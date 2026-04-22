@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { buildWowheadHref } from '@/utils/wowhead'
 
 const props = defineProps<{
   itemId?: number
@@ -19,15 +20,25 @@ const props = defineProps<{
   itemLevel?: number
   qualityId?: number
   label?: string
+  bonus?: number[]
+  gems?: number[]
+  enchantments?: number[]
+  pcs?: number[]
+  classic?: boolean
 }>()
 
-const href = computed(() => {
-  let h = ''
-  if (props.itemId) h += `item=${props.itemId}`
-  if (props.spellId) h += `spell=${props.spellId}`
-  if (props.itemLevel) h += `&ilvl=${props.itemLevel}`
-  return h
-})
+const href = computed(() =>
+  buildWowheadHref({
+    itemId: props.itemId,
+    spellId: props.spellId,
+    itemLevel: props.itemLevel,
+    bonus: props.bonus,
+    gems: props.gems,
+    enchantments: props.enchantments,
+    pcs: props.pcs,
+    classic: props.classic,
+  }),
+)
 
 const qualityClass = computed(() => (props.qualityId !== undefined ? `q${props.qualityId}` : ''))
 </script>
