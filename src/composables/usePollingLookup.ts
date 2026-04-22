@@ -17,8 +17,11 @@ export function useCharacterLookup(
     queryKey: ['character', region, realm, name] as const,
     queryFn: () => fetchCharacter(region.value, realm.value, name.value),
     enabled: () => !!region.value && !!realm.value && !!name.value,
-    retry: (failureCount, error) =>
-      error instanceof SyncPendingError && failureCount < MAX_POLLING_ATTEMPTS,
+    retry: (failureCount, error) => {
+      if (error instanceof SyncPendingError) return failureCount < MAX_POLLING_ATTEMPTS
+      // All other typed errors (NotFound, Throttled, …) must bubble to the UI immediately.
+      return false
+    },
     retryDelay: (_count, error) =>
       error instanceof SyncPendingError ? error.retryAfter : DEFAULT_RETRY_DELAY,
     staleTime: 30_000,
@@ -37,8 +40,10 @@ export function useGuildLookup(
     queryKey: ['guild', region, realm, name, page, perPage] as const,
     queryFn: () => fetchGuild(region.value, realm.value, name.value, perPage, page.value),
     enabled: () => !!region.value && !!realm.value && !!name.value,
-    retry: (failureCount, error) =>
-      error instanceof SyncPendingError && failureCount < MAX_POLLING_ATTEMPTS,
+    retry: (failureCount, error) => {
+      if (error instanceof SyncPendingError) return failureCount < MAX_POLLING_ATTEMPTS
+      return false
+    },
     retryDelay: (_count, error) =>
       error instanceof SyncPendingError ? error.retryAfter : DEFAULT_RETRY_DELAY,
     staleTime: 30_000,
