@@ -10,7 +10,7 @@
           <p v-if="!talents.class.length" class="text-base-content/60 text-sm">None</p>
           <ul v-else class="flex flex-col gap-1">
             <li v-for="t in talents.class" :key="`class-${t.id}`">
-              <WowheadLink :spell-id="t.id" :label="t.name" />
+              <WowheadLink :spell-id="t.id">Rank {{ t.rank }}</WowheadLink>
             </li>
           </ul>
         </section>
@@ -22,7 +22,7 @@
           <p v-if="!talents.spec.length" class="text-base-content/60 text-sm">None</p>
           <ul v-else class="flex flex-col gap-1">
             <li v-for="t in talents.spec" :key="`spec-${t.id}`">
-              <WowheadLink :spell-id="t.id" :label="t.name" />
+              <WowheadLink :spell-id="t.id">Rank {{ t.rank }}</WowheadLink>
             </li>
           </ul>
         </section>
@@ -34,7 +34,7 @@
           <p v-if="!talents.hero.length" class="text-base-content/60 text-sm">None</p>
           <ul v-else class="flex flex-col gap-1">
             <li v-for="t in talents.hero" :key="`hero-${t.id}`">
-              <WowheadLink :spell-id="t.id" :label="t.name" />
+              <WowheadLink :spell-id="t.id">Rank {{ t.rank }}</WowheadLink>
             </li>
           </ul>
         </section>

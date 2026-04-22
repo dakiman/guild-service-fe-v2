@@ -43,3 +43,12 @@ export class NotFoundError extends Error {
     this.name = 'NotFoundError'
   }
 }
+
+export class ThrottledError extends Error {
+  readonly retryAfter: number
+  constructor(retryAfter: number) {
+    super('THROTTLED')
+    this.name = 'ThrottledError'
+    this.retryAfter = retryAfter
+  }
+}
