@@ -16,9 +16,13 @@
             :item-id="item.id"
             :item-level="item.item_level"
             :quality-id="itemQualityToId(item.quality)"
+            :bonus="item.bonus"
+            :gems="item.gems"
+            :enchantments="item.enchantments"
+            :pcs="pcsFor(item)"
             class="flex-1 truncate"
           >
-            {{ item.item_level }} {{ formatQuality(item.quality) }}
+            {{ item.item_level }} {{ item.name || formatQuality(item.quality) }}
           </WowheadLink>
         </div>
       </div>
@@ -30,6 +34,7 @@
 import { computed } from 'vue'
 import WowheadLink from '@/components/wow/WowheadLink.vue'
 import { itemQualityToId } from '@/utils/wowConstants'
+import { groupEquipmentBySetId, getPcsFor } from '@/utils/equipmentSets'
 import type { EquipmentItem } from '@/types/character'
 import type { Slot } from '@/types/wow'
 
@@ -65,6 +70,12 @@ const sortedEquipment = computed(() => {
     return ai - bi
   })
 })
+
+const sets = computed(() => groupEquipmentBySetId(props.equipment))
+
+function pcsFor(item: EquipmentItem): number[] | undefined {
+  return getPcsFor(item, sets.value)
+}
 
 function formatSlot(slot: string): string {
   return slot.replace(/_/g, ' ')
