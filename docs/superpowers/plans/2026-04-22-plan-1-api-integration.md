@@ -293,7 +293,7 @@ This is a stop-gap so the build stays green. Task 8 revisits the rendering and a
 
 - [ ] **Step 4: Typecheck**
 
-Run: `npx vue-tsc --noEmit`
+Run: `npx vue-tsc -b --force --noEmit`
 Expected: exit code 0, no errors.
 
 - [ ] **Step 5: Commit**
@@ -309,6 +309,7 @@ git commit -m "types: adopt Plan 1 character shape and add ThrottledError"
 
 **Files:**
 - Modify: `src/api/characters.ts`
+- Modify: `src/pages/CharacterDetailPage.vue` (one-line null-safety fix — `synced_at` is now `string | null`, `StaleBadge.lastSyncedAt` is `string | undefined`)
 
 - [ ] **Step 1: Rewrite `fetchCharacter`**
 
@@ -378,17 +379,25 @@ Notes:
 - `meta.freshness.profile === 'stale'` is now the primary staleness signal; the header is kept as a fallback so an older BE deploy does not break the banner.
 - `toggleRecruitment` still returns `CharacterResource` — the PATCH response is not wrapped in `{data, meta}`, per the existing convention. If the BE later changes this, update here.
 
-- [ ] **Step 2: Typecheck**
+- [ ] **Step 2: Null-safety fix in `CharacterDetailPage.vue`**
 
-Run: `npx vue-tsc --noEmit`
+Task 1 widened `CharacterResource.synced_at` to `string | null`, but `StaleBadge`'s `lastSyncedAt` prop is declared `string | undefined`. The existing template passes `character.synced_at` directly. Open `src/pages/CharacterDetailPage.vue` and change the one affected line:
+
+```vue
+<StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
+```
+
+That is the only change in this file for Task 2. Page-level wiring of `meta` and `FreshnessChips` is still Task 10's job.
+
+- [ ] **Step 3: Typecheck**
+
+Run: `npx vue-tsc -b --force --noEmit`
 Expected: exit code 0.
 
-`CharacterDetailPage.vue` already reads `lookup.data.value?.data` and `lookup.data.value?.isStale`, both of which are still provided, so it keeps compiling. Page-level wiring of `meta` happens in Task 10.
-
-- [ ] **Step 3: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
-git add src/api/characters.ts
+git add src/api/characters.ts src/pages/CharacterDetailPage.vue
 git commit -m "api: parse {data, meta} envelope and map 429 to ThrottledError"
 ```
 
@@ -454,7 +463,7 @@ export function useGuildLookup(
 
 - [ ] **Step 2: Typecheck**
 
-Run: `npx vue-tsc --noEmit`
+Run: `npx vue-tsc -b --force --noEmit`
 Expected: exit code 0.
 
 - [ ] **Step 3: Commit**
@@ -666,7 +675,7 @@ const qualityClass = computed(() => (props.qualityId !== undefined ? `q${props.q
 
 - [ ] **Step 2: Typecheck**
 
-Run: `npx vue-tsc --noEmit`
+Run: `npx vue-tsc -b --force --noEmit`
 Expected: exit code 0.
 
 - [ ] **Step 3: Commit**
@@ -895,7 +904,7 @@ function formatQuality(quality: string): string {
 
 - [ ] **Step 2: Typecheck**
 
-Run: `npx vue-tsc --noEmit`
+Run: `npx vue-tsc -b --force --noEmit`
 Expected: exit code 0.
 
 - [ ] **Step 3: Commit**
@@ -1035,7 +1044,7 @@ Replace with:
 
 - [ ] **Step 3: Typecheck**
 
-Run: `npx vue-tsc --noEmit`
+Run: `npx vue-tsc -b --force --noEmit`
 Expected: exit code 0.
 
 - [ ] **Step 4: Commit**
@@ -1149,7 +1158,7 @@ const retryLabel = computed(() => {
 
 - [ ] **Step 2: Typecheck**
 
-Run: `npx vue-tsc --noEmit`
+Run: `npx vue-tsc -b --force --noEmit`
 Expected: exit code 0.
 
 - [ ] **Step 3: Commit**
@@ -1229,21 +1238,7 @@ Open `src/pages/CharacterDetailPage.vue`. Two changes:
 import FreshnessChips from '@/components/feedback/FreshnessChips.vue'
 ```
 
-2. Expose `meta` from the lookup and render the chips in the status row. Replace this block:
-
-```vue
-<div class="flex flex-wrap items-center gap-3">
-  <StaleBadge v-if="isStale" :last-synced-at="character.synced_at" />
-  <button
-    v-if="canToggleRecruitment"
-    ...
-  >
-    ...
-  </button>
-</div>
-```
-
-with:
+2. Add the `<FreshnessChips>` line in the existing status row, directly after `<StaleBadge>` (which Task 2 already fixed with `?? undefined`):
 
 ```vue
 <div class="flex flex-wrap items-center gap-3">
@@ -1263,8 +1258,6 @@ with:
 </div>
 ```
 
-The `?? undefined` coalesce on `synced_at` is needed because `CharacterResource.synced_at` is now `string | null` (Task 1) but `StaleBadge`'s prop is `string | undefined`.
-
 3. Add a `meta` computed just under the existing `character` computed:
 
 ```ts
@@ -1275,7 +1268,7 @@ const isStale = computed(() => lookup.data.value?.isStale ?? false)
 
 - [ ] **Step 3: Typecheck**
 
-Run: `npx vue-tsc --noEmit`
+Run: `npx vue-tsc -b --force --noEmit`
 Expected: exit code 0.
 
 - [ ] **Step 4: Commit**
