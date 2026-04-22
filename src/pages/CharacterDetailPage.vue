@@ -26,7 +26,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <EquipmentList :equipment="character.equipment" />
-        <TalentTree :talents="character.talents" />
+        <TalentTree :talents="character.talents" :loadout-code="character.talent_loadout_code" />
       </div>
 
       <DungeonRunsList :runs="character.dungeon_runs" />

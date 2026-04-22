@@ -1,8 +1,19 @@
 <template>
   <div class="card bg-base-200 shadow-sm">
     <div class="card-body">
-      <h2 class="card-title">Talents</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <h2 class="card-title">Talents</h2>
+        <button
+          v-if="loadoutCode"
+          type="button"
+          class="btn btn-sm btn-outline"
+          @click="copyLoadout"
+        >
+          {{ justCopied ? 'Copied!' : 'Copy loadout' }}
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
         <section>
           <h3 class="text-sm font-semibold uppercase tracking-wide text-base-content/70 mb-2">
             Class
@@ -39,15 +50,43 @@
           </ul>
         </section>
       </div>
+
+      <section v-if="talents.pvp && talents.pvp.length" class="mt-4">
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-base-content/70 mb-2">
+          PvP
+        </h3>
+        <ul class="flex flex-wrap gap-2">
+          <li v-for="p in talents.pvp" :key="`pvp-${p.slot}`">
+            <WowheadLink :spell-id="p.spell_id">Slot {{ p.slot + 1 }}</WowheadLink>
+          </li>
+        </ul>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { toast } from 'vue-sonner'
 import WowheadLink from '@/components/wow/WowheadLink.vue'
-import type { TalentEntry } from '@/types/character'
+import type { CharacterTalents } from '@/types/character'
 
-defineProps<{
-  talents: { class: TalentEntry[]; spec: TalentEntry[]; hero: TalentEntry[] }
+const props = defineProps<{
+  talents: CharacterTalents
+  loadoutCode?: string | null
 }>()
+
+const justCopied = ref(false)
+
+async function copyLoadout() {
+  if (!props.loadoutCode) return
+  try {
+    await navigator.clipboard.writeText(props.loadoutCode)
+    justCopied.value = true
+    toast.success('Loadout code copied — paste it into WoW\'s Import Loadout box')
+    setTimeout(() => (justCopied.value = false), 2000)
+  } catch {
+    toast.error('Could not copy to clipboard')
+  }
+}
 </script>
