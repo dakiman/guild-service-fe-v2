@@ -11,6 +11,7 @@
 
       <div class="flex flex-wrap items-center gap-3">
         <StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
+        <FreshnessChips v-if="meta" :freshness="meta.freshness" />
         <button
           v-if="canToggleRecruitment"
           type="button"
@@ -56,6 +57,7 @@ import DungeonRunsList from '@/components/character/DungeonRunsList.vue'
 import PollingState from '@/components/feedback/PollingState.vue'
 import StaleBadge from '@/components/feedback/StaleBadge.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
+import FreshnessChips from '@/components/feedback/FreshnessChips.vue'
 import type { Region } from '@/types/api'
 import type { CharacterLookupResult } from '@/types/character'
 import { getErrorMessage } from '@/utils/errors'
@@ -70,6 +72,7 @@ const queryClient = useQueryClient()
 const lookup = useCharacterLookup(region, realm, name)
 
 const character = computed(() => lookup.data.value?.data ?? null)
+const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
 
 useWowheadRefresh(() => character.value)
