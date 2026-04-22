@@ -10,7 +10,7 @@
       <CharacterHeader :character="character" />
 
       <div class="flex flex-wrap items-center gap-3">
-        <StaleBadge v-if="isStale" :last-synced-at="character.synced_at" />
+        <StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
         <button
           v-if="canToggleRecruitment"
           type="button"
