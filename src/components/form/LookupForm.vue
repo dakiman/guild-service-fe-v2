@@ -15,7 +15,7 @@ const canSubmit = computed(() => !!realm.value.trim() && !!name.value.trim())
 
 function onSubmit() {
   if (!canSubmit.value) return
-  emit('submit', { region: region.value, realm: slugify(realm.value), name: name.value.trim() })
+  emit('submit', { region: region.value, realm: slugify(realm.value), name: name.value.trim().toLocaleLowerCase() })
 }
 </script>
 
