@@ -8,7 +8,7 @@
     <ProfessionsStrip :entries="character.professions" />
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <CharacterStatsCardPlaceholder />
-      <!-- PvpRatingsCard slot — Task 5 will add it here -->
+      <PvpRatingsCard :brackets="character.pvp_brackets" />
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@ import { useCharacterContext } from '@/composables/useCharacterContext'
 import MirroredEquipmentLayout from '@/components/character/MirroredEquipmentLayout.vue'
 import ProfessionsStrip from '@/components/character/ProfessionsStrip.vue'
 import CharacterStatsCardPlaceholder from '@/components/character/CharacterStatsCardPlaceholder.vue'
+import PvpRatingsCard from '@/components/character/PvpRatingsCard.vue'
 
 const { character } = useCharacterContext()
 </script>
