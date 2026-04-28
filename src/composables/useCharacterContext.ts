@@ -6,6 +6,7 @@ export interface CharacterContext {
   meta: ComputedRef<MetaBlock>
   freshness: ComputedRef<MetaBlock['freshness']>
   isStale: ComputedRef<boolean>
+  isClassic: ComputedRef<boolean>
   refetch: () => Promise<unknown>
 }
 

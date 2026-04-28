@@ -77,6 +77,7 @@ const lookup = useCharacterLookup(region, realm, name)
 const character = computed(() => lookup.data.value?.data ?? null)
 const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
+const isClassic = computed(() => character.value?.game_version === 'classic')
 
 useWowheadRefresh(() => character.value)
 useStaleAutoRefresh(isStale, () => ['character', region.value, realm.value, name.value])
@@ -88,6 +89,7 @@ provideCharacterContext({
   meta: meta as ComputedRef<MetaBlock>,
   freshness: computed(() => (meta.value ? meta.value.freshness : ({} as MetaBlock['freshness']))),
   isStale,
+  isClassic,
   refetch: () => lookup.refetch(),
 })
 

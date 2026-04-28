@@ -16,6 +16,7 @@
         :gems="item.gems"
         :enchantments="item.enchantments"
         :pcs="pcs"
+        :classic="isClassic"
         class="flex-1 truncate text-sm"
       >
         {{ item.name || formatQuality(item.quality) }}
@@ -32,6 +33,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import WowheadLink from '@/components/wow/WowheadLink.vue'
+import { useCharacterContext } from '@/composables/useCharacterContext'
 import { itemQualityToId } from '@/utils/wowConstants'
 import { formatSlotLabel } from '@/utils/equipmentLayout'
 import type { EquipmentItem } from '@/types/character'
@@ -43,6 +45,8 @@ const props = defineProps<{
   mirrored?: 'left' | 'right' | 'center'
   pcs?: number[]
 }>()
+
+const { isClassic } = useCharacterContext()
 
 const orientationClass = computed(() =>
   props.mirrored === 'right' ? 'flex-row-reverse text-right' : '',
