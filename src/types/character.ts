@@ -59,10 +59,39 @@ export interface MythicPlusRating {
   per_spec: Record<string, number>
 }
 
-// Plan 2 placeholders — real shape arrives when Plan 2 ships.
-export type PvpBracketStats = Record<string, unknown>
-export type Professions = Record<string, unknown>
-export type RaidProgress = Record<string, unknown>
+export interface PvpMatchStatistics {
+  played: number
+  won: number
+  lost: number
+}
+
+export interface PvpBracketStats {
+  bracket: string
+  rating: number
+  tier_name: string | null
+  season: PvpMatchStatistics
+  weekly: PvpMatchStatistics
+}
+
+export interface Profession {
+  profession_id: number
+  profession_name: string
+  tier_name: string
+  skill_points: number
+  max_skill_points: number
+  is_primary: boolean
+}
+
+export interface RaidEncounterProgress {
+  expansion: string
+  instance_id: number
+  instance_name: string
+  encounter_id: number
+  encounter_name: string
+  difficulty: string
+  completed_count: number
+  last_kill_timestamp: number
+}
 
 export interface DungeonRunMember {
   character_id: number
@@ -108,8 +137,8 @@ export interface CharacterResource {
   talents: CharacterTalents
   equipment: EquipmentItem[]
   pvp_brackets: PvpBracketStats[] | null
-  professions: Professions | null
-  raid_progress: RaidProgress | null
+  professions: Profession[] | null
+  raid_progress: RaidEncounterProgress[] | null
   recruitment: boolean
   guild: GuildSummary | null
   dungeon_runs: DungeonRun[]
