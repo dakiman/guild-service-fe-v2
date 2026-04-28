@@ -26,8 +26,12 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <EquipmentList :equipment="character.equipment" />
-        <TalentTree :talents="character.talents" :loadout-code="character.talent_loadout_code" />
+        <EquipmentList :equipment="character.equipment" :classic="isClassic" />
+        <TalentTree
+          :talents="character.talents"
+          :loadout-code="character.talent_loadout_code"
+          :classic="isClassic"
+        />
       </div>
 
       <DungeonRunsList :runs="character.dungeon_runs" />
@@ -74,6 +78,7 @@ const lookup = useCharacterLookup(region, realm, name)
 const character = computed(() => lookup.data.value?.data ?? null)
 const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
+const isClassic = computed(() => character.value?.game_version === 'classic')
 
 useWowheadRefresh(() => character.value)
 useStaleAutoRefresh(isStale, () => ['character', region.value, realm.value, name.value])

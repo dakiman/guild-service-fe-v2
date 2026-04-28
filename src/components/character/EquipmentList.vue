@@ -20,6 +20,7 @@
             :gems="item.gems"
             :enchantments="item.enchantments"
             :pcs="pcsFor(item)"
+            :classic="props.classic"
             class="flex-1 truncate"
           >
             {{ item.item_level }} {{ item.name || formatQuality(item.quality) }}
@@ -38,7 +39,7 @@ import { groupEquipmentBySetId, getPcsFor } from '@/utils/equipmentSets'
 import type { EquipmentItem } from '@/types/character'
 import type { Slot } from '@/types/wow'
 
-const props = defineProps<{ equipment: EquipmentItem[] }>()
+const props = defineProps<{ equipment: EquipmentItem[]; classic?: boolean }>()
 
 const SLOT_ORDER: Slot[] = [
   'head',
