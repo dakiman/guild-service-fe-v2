@@ -52,7 +52,7 @@ import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
 import { provideCharacterContext } from '@/composables/useCharacterContext'
 import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
-import { Sparkles, Crown, Gem, Skull, Star, Trophy } from 'lucide-vue-next'
+import { Sparkles, BookOpen, Crown, Gem, Skull, Star, Trophy } from 'lucide-vue-next'
 import CharacterHeader from '@/components/character/CharacterHeader.vue'
 import CharacterStatPills from '@/components/character/CharacterStatPills.vue'
 import CharacterTabStrip, {
@@ -97,6 +97,7 @@ const tabs = computed<TabDescriptor[]>(() => {
   const params = { region: region.value, realm: realm.value, name: name.value }
   return [
     { label: 'Summary',      to: { name: 'character-summary', params },      icon: Sparkles },
+    { label: 'Talents',      to: { name: 'character-talents', params },      icon: BookOpen },
     { label: 'Titles',       to: { name: 'character-titles', params },       icon: Crown },
     {
       label: 'Collections',
