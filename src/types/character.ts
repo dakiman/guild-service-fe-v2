@@ -83,7 +83,7 @@ export interface DungeonRun {
   duration: number
   completed_timestamp: number
   is_completed_on_time: boolean
-  affixes: string[]
+  affixes: { id: number; name: string }[]
   members: DungeonRunMember[]
 }
 

@@ -22,10 +22,10 @@
           <div v-if="run.affixes.length" class="flex flex-wrap gap-1 mb-3">
             <span
               v-for="affix in run.affixes"
-              :key="affix"
+              :key="affix.id"
               class="badge badge-outline badge-sm"
             >
-              {{ affix }}
+              {{ affix.name }}
             </span>
           </div>
 
