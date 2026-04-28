@@ -35,8 +35,93 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/characters/:region/:realm/:name',
     name: 'character-detail',
-    component: () => import('@/pages/CharacterDetailPage.vue'),
+    component: () => import('@/pages/CharacterDetailLayout.vue'),
     props: true,
+    redirect: (to) => ({
+      name: 'character-summary',
+      params: {
+        region: to.params.region,
+        realm: to.params.realm,
+        name: to.params.name,
+      },
+    }),
+    children: [
+      {
+        path: 'summary',
+        name: 'character-summary',
+        component: () => import('@/pages/character/CharacterSummaryTab.vue'),
+      },
+      {
+        path: 'titles',
+        name: 'character-titles',
+        component: () => import('@/pages/character/CharacterTitlesTab.vue'),
+      },
+      {
+        path: 'collections',
+        name: 'character-collections',
+        component: () => import('@/pages/character/CharacterCollectionsTab.vue'),
+        redirect: (to) => ({
+          name: 'character-collections-mounts',
+          params: {
+            region: to.params.region,
+            realm: to.params.realm,
+            name: to.params.name,
+          },
+        }),
+        children: [
+          {
+            path: 'mounts',
+            name: 'character-collections-mounts',
+            component: () => import('@/pages/character/collections/MountsSubtab.vue'),
+          },
+          {
+            path: 'pets',
+            name: 'character-collections-pets',
+            component: () => import('@/pages/character/collections/PetsSubtab.vue'),
+          },
+          {
+            path: 'toys',
+            name: 'character-collections-toys',
+            component: () => import('@/pages/character/collections/ToysSubtab.vue'),
+          },
+        ],
+      },
+      {
+        path: 'pve',
+        name: 'character-pve',
+        component: () => import('@/pages/character/CharacterPveTab.vue'),
+        redirect: (to) => ({
+          name: 'character-pve-raids',
+          params: {
+            region: to.params.region,
+            realm: to.params.realm,
+            name: to.params.name,
+          },
+        }),
+        children: [
+          {
+            path: 'raids',
+            name: 'character-pve-raids',
+            component: () => import('@/pages/character/pve/RaidsSubtab.vue'),
+          },
+          {
+            path: 'mythic',
+            name: 'character-pve-mythic',
+            component: () => import('@/pages/character/pve/MythicSubtab.vue'),
+          },
+        ],
+      },
+      {
+        path: 'reputations',
+        name: 'character-reputations',
+        component: () => import('@/pages/character/CharacterReputationsTab.vue'),
+      },
+      {
+        path: 'achievements',
+        name: 'character-achievements',
+        component: () => import('@/pages/character/CharacterAchievementsTab.vue'),
+      },
+    ],
   },
   {
     path: '/guilds',
