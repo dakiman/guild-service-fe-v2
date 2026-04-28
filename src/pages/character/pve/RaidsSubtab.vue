@@ -1,17 +1,10 @@
 <template>
-  <EmptyTab
-    slice="raids"
-    :freshness="freshness.raids"
-    title="No raid data yet"
-    message="Raid encounter kills will appear here once raid progress sync lands."
-    :icon="Castle"
-  />
+  <RaidEncountersList :entries="character.raid_progress" />
 </template>
 
 <script setup lang="ts">
-import { Castle } from 'lucide-vue-next'
-import EmptyTab from '@/components/character/EmptyTab.vue'
 import { useCharacterContext } from '@/composables/useCharacterContext'
+import RaidEncountersList from '@/components/character/RaidEncountersList.vue'
 
-const { freshness } = useCharacterContext()
+const { character } = useCharacterContext()
 </script>
