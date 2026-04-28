@@ -1,3 +1,123 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Masked Armory base palette — values lifted from
+   * tmp/masked-armory-review/REPORT.md section F. */
+  --ma-bg: 3 1 8;                       /* rgb(3,1,8)        page bg */
+  --ma-card: 26 15 46;                  /* rgb(26,15,46)     outer panel base */
+  --ma-card-2: 18 11 30;                /* rgb(18,11,30)     outer panel deep stop */
+  --ma-card-inner: 45 27 78;            /* rgb(45,27,78)     inner row stop */
+  --ma-border: 139 92 246;              /* rgb(139,92,246)   violet-500 */
+  --ma-text: 241 232 255;               /* rgb(241,232,255)  body copy */
+  --ma-text-muted: 241 247 254;         /* base for muted (.71 alpha) */
+  --ma-text-disabled: 217 237 255;      /* base for disabled (.365 alpha) */
+  --ma-heading: 186 167 255;            /* rgb(186,167,255)  default h1 */
+  --ma-gold: 255 217 85;                /* rgb(255,217,85)   ilvl/feats accent */
+  --ma-violet: 139 92 246;              /* rgb(139,92,246)   primary violet */
+  --ma-violet-soft: 167 139 250;        /* rgb(167,139,250)  violet-400 */
+  --ma-amber: 253 230 138;              /* rgb(253,230,138)  amber-200 */
+
+  /* Canonical WoW stat colors (REPORT.md section F). */
+  --stat-health:      39 204  78;
+  --stat-agility:    255 217  85;
+  --stat-stamina:    255 139  45;
+  --stat-crit:       224  28  28;
+  --stat-haste:       14 213 155;
+  --stat-mastery:    146  86 255;
+  --stat-versatility: 191 191 191;
+}
+
+@layer components {
+  /* Outer panel: violet-tinted gradient + 1px violet border + the
+   * three-layer shadow described in REPORT.md takeaway J2. */
+  .ma-card {
+    background-image: linear-gradient(
+      135deg,
+      rgba(var(--ma-card) / 0.85) 0%,
+      rgba(var(--ma-card-2) / 0.95) 100%
+    );
+    border: 1px solid rgba(var(--ma-border) / 0.3);
+    border-radius: 12px;
+    box-shadow:
+      0 4px 30px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(var(--ma-violet) / 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* Inner row card — equipment slots, render frame, etc. */
+  .ma-card-inner {
+    background-image: linear-gradient(
+      135deg,
+      rgba(var(--ma-card) / 0.9) 0%,
+      rgba(var(--ma-card-inner) / 0.7) 100%
+    );
+    border: 1px solid rgba(var(--ma-border) / 0.2);
+    border-radius: 8px;
+  }
+
+  /* Stat pill row sitting above the tab strip (REPORT J6). */
+  .ma-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(var(--ma-border) / 0.3);
+    background-color: rgba(var(--ma-card) / 0.5);
+  }
+
+  /* Tab strip pattern (REPORT J5). */
+  .ma-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(var(--ma-text) / 0.95);
+    background-color: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    text-decoration: none;
+  }
+  .ma-tab:hover {
+    background-color: rgba(var(--ma-violet) / 0.1);
+  }
+  .ma-tab--active {
+    background-color: rgba(var(--ma-violet) / 0.25);
+    border-color: rgba(var(--ma-border) / 0.4);
+    color: rgb(var(--ma-gold));
+  }
+  .ma-tab--active svg {
+    color: rgb(var(--ma-gold));
+  }
+
+  /* Default heading style — violet, slight tracking, Cinzel display family. */
+  .ma-text-heading {
+    color: rgb(var(--ma-heading));
+    font-family: 'Cinzel', 'Raleway', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* "MASKED ARMORY" gradient wordmark (REPORT J3). */
+  .ma-wordmark {
+    background: linear-gradient(
+      135deg,
+      rgb(var(--ma-amber)) 0%,
+      rgb(var(--ma-violet-soft)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-family: 'Cinzel', 'Raleway', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+}
