@@ -38,7 +38,9 @@ export interface EquipmentItem {
 
 export interface TalentEntry {
   id: number
+  spell_id: number
   rank: number
+  max_rank: number
 }
 
 export interface PvpTalentEntry {

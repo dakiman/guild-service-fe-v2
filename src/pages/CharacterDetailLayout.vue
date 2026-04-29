@@ -44,6 +44,7 @@
 
 <script setup lang="ts">
 import { computed, ref, toRefs, type ComputedRef } from 'vue'
+import { useRoute } from 'vue-router'
 import { useQueryClient } from '@tanstack/vue-query'
 import { toast } from 'vue-sonner'
 import { useCharacterLookup } from '@/composables/usePollingLookup'
@@ -71,6 +72,7 @@ const { region, realm, name } = toRefs(props)
 
 const auth = useAuthStore()
 const queryClient = useQueryClient()
+const route = useRoute()
 
 const lookup = useCharacterLookup(region, realm, name)
 
@@ -80,6 +82,7 @@ const isStale = computed(() => lookup.data.value?.isStale ?? false)
 const isClassic = computed(() => character.value?.game_version === 'classic')
 
 useWowheadRefresh(() => character.value)
+useWowheadRefresh(() => route.fullPath)
 useStaleAutoRefresh(isStale, () => ['character', region.value, realm.value, name.value])
 
 // The layout v-if-gates <router-view> on `character` non-null, so children

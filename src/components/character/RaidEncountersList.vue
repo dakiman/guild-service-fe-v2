@@ -68,6 +68,7 @@ function difficultyBorderClass(difficulty: string): string {
   if (lower.includes('mythic')) return 'border-orange-500'
   if (lower.includes('heroic')) return 'border-purple-500'
   if (lower.includes('normal')) return 'border-blue-500'
+  if (lower.includes('lfr') || lower.includes('raid finder')) return 'border-teal-500'
   return 'border-gray-500'
 }
 

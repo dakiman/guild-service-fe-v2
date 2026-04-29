@@ -8,7 +8,7 @@
       <Hammer v-if="entry.is_primary" class="w-3.5 h-3.5 text-ma-gold" />
       <Wrench v-else class="w-3.5 h-3.5 text-ma-muted/70" />
       <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">
-        {{ entry.profession_name }}
+        {{ entry.tier_name || entry.profession_name }}
       </span>
       <span class="font-bold text-ma-gold tabular-nums">
         {{ entry.skill_points }}/{{ entry.max_skill_points }}
@@ -29,7 +29,9 @@ const props = defineProps<{
 const sortedEntries = computed(() =>
   [...(props.entries ?? [])].sort((a, b) => {
     if (a.is_primary !== b.is_primary) return a.is_primary ? -1 : 1
-    return a.profession_name.localeCompare(b.profession_name)
+    const byName = a.profession_name.localeCompare(b.profession_name)
+    if (byName !== 0) return byName
+    return (a.tier_name ?? '').localeCompare(b.tier_name ?? '')
   })
 )
 </script>
