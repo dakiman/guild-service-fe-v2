@@ -119,6 +119,13 @@ export interface Profession {
   is_primary: boolean
 }
 
+export interface CharacterTitle {
+  id: number
+  name: string
+  display_string: string
+  is_selected: boolean
+}
+
 export interface RaidEncounterProgress {
   expansion: string
   instance_id: number
@@ -177,6 +184,7 @@ export interface CharacterResource {
   pvp_brackets: PvpBracketStats[] | null
   professions: Profession[] | null
   raid_progress: RaidEncounterProgress[] | null
+  titles: CharacterTitle[]
   recruitment: boolean
   guild: GuildSummary | null
   dungeon_runs: DungeonRun[]
@@ -196,6 +204,7 @@ export interface MetaBlock {
     professions: FreshnessState
     raids: FreshnessState
     stats: FreshnessState
+    titles: FreshnessState
   }
 }
 
