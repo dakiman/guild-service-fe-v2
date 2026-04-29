@@ -36,6 +36,41 @@ export interface EquipmentItem {
   stats: EquipmentStat[]
 }
 
+export interface CharacterStats {
+  // Top-level numeric fields the FE renders prominently.
+  health?: number
+  power?: number
+  power_type?: { id?: number; name?: string; type?: string }
+
+  // Primary stats — Blizzard nests as { base, effective }.
+  strength?: { base: number; effective: number }
+  agility?: { base: number; effective: number }
+  intellect?: { base: number; effective: number }
+  stamina?: { base: number; effective: number }
+
+  // Secondaries — Blizzard nests as { value, effective, rating, rating_bonus }.
+  melee_crit?: { value: number; effective: number; rating: number; rating_bonus: number }
+  melee_haste?: { value: number; effective: number; rating: number; rating_bonus: number }
+  mastery?: { value: number; effective: number; rating: number; rating_bonus: number }
+  versatility_damage_done_bonus?: number
+  versatility_healing_done_bonus?: number
+  versatility_damage_taken_bonus?: number
+
+  // Defensive
+  armor?: { base: number; effective: number }
+  dodge?: { value: number; rating: number; rating_bonus: number }
+  parry?: { value: number; rating: number; rating_bonus: number }
+  block?: { value: number; rating: number; rating_bonus: number }
+
+  // Offensive
+  attack_power?: number
+  spell_power?: number
+  spell_crit?: { value: number; rating: number; rating_bonus: number }
+
+  // Forward-compatible: any other Blizzard-emitted key.
+  [key: string]: unknown
+}
+
 export interface TalentEntry {
   id: number
   spell_id: number
@@ -138,6 +173,7 @@ export interface CharacterResource {
   media: { avatar: string; inset: string; main: string }
   talents: CharacterTalents
   equipment: EquipmentItem[]
+  stats: CharacterStats | null
   pvp_brackets: PvpBracketStats[] | null
   professions: Profession[] | null
   raid_progress: RaidEncounterProgress[] | null
@@ -146,6 +182,7 @@ export interface CharacterResource {
   dungeon_runs: DungeonRun[]
   last_searched_at: string | null
   mythics_synced_at: string | null
+  stats_synced_at: string | null
   synced_at: string | null
 }
 
@@ -158,6 +195,7 @@ export interface MetaBlock {
     pvp: FreshnessState
     professions: FreshnessState
     raids: FreshnessState
+    stats: FreshnessState
   }
 }
 
