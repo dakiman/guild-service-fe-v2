@@ -24,6 +24,7 @@ const slices: Array<{ key: keyof MetaBlock['freshness']; label: string }> = [
   { key: 'professions', label: 'Profs' },
   { key: 'raids', label: 'Raids' },
   { key: 'stats', label: 'Stats' },
+  { key: 'titles', label: 'Titles' },
 ]
 
 function badgeClass(state: FreshnessState): string {
@@ -40,7 +41,8 @@ function label(state: FreshnessState): string {
 
 function tooltip(sliceLabel: string, state: FreshnessState): string {
   if (state === 'fresh') return `${sliceLabel} data is up to date`
-  if (state === 'stale') return `${sliceLabel} data is being refreshed — reload shortly for newer data`
+  if (state === 'stale')
+    return `${sliceLabel} data is being refreshed — reload shortly for newer data`
   return `${sliceLabel} has never been synced yet`
 }
 </script>
