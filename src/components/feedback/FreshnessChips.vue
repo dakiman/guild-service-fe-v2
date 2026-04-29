@@ -23,6 +23,7 @@ const slices: Array<{ key: keyof MetaBlock['freshness']; label: string }> = [
   { key: 'pvp', label: 'PvP' },
   { key: 'professions', label: 'Profs' },
   { key: 'raids', label: 'Raids' },
+  { key: 'stats', label: 'Stats' },
 ]
 
 function badgeClass(state: FreshnessState): string {
