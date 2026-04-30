@@ -12,15 +12,33 @@ import { Mountain, Cat, Sparkles } from 'lucide-vue-next'
 import CharacterTabStrip, {
   type TabDescriptor,
 } from '@/components/character/CharacterTabStrip.vue'
+import { useCharacterContext } from '@/composables/useCharacterContext'
 
 const route = useRoute()
+const { character } = useCharacterContext()
+
+const mountCount = computed(() => character.value.mounts?.length ?? 0)
+const petCount = computed(() => character.value.pets?.length ?? 0)
+const toyCount = computed(() => character.value.toys?.length ?? 0)
 
 const subTabs = computed<TabDescriptor[]>(() => {
   const params = route.params
   return [
-    { label: 'Mounts', to: { name: 'character-collections-mounts', params }, icon: Mountain },
-    { label: 'Pets',   to: { name: 'character-collections-pets', params },   icon: Cat },
-    { label: 'Toys',   to: { name: 'character-collections-toys', params },   icon: Sparkles },
+    {
+      label: mountCount.value ? `Mounts (${mountCount.value})` : 'Mounts',
+      to: { name: 'character-collections-mounts', params },
+      icon: Mountain,
+    },
+    {
+      label: petCount.value ? `Pets (${petCount.value})` : 'Pets',
+      to: { name: 'character-collections-pets', params },
+      icon: Cat,
+    },
+    {
+      label: toyCount.value ? `Toys (${toyCount.value})` : 'Toys',
+      to: { name: 'character-collections-toys', params },
+      icon: Sparkles,
+    },
   ]
 })
 </script>
