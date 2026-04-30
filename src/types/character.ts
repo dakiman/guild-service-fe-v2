@@ -215,6 +215,22 @@ export interface CharacterAchievement {
   completed_timestamp: number | null
 }
 
+export interface GameDataAchievementCategory {
+  id: number
+  name: string
+  parent_id: number | null
+  display_order: number
+}
+
+export interface GameDataAchievement {
+  id: number
+  name: string
+  description: string | null
+  points: number
+  is_account_wide: boolean
+  category: GameDataAchievementCategory | null
+}
+
 export interface Toy {
   toy_id: number
   name: string
