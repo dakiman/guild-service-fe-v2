@@ -185,10 +185,18 @@ export interface DungeonRunMember {
   equipped_item_level: number
 }
 
+export interface MountGameData {
+  description: string | null
+  source_text: string | null
+  summon_spell_id: number | null
+  item_id: number | null
+}
+
 export interface Mount {
   mount_id: number
   name: string
   is_useable: boolean
+  game_data?: MountGameData | null
 }
 
 export interface Pet {
