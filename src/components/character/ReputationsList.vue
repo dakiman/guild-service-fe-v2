@@ -50,25 +50,15 @@ interface ExpansionGroup {
   entries: Reputation[]
 }
 
-// TODO: lift to shared wow.ts constants once collections / achievements slices land.
-const EXPANSION_BY_FACTION_ID: Record<number, { label: string; order: number }> = {
-  // The War Within
-  2570: { label: 'The War Within', order: 1 }, // Council of Dornogal
-  2574: { label: 'The War Within', order: 1 }, // The Assembly of the Deeps
-  2590: { label: 'The War Within', order: 1 }, // Hallowfall Arathi
-  2600: { label: 'The War Within', order: 1 }, // The Severed Threads
-  // Dragonflight
-  2510: { label: 'Dragonflight', order: 2 }, // Valdrakken Accord
-  2511: { label: 'Dragonflight', order: 2 }, // Iskaara Tuskarr
-  2503: { label: 'Dragonflight', order: 2 }, // Maruuk Centaur
-  2507: { label: 'Dragonflight', order: 2 }, // Dragonscale Expedition
-  2564: { label: 'Dragonflight', order: 2 }, // Loamm Niffen
-  2553: { label: 'Dragonflight', order: 2 }, // Soridormi
-  2544: { label: 'Dragonflight', order: 2 }, // Artisan's Consortium
-}
-
 function bucketOf(rep: Reputation): { label: string; order: number } {
-  return EXPANSION_BY_FACTION_ID[rep.faction_id] ?? { label: 'Legacy', order: 99 }
+  if (rep.faction?.expansion) {
+    return {
+      label: rep.faction.expansion.name,
+      order: rep.faction.expansion.display_order,
+    }
+  }
+
+  return { label: 'Legacy', order: 99 }
 }
 
 const groupedByExpansion = computed<ExpansionGroup[]>(() => {
