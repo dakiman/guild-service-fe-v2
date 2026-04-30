@@ -136,12 +136,26 @@ export type ReputationStanding =
   | 'revered'
   | 'exalted'
 
+export interface Expansion {
+  id: number
+  name: string
+  display_order: number
+}
+
+export interface FactionGameData {
+  id: number
+  name: string
+  parent_faction_id: number | null
+  expansion: Expansion | null
+}
+
 export interface Reputation {
   faction_id: number
   faction_name: string
   standing: ReputationStanding
   value: number
   max: number
+  faction: FactionGameData | null
 }
 
 export interface RaidEncounterProgress {
