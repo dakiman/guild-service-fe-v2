@@ -119,11 +119,17 @@ export interface Profession {
   is_primary: boolean
 }
 
+export interface CharacterTitleGameData {
+  name_male: string
+  name_female: string
+}
+
 export interface CharacterTitle {
   id: number
   name: string
   display_string: string
   is_selected: boolean
+  game_data?: CharacterTitleGameData
 }
 
 export type ReputationStanding =
