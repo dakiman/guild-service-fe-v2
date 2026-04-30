@@ -15,7 +15,21 @@
         :class="{ 'opacity-50': !m.is_useable }"
       >
         <Mountain class="h-5 w-5 shrink-0 opacity-70" />
-        <span class="truncate">{{ m.name }}</span>
+        <div class="flex min-w-0 flex-1 flex-col">
+          <component
+            :is="wowheadHrefFor(m) ? 'a' : 'span'"
+            v-bind="wowheadAttrsFor(m)"
+            class="truncate"
+          >
+            {{ m.name }}
+          </component>
+          <span
+            v-if="m.game_data?.source_text"
+            class="truncate text-xs opacity-60"
+          >
+            {{ m.game_data.source_text }}
+          </span>
+        </div>
         <span v-if="!m.is_useable" class="badge badge-ghost badge-sm">unusable</span>
       </li>
     </ul>
@@ -25,10 +39,28 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Mountain } from 'lucide-vue-next'
+import type { Mount } from '@/types/character'
 import { useCharacterContext } from '@/composables/useCharacterContext'
 
 const { character } = useCharacterContext()
 
 const mounts = computed(() => character.value.mounts ?? [])
 const hasMounts = computed(() => mounts.value.length > 0)
+
+function wowheadHrefFor(m: Mount): string | null {
+  const id = m.game_data?.summon_spell_id
+  return typeof id === 'number' ? `https://www.wowhead.com/spell=${id}` : null
+}
+
+function wowheadAttrsFor(m: Mount): Record<string, string> {
+  const href = wowheadHrefFor(m)
+  if (!href) return {}
+  const id = m.game_data!.summon_spell_id!
+  return {
+    href,
+    'data-wowhead': `spell=${id}`,
+    target: '_blank',
+    rel: 'noopener',
+  }
+}
 </script>
