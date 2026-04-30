@@ -27,6 +27,7 @@ const slices: Array<{ key: keyof MetaBlock['freshness']; label: string }> = [
   { key: 'titles', label: 'Titles' },
   { key: 'reputations', label: 'Reps' },
   { key: 'collections', label: 'Collect.' },
+  { key: 'achievements', label: 'Achievs' },
 ]
 
 function badgeClass(state: FreshnessState): string {
