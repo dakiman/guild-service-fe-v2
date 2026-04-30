@@ -165,6 +165,28 @@ export interface DungeonRunMember {
   equipped_item_level: number
 }
 
+export interface Mount {
+  mount_id: number
+  name: string
+  is_useable: boolean
+}
+
+export interface Pet {
+  pet_id: number
+  species_id: number
+  name: string
+  level: number
+  breed_id: number | null
+  quality: string | null
+  is_favorite: boolean
+  creature_display_id: number | null
+}
+
+export interface Toy {
+  toy_id: number
+  name: string
+}
+
 export interface DungeonRun {
   id: number
   season: number
@@ -207,6 +229,9 @@ export interface CharacterResource {
   recruitment: boolean
   guild: GuildSummary | null
   dungeon_runs: DungeonRun[]
+  mounts: Mount[] | null
+  pets: Pet[] | null
+  toys: Toy[] | null
   last_searched_at: string | null
   mythics_synced_at: string | null
   stats_synced_at: string | null
@@ -225,6 +250,7 @@ export interface MetaBlock {
     stats: FreshnessState
     titles: FreshnessState
     reputations: FreshnessState
+    collections: FreshnessState
   }
 }
 
