@@ -126,6 +126,24 @@ export interface CharacterTitle {
   is_selected: boolean
 }
 
+export type ReputationStanding =
+  | 'hated'
+  | 'hostile'
+  | 'unfriendly'
+  | 'neutral'
+  | 'friendly'
+  | 'honored'
+  | 'revered'
+  | 'exalted'
+
+export interface Reputation {
+  faction_id: number
+  faction_name: string
+  standing: ReputationStanding
+  value: number
+  max: number
+}
+
 export interface RaidEncounterProgress {
   expansion: string
   instance_id: number
@@ -185,6 +203,7 @@ export interface CharacterResource {
   professions: Profession[] | null
   raid_progress: RaidEncounterProgress[] | null
   titles: CharacterTitle[]
+  reputations: Reputation[] | null
   recruitment: boolean
   guild: GuildSummary | null
   dungeon_runs: DungeonRun[]
@@ -205,6 +224,7 @@ export interface MetaBlock {
     raids: FreshnessState
     stats: FreshnessState
     titles: FreshnessState
+    reputations: FreshnessState
   }
 }
 
