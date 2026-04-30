@@ -182,6 +182,11 @@ export interface Pet {
   creature_display_id: number | null
 }
 
+export interface CharacterAchievement {
+  achievement_id: number
+  completed_timestamp: number | null
+}
+
 export interface Toy {
   toy_id: number
   name: string
@@ -232,6 +237,7 @@ export interface CharacterResource {
   mounts: Mount[] | null
   pets: Pet[] | null
   toys: Toy[] | null
+  achievements: CharacterAchievement[]
   last_searched_at: string | null
   mythics_synced_at: string | null
   stats_synced_at: string | null
@@ -251,6 +257,7 @@ export interface MetaBlock {
     titles: FreshnessState
     reputations: FreshnessState
     collections: FreshnessState
+    achievements: FreshnessState
   }
 }
 
