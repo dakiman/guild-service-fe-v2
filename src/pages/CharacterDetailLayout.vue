@@ -116,7 +116,6 @@ const tabs = computed<TabDescriptor[]>(() => {
       label: 'Dungeons & Raids',
       to: { name: 'character-pve', params },
       icon: Skull,
-      activeMatchNames: ['character-pve-raids', 'character-pve-mythic'],
     },
     { label: 'Reputations',  to: { name: 'character-reputations', params },  icon: Star },
     { label: 'Achievements', to: { name: 'character-achievements', params }, icon: Trophy },

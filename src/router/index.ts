@@ -95,26 +95,6 @@ const routes: RouteRecordRaw[] = [
         path: 'pve',
         name: 'character-pve',
         component: () => import('@/pages/character/CharacterPveTab.vue'),
-        redirect: (to) => ({
-          name: 'character-pve-raids',
-          params: {
-            region: to.params.region,
-            realm: to.params.realm,
-            name: to.params.name,
-          },
-        }),
-        children: [
-          {
-            path: 'raids',
-            name: 'character-pve-raids',
-            component: () => import('@/pages/character/pve/RaidsSubtab.vue'),
-          },
-          {
-            path: 'mythic',
-            name: 'character-pve-mythic',
-            component: () => import('@/pages/character/pve/MythicSubtab.vue'),
-          },
-        ],
       },
       {
         path: 'reputations',

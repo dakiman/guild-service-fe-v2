@@ -1,25 +1,22 @@
 <template>
-  <div class="flex flex-col gap-4">
-    <CharacterTabStrip :tabs="subTabs" />
-    <router-view />
+  <div class="flex flex-col gap-6">
+    <PveHeadlineStrip
+      :rating="character.mythic_plus_rating"
+      :raid-progress="character.raid_progress"
+    />
+    <RaidProgressionSection :raid-progress="character.raid_progress" />
+    <MythicPlusSection
+      :runs="character.dungeon_runs"
+      :rating="character.mythic_plus_rating"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { Castle, Swords } from 'lucide-vue-next'
-import CharacterTabStrip, {
-  type TabDescriptor,
-} from '@/components/character/CharacterTabStrip.vue'
+import { useCharacterContext } from '@/composables/useCharacterContext'
+import PveHeadlineStrip from '@/components/character/pve/PveHeadlineStrip.vue'
+import RaidProgressionSection from '@/components/character/pve/RaidProgressionSection.vue'
+import MythicPlusSection from '@/components/character/pve/MythicPlusSection.vue'
 
-const route = useRoute()
-
-const subTabs = computed<TabDescriptor[]>(() => {
-  const params = route.params
-  return [
-    { label: 'Raids',     to: { name: 'character-pve-raids', params },  icon: Castle },
-    { label: 'Mythic+',   to: { name: 'character-pve-mythic', params }, icon: Swords },
-  ]
-})
+const { character } = useCharacterContext()
 </script>
