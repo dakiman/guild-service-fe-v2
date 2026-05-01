@@ -59,8 +59,6 @@
               : 'border-base-300/60 hover:border-ma-gold/60 text-ma-muted hover:ma-text-heading'
           "
           @click.stop="onChipClick(title.id)"
-          @mouseenter="onChipEnter(title.id)"
-          @mouseleave="onChipLeave"
         >
           <span
             class="absolute left-0 top-0 bottom-0 w-[2px] transition-colors"
@@ -149,14 +147,6 @@ const heroName = computed(() => {
   if (!t) return null
   return renderWithName(rawFor(t), displayName.value)
 })
-
-function onChipEnter(id: number) {
-  previewedTitleId.value = id
-}
-
-function onChipLeave() {
-  previewedTitleId.value = null
-}
 
 function onChipClick(id: number) {
   previewedTitleId.value = previewedTitleId.value === id ? null : id
