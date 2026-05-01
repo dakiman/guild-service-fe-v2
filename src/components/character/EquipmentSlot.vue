@@ -7,20 +7,33 @@
       {{ formatSlotLabel(slot) }}
     </span>
 
+    <a
+      v-if="item"
+      :href="`https://www.wowhead.com/${href}`"
+      :data-wowhead="href"
+      class="shrink-0 inline-flex w-11 h-11 items-center justify-center"
+      target="_blank"
+      rel="noopener"
+      aria-hidden="true"
+      tabindex="-1"
+    />
+    <div
+      v-else
+      class="shrink-0 w-11 h-11 rounded border border-dashed border-ma-disabled/15"
+      aria-hidden="true"
+    />
+
     <template v-if="item">
-      <WowheadLink
-        :item-id="item.id"
-        :item-level="item.item_level"
-        :quality-id="itemQualityToId(item.quality)"
-        :bonus="item.bonus"
-        :gems="item.gems"
-        :enchantments="item.enchantments"
-        :pcs="pcs"
-        :classic="isClassic"
-        class="flex-1 truncate text-sm"
+      <a
+        :href="`https://www.wowhead.com/${href}`"
+        :data-wowhead="href"
+        :class="['flex-1 truncate text-sm', qualityClass]"
+        target="_blank"
+        rel="noopener"
+        data-wh-icon-added="true"
       >
         {{ item.name || formatQuality(item.quality) }}
-      </WowheadLink>
+      </a>
       <span class="text-xs font-mono text-ma-gold shrink-0">
         {{ item.item_level }}
       </span>
@@ -32,10 +45,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import WowheadLink from '@/components/wow/WowheadLink.vue'
 import { useCharacterContext } from '@/composables/useCharacterContext'
 import { itemQualityToId } from '@/utils/wowConstants'
 import { formatSlotLabel } from '@/utils/equipmentLayout'
+import { buildWowheadHref } from '@/utils/wowhead'
 import type { EquipmentItem } from '@/types/character'
 import type { Slot } from '@/types/wow'
 
@@ -51,6 +64,26 @@ const { isClassic } = useCharacterContext()
 const orientationClass = computed(() =>
   props.mirrored === 'right' ? 'flex-row-reverse text-right' : '',
 )
+
+const href = computed(() =>
+  props.item
+    ? buildWowheadHref({
+        itemId: props.item.id,
+        itemLevel: props.item.item_level,
+        bonus: props.item.bonus,
+        gems: props.item.gems,
+        enchantments: props.item.enchantments,
+        pcs: props.pcs,
+        classic: isClassic.value,
+      })
+    : '',
+)
+
+const qualityClass = computed(() => {
+  if (!props.item) return ''
+  const id = itemQualityToId(props.item.quality)
+  return id !== undefined ? `q${id}` : ''
+})
 
 function formatQuality(quality: string): string {
   if (!quality) return ''

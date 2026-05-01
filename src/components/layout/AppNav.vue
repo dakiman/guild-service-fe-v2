@@ -2,7 +2,7 @@
   <nav class="navbar bg-base-200">
     <div class="flex-1">
       <router-link :to="{ name: 'home' }" class="btn btn-ghost text-xl normal-case">
-        Guild Service
+        WoW Service
       </router-link>
       <div class="ml-2 hidden gap-1 md:flex">
         <router-link :to="{ name: 'home' }" class="btn btn-ghost btn-sm">Home</router-link>

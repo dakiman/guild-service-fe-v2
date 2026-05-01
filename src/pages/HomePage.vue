@@ -1,11 +1,26 @@
 <template>
   <div class="p-4 max-w-6xl mx-auto">
     <header class="mb-6">
-      <h1 class="text-3xl font-bold">Guild Service</h1>
+      <h1 class="text-3xl font-bold">WoW Service</h1>
       <p class="text-base-content/70 mt-1">
         Browse World of Warcraft guilds and characters across regions and realms.
       </p>
     </header>
+
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="card bg-base-200 shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="card-title text-base">Find a character</h2>
+          <LookupForm kind="character" @submit="onCharacterSubmit" />
+        </div>
+      </div>
+      <div class="card bg-base-200 shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="card-title text-base">Find a guild</h2>
+          <LookupForm kind="guild" @submit="onGuildSubmit" />
+        </div>
+      </div>
+    </section>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <section aria-labelledby="guilds-heading" class="space-y-4">
@@ -35,9 +50,9 @@
                   class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
                 >
                   <FactionBadge v-if="g.faction" :faction="g.faction" />
-                  <span class="font-bold">{{ g.name }}</span>
+                  <span class="font-bold">{{ displayName(g.name) }}</span>
                   <span class="text-base-content/70 text-sm">
-                    on {{ g.realm }} ({{ g.region.toUpperCase() }})
+                    on {{ displayRealm(g.realm) }} ({{ g.region.toUpperCase() }})
                   </span>
                 </router-link>
               </li>
@@ -71,9 +86,9 @@
                   class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
                 >
                   <FactionBadge v-if="g.faction" :faction="g.faction" />
-                  <span class="font-bold">{{ g.name }}</span>
+                  <span class="font-bold">{{ displayName(g.name) }}</span>
                   <span class="text-base-content/70 text-sm">
-                    on {{ g.realm }} ({{ g.region.toUpperCase() }})
+                    on {{ displayRealm(g.realm) }} ({{ g.region.toUpperCase() }})
                   </span>
                 </router-link>
               </li>
@@ -114,9 +129,9 @@
                   class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
                 >
                   <ClassIcon :class-id="c.class_id" />
-                  <span class="font-bold">{{ c.name }}</span>
+                  <span class="font-bold">{{ displayName(c.name) }}</span>
                   <span class="text-base-content/70 text-sm">
-                    · {{ c.realm }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
+                    · {{ displayRealm(c.realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
                   </span>
                 </router-link>
               </li>
@@ -150,9 +165,9 @@
                   class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
                 >
                   <ClassIcon :class-id="c.class_id" />
-                  <span class="font-bold">{{ c.name }}</span>
+                  <span class="font-bold">{{ displayName(c.name) }}</span>
                   <span class="text-base-content/70 text-sm">
-                    · {{ c.realm }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
+                    · {{ displayRealm(c.realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
                   </span>
                 </router-link>
               </li>
@@ -168,11 +183,31 @@
 
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
+import { useRouter } from 'vue-router'
 import { fetchPopularGuilds } from '@/api/guilds'
 import { fetchPopularCharacters } from '@/api/characters'
 import FactionBadge from '@/components/wow/FactionBadge.vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
+import LookupForm from '@/components/form/LookupForm.vue'
+import { displayName, displayRealm } from '@/utils/display'
+import type { Region } from '@/types/api'
+
+const router = useRouter()
+
+function onCharacterSubmit(payload: { region: Region; realm: string; name: string }) {
+  router.push({
+    name: 'character-detail',
+    params: { region: payload.region, realm: payload.realm, name: payload.name },
+  })
+}
+
+function onGuildSubmit(payload: { region: Region; realm: string; name: string }) {
+  router.push({
+    name: 'guild-detail',
+    params: { region: payload.region, realm: payload.realm, name: payload.name },
+  })
+}
 
 const guildsQuery = useQuery({
   queryKey: ['popular', 'guilds'] as const,

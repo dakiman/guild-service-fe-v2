@@ -20,21 +20,26 @@ function onSubmit() {
 </script>
 
 <template>
-  <form class="flex flex-col gap-3 sm:flex-row sm:items-end" @submit.prevent="onSubmit">
-    <div class="form-control">
-      <label class="label"><span class="label-text">Region</span></label>
-      <RegionSelect v-model="region" />
+  <form class="flex flex-col gap-2" @submit.prevent="onSubmit">
+    <div class="flex gap-2">
+      <RegionSelect v-model="region" class="select-sm w-20 shrink-0" aria-label="Region" />
+      <input
+        v-model="name"
+        type="text"
+        class="input input-bordered input-sm w-32 shrink-0"
+        :placeholder="kind === 'guild' ? 'Guild name' : 'Character name'"
+        :aria-label="kind === 'guild' ? 'Guild name' : 'Character name'"
+      />
+      <input
+        v-model="realm"
+        type="text"
+        class="input input-bordered input-sm flex-1 min-w-0"
+        placeholder="Realm"
+        aria-label="Realm"
+      />
     </div>
-    <div class="form-control flex-1">
-      <label class="label"><span class="label-text">Realm</span></label>
-      <input v-model="realm" type="text" class="input input-bordered" placeholder="e.g. Tarren Mill" />
-    </div>
-    <div class="form-control flex-1">
-      <label class="label"><span class="label-text">{{ kind === 'guild' ? 'Guild name' : 'Character name' }}</span></label>
-      <input v-model="name" type="text" class="input input-bordered" :placeholder="kind === 'guild' ? 'e.g. Method' : 'e.g. Arthas'" />
-    </div>
-    <button type="submit" class="btn btn-primary" :disabled="!canSubmit">
-      {{ kind === 'guild' ? 'Find Guild' : 'Find Character' }}
+    <button type="submit" class="btn btn-primary btn-sm" :disabled="!canSubmit">
+      {{ kind === 'guild' ? 'Find guild' : 'Find character' }}
     </button>
   </form>
 </template>

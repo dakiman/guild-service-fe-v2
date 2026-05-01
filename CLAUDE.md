@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npx cypress open` / `npx cypress run` — E2E; specs live in `cypress/e2e/*.cy.ts`. Dev server must already be running.
 - No unit test runner is wired up in `scripts` even though `vitest` and `@vue/test-utils` are installed; add a `test` script before invoking them.
 
-Environment variables (Vite, so they must be prefixed `VITE_`): copy `.env.example` → `.env`. `VITE_API_BASE_URL` defaults to `http://localhost:8091/api/v1` (the Laravel backend in `../guild-service-be-v2`). `VITE_BLIZZARD_CLIENT_ID` and `VITE_BLIZZARD_REDIRECT_URI` are required for the Blizzard OAuth flow.
+Environment variables (Vite, so they must be prefixed `VITE_`): copy `.env.example` → `.env`. `VITE_API_BASE_URL` defaults to `http://localhost:8091/api/v1` (the Laravel backend at `../backend`). `VITE_BLIZZARD_CLIENT_ID` and `VITE_BLIZZARD_REDIRECT_URI` are required for the Blizzard OAuth flow.
 
 ## Architecture
 
@@ -32,6 +32,12 @@ Paginated responses (`src/types/api.ts` → `Paginated<T>`) match Laravel's `Len
 
 Stale-data auto-refresh: components that render potentially-stale resources use `useStaleAutoRefresh` to trigger a refetch.
 
+### Character tabs (Plan 4)
+
+`pages/character/Character{Tab}Tab.vue` — one file per top-level tab. Two tabs nest subtabs in subdirectories: `pages/character/pve/` (`MythicSubtab`, `RaidsSubtab`) and `pages/character/collections/` (`MountsSubtab`, `PetsSubtab`, `ToysSubtab`).
+
+`components/feedback/FreshnessChips.vue` renders 10 slice chips in a fixed order — `Profile, M+, PvP, Profs, Raids, Stats, Titles, Reps, Collect., Achievs`. **The order must match `meta.freshness`'s key set from the BE** — drift is silent (a wrong label binds to a wrong key with no error). `AchievementsList.vue` is the app's only virtualized list (`@tanstack/vue-virtual`, fixed 56px rows, overscan 8) since characters can carry 30k achievements. It loads via `useInfiniteQuery` against `GET /characters/{region}/{realm}/{name}/achievements` (server-side join + cursor pagination, default 100/page, default filters out `Feats of Strength`); `api/achievements.ts` wraps the call. The watch on `virtualizer.getVirtualItems()` calls `fetchNextPage()` when the last virtual row is within ~200px of `getTotalSize()`, so scrolling triggers prefetch without a sentinel element. Toggling the "Include Feats of Strength" checkbox flips `includeFeats` which is part of the query key — TanStack treats it as a fresh query, no manual reset needed. The BE row carries the resolved `name` and `category_name`, so Wowhead's `power.js` is no longer load-bearing for the inline label (it still hydrates the hover tooltip).
+
 ### HTTP client & auth
 
 `src/api/client.ts` exports a single axios instance. It uses injected closures (`getToken`, `onUnauthorized`) configured from `main.ts` at boot — this avoids a circular import between the axios client and the Pinia auth store. On 401 the client calls `onUnauthorized`, which clears the session and redirects to `/login`.
@@ -42,9 +48,11 @@ Stale-data auto-refresh: components that render potentially-stale resources use 
 
 `src/router/index.ts` — all pages lazy-loaded. Guards in `router/guards.ts`: `meta.requiresAuth` redirects to `/login?next=...`; `meta.guestOnly` redirects authed users to `/`. Dynamic route params `:region/:realm/:name` use `props: true` and are passed directly into pages.
 
+**Identity casing.** `character.name` and `character.realm` from the BE are the canonical lowercased/slug forms (e.g. `melaniya`, `the-maelstrom`) — they round-trip into URLs and lookups, so do **not** mutate them. Display formatting is the component's job: `CharacterHeader.vue` exposes `displayName` (title-case the first letter) and `displayRealm` (split on `-`, title-case each word, join with spaces) for the rendered header. New components that show name/realm should follow the same pattern rather than calling `.toUpperCase()` on the raw fields.
+
 ### Wowhead tooltips
 
-`index.html` loads `https://wow.zamimg.com/widgets/power.js` (correct CDN is `zamimg.com`, not `zamzig.com` — a stale build once had this wrong and silently broke all tooltips). Components render anchors with `:data-wowhead="item=123"` / `spell=123` attributes (see `src/components/wow/WowheadLink.vue`). When tooltip-bearing content is re-rendered (e.g. after a query resolves), call `useWowheadRefresh(deps)` from `src/composables/useWowhead.ts` — it waits for `window.$WowheadPower` to exist and invokes `refreshLinks()` on dep changes.
+`index.html` loads `https://wow.zamimg.com/widgets/power.js` (correct CDN is `zamimg.com`, not `zamzig.com` — a stale build once had this wrong and silently broke all tooltips). Components render anchors with `:data-wowhead="item=123"` / `spell=123` attributes; **`src/utils/wowhead.ts` (`buildWowheadHref`) is the single source of truth for the URL fragment** — `WowheadLink.vue` and any component that bypasses it (currently `EquipmentSlot.vue`) both call this helper. `EquipmentSlot.vue` is the only place that emits raw `<a data-wowhead>` instead of `<WowheadLink>`, because it needs a sized icon-anchor (slot icon) plus a separate text-anchor with `q{quality_id}` color class — power.js injects the icon into the empty anchor at the chosen size. When tooltip-bearing content is re-rendered (e.g. after a query resolves), call `useWowheadRefresh(deps)` from `src/composables/useWowhead.ts` — it waits for `window.$WowheadPower` to exist and invokes `refreshLinks()` on dep changes.
 
 ### Component layout
 
@@ -52,7 +60,7 @@ Stale-data auto-refresh: components that render potentially-stale resources use 
 - `src/components/{character,guild,layout,form,feedback,wow}/` — grouped by domain. `wow/` holds WoW-specific presentational widgets (class/race icons, faction badges, wowhead links).
 - `src/composables/` — cross-cutting logic (polling, stale refresh, wowhead).
 - `src/api/` — one file per backend resource; all call the shared `api` client.
-- `src/types/` — TypeScript types mirroring BE resources. Keep in sync with `../guild-service-be-v2` Laravel resources.
+- `src/types/` — TypeScript types mirroring BE resources. Keep in sync with `../backend` Laravel resources.
 
 ### Styling
 

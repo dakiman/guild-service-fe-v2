@@ -1,18 +1,23 @@
 <template>
-  <div class="flex flex-wrap gap-1">
+  <div class="flex flex-wrap gap-1.5">
     <span
       v-for="slice in slices"
       :key="slice.key"
-      class="badge badge-sm"
-      :class="badgeClass(freshness[slice.key])"
+      class="ma-stat-pill !py-1 !px-2.5 !gap-1.5 text-xs"
       :title="tooltip(slice.label, freshness[slice.key])"
     >
-      {{ slice.label }}: {{ label(freshness[slice.key]) }}
+      <component
+        :is="iconFor(freshness[slice.key])"
+        class="w-3 h-3"
+        :class="iconClass(freshness[slice.key])"
+      />
+      {{ slice.label }}
     </span>
   </div>
 </template>
 
 <script setup lang="ts">
+import { CircleCheck, CircleDashed, RefreshCw, type LucideIcon } from 'lucide-vue-next'
 import type { FreshnessState, MetaBlock } from '@/types/character'
 
 defineProps<{ freshness: MetaBlock['freshness'] }>()
@@ -30,22 +35,21 @@ const slices: Array<{ key: keyof MetaBlock['freshness']; label: string }> = [
   { key: 'achievements', label: 'Achievs' },
 ]
 
-function badgeClass(state: FreshnessState): string {
-  if (state === 'fresh') return 'badge-success'
-  if (state === 'stale') return 'badge-warning'
-  return 'badge-ghost'
+function iconFor(state: FreshnessState): LucideIcon {
+  if (state === 'fresh') return CircleCheck
+  if (state === 'stale') return RefreshCw
+  return CircleDashed
 }
 
-function label(state: FreshnessState): string {
-  if (state === 'fresh') return 'fresh'
-  if (state === 'stale') return 'stale'
-  return 'awaiting'
+function iconClass(state: FreshnessState): string {
+  if (state === 'fresh') return 'text-success'
+  if (state === 'stale') return 'text-warning animate-spin'
+  return 'text-base-content/40'
 }
 
 function tooltip(sliceLabel: string, state: FreshnessState): string {
-  if (state === 'fresh') return `${sliceLabel} data is up to date`
-  if (state === 'stale')
-    return `${sliceLabel} data is being refreshed — reload shortly for newer data`
-  return `${sliceLabel} has never been synced yet`
+  if (state === 'fresh') return `${sliceLabel} synced`
+  if (state === 'stale') return `${sliceLabel} sync in progress — reload shortly for newer data`
+  return `${sliceLabel} not synced yet`
 }
 </script>

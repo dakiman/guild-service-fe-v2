@@ -6,19 +6,19 @@
           <img
             v-if="character.media?.avatar"
             :src="character.media.avatar"
-            :alt="character.name"
+            :alt="displayName"
           />
         </div>
       </div>
 
       <div class="flex flex-col gap-2 flex-1">
         <div class="flex flex-wrap items-center gap-3">
-          <h1 class="text-3xl font-bold">{{ character.name }}</h1>
+          <h1 class="text-3xl font-bold">{{ displayName }}</h1>
           <FactionBadge :faction="character.faction" />
         </div>
 
         <p class="text-base-content/70">
-          {{ character.realm }} ({{ character.region.toUpperCase() }})
+          {{ displayRealm }} ({{ character.region.toUpperCase() }})
         </p>
 
         <div class="flex flex-wrap items-center gap-3 text-sm">
@@ -62,4 +62,16 @@ const props = defineProps<{ character: CharacterResource }>()
 const className = computed(() => CLASSES[props.character.class_id] ?? 'Unknown')
 const classColor = computed(() => CLASS_COLORS[props.character.class_id] ?? '#888')
 const raceName = computed(() => RACES[props.character.race_id] ?? 'Unknown')
+
+const displayName = computed(() => {
+  const n = props.character.name
+  return n ? n.charAt(0).toUpperCase() + n.slice(1) : n
+})
+
+const displayRealm = computed(() =>
+  props.character.realm
+    .split('-')
+    .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1) : w))
+    .join(' '),
+)
 </script>

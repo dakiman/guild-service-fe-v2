@@ -1,3 +1,7 @@
+> **HISTORICAL — Plan 1 hand-off, frozen 2026-04-22.** Plans 1–4 have all shipped (current state, as of v0.1: stats, titles, reputations, collections, achievements all rendering). The "null in Plan 1, lands in Plan 2/3" caveats throughout this document and the 5-key `meta.freshness` shape are no longer accurate — the live shape now carries 10 slice keys. For the current contract, see `CLAUDE.md` (this repo), the BE's `CLAUDE.md` at `../backend/CLAUDE.md`, and the latest plan docs under `docs/superpowers/plans/` in either repo.
+
+---
+
 # Backend API Changes — Plan 1 Integration Summary
 
 **As of:** 2026-04-22 · BE repo: `../guild-service-be-v2` · Merged to `master`
