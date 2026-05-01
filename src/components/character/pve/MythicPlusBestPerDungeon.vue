@@ -82,10 +82,15 @@ const seasonRuns = computed<DungeonRun[]>(() => {
 
 const rows = computed<BestRow[]>(() => {
   const sorted = [...props.dungeons].sort((a, b) => a.name.localeCompare(b.name))
-  return sorted.map((dungeon) => ({
-    dungeon,
-    bestRun: bestRunFor(dungeon.id),
-  }))
+  // Hide dungeons with no runs this season — empty rows add visual noise
+  // without information. The character still has the option to switch to
+  // "All Runs" if they want the full historical view.
+  return sorted
+    .map((dungeon) => ({
+      dungeon,
+      bestRun: bestRunFor(dungeon.id),
+    }))
+    .filter((row) => row.bestRun !== null)
 })
 
 function bestRunFor(dungeonId: number): DungeonRun | null {
