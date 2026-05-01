@@ -15,21 +15,25 @@
     </div>
 
     <!-- Difficulty tabs: per-difficulty X/Y counts -->
-    <div class="flex flex-wrap gap-1 px-3 py-2 border-b border-ma-border/20">
+    <div class="flex flex-wrap gap-1.5 px-3 py-2 border-b border-ma-border/20">
       <button
         v-for="diff in DIFFICULTIES"
         :key="diff.key"
         type="button"
-        class="ma-tab text-xs"
+        class="ma-tab text-xs border-l-4 pl-3 transition-all"
         :class="[
-          activeDifficulty === diff.key ? 'ma-tab--active' : '',
           difficultyBorderClass(diff.key),
-          'border-l-2 pl-3',
+          activeDifficulty === diff.key
+            ? `ma-tab--active font-semibold ring-2 ring-inset shadow-md ${difficultyActiveClass(diff.key)}`
+            : 'opacity-60 hover:opacity-100',
         ]"
         @click="activeDifficulty = diff.key"
       >
         <span>{{ diff.label }}</span>
-        <span class="tabular-nums text-ma-muted/80">
+        <span
+          class="tabular-nums"
+          :class="activeDifficulty === diff.key ? 'text-ma-text' : 'text-ma-muted/80'"
+        >
           {{ killedCountFor(diff.key) }}/{{ instance.encounters.length }}
         </span>
       </button>
@@ -70,12 +74,17 @@ const DIFFICULTIES: DifficultyDescriptor[] = [
   { key: 'mythic',  label: 'Mythic' },
 ]
 
-const activeDifficulty = ref<DifficultyDescriptor['key']>('mythic')
-
 const instanceProgress = computed<RaidEncounterProgress[]>(() => {
   if (!props.progress) return []
   return props.progress.filter((row) => row.instance_id === props.instance.id)
 })
+
+// Default to the highest difficulty that has at least one kill, falling back
+// to Mythic when nothing is killed yet (so the user lands on the most
+// aspirational view by default — matches raider.io's behavior).
+const DIFFICULTY_PRIORITY: DifficultyDescriptor['key'][] = ['mythic', 'heroic', 'normal', 'lfr']
+const initialActive = DIFFICULTY_PRIORITY.find((key) => killedCountFor(key) > 0) ?? 'mythic'
+const activeDifficulty = ref<DifficultyDescriptor['key']>(initialActive)
 
 const sortedEncounters = computed(() =>
   [...props.instance.encounters].sort((a, b) => a.display_order - b.display_order),
@@ -116,6 +125,18 @@ function difficultyBorderClass(key: DifficultyDescriptor['key']): string {
     case 'heroic': return 'border-purple-500'
     case 'normal': return 'border-blue-500'
     case 'lfr':    return 'border-teal-500'
+  }
+}
+
+function difficultyActiveClass(key: DifficultyDescriptor['key']): string {
+  // Tint the active tab with a translucent fill matching the difficulty's
+  // border color, plus a matching ring so the highlight pops without
+  // changing the existing border-left accent.
+  switch (key) {
+    case 'mythic': return 'bg-orange-500/15 ring-orange-500/60'
+    case 'heroic': return 'bg-purple-500/15 ring-purple-500/60'
+    case 'normal': return 'bg-blue-500/15 ring-blue-500/60'
+    case 'lfr':    return 'bg-teal-500/15 ring-teal-500/60'
   }
 }
 </script>
