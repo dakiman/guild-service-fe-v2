@@ -35,17 +35,26 @@
           <thead>
             <tr class="text-[10px] uppercase tracking-wider text-ma-muted/70">
               <th class="text-left px-2 py-1 font-medium">Name</th>
+              <th class="text-left px-2 py-1 font-medium">Realm</th>
               <th class="text-left px-2 py-1 font-medium">Spec</th>
               <th class="text-right px-2 py-1 font-medium">iLvl</th>
             </tr>
           </thead>
           <tbody>
             <tr
-              v-for="member in run.members"
-              :key="member.character_id"
+              v-for="(member, idx) in run.members"
+              :key="`${member.character_region}:${member.character_realm}:${member.character_name}:${idx}`"
               class="border-t border-ma-border/15"
             >
-              <td class="px-2 py-1 text-ma-text">{{ member.character_name }}</td>
+              <td class="px-2 py-1">
+                <RouterLink
+                  :to="memberRoute(member)"
+                  class="text-ma-text hover:text-ma-gold transition-colors"
+                >
+                  {{ member.character_name }}
+                </RouterLink>
+              </td>
+              <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm) }}</td>
               <td class="px-2 py-1 text-ma-muted/70">{{ member.spec_name }}</td>
               <td class="px-2 py-1 text-right tabular-nums">{{ member.equipped_item_level }}</td>
             </tr>
@@ -58,8 +67,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import AffixIcon from './AffixIcon.vue'
-import type { DungeonRun } from '@/types/character'
+import type { DungeonRun, DungeonRunMember } from '@/types/character'
 import type { KeystoneAffixGameData } from '@/types/gameData'
 
 const props = defineProps<{
@@ -67,6 +77,24 @@ const props = defineProps<{
   affixes: Record<number, KeystoneAffixGameData> | undefined | null
   currentSeason: number | null
 }>()
+
+function memberRoute(member: DungeonRunMember) {
+  return {
+    name: 'character-detail',
+    params: {
+      region: member.character_region,
+      realm: member.character_realm,
+      name: member.character_name.toLowerCase(),
+    },
+  }
+}
+
+function formatRealm(slug: string): string {
+  return slug
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
 
 const seasonRuns = computed<DungeonRun[]>(() => {
   if (props.currentSeason == null) return props.runs
