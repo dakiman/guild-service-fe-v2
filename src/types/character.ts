@@ -244,6 +244,8 @@ export interface CharacterResource {
   average_item_level: number
   equipped_item_level: number
   active_specialization: string | null
+  active_specialization_id: number | null
+  talent_tree_id: number | null
   talent_loadout_code: string | null
   mythic_plus_rating: MythicPlusRating | null
   media: { avatar: string; inset: string; main: string }
