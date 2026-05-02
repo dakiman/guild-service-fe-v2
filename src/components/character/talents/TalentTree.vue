@@ -62,13 +62,14 @@
       <!-- Full tree -->
       <div v-else-if="topology" class="mt-3 flex flex-col gap-4">
         <TalentSummaryStrip :refs="summaryRefs" :class-color="classColor" />
-        <div class="flex flex-col md:flex-row gap-6">
+        <div class="flex flex-col md:flex-row gap-6 min-w-0">
           <TalentTreeColumn
             title="Class"
             :nodes="topology.class_nodes"
             :edges="filterEdges(topology.edges, topology.class_nodes)"
             :picked="talents.class"
             :class-color="classColor"
+            :cell-size="cellSize"
           />
           <TalentTreeColumn
             v-if="activeHero"
@@ -77,6 +78,7 @@
             :edges="filterEdges(topology.edges, activeHero.nodes)"
             :picked="talents.hero"
             :class-color="classColor"
+            :cell-size="cellSize"
           />
           <TalentTreeColumn
             title="Spec"
@@ -84,6 +86,7 @@
             :edges="filterEdges(topology.edges, topology.spec_nodes)"
             :picked="talents.spec"
             :class-color="classColor"
+            :cell-size="cellSize"
           />
         </div>
       </div>
@@ -110,6 +113,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import WowheadLink from '@/components/wow/WowheadLink.vue'
 import TalentSummaryStrip from './TalentSummaryStrip.vue'
@@ -130,6 +134,11 @@ const props = defineProps<{
 }>()
 
 const justCopied = ref(false)
+
+// Tighter cells on mobile so wide spec trees (some go to ~22 columns)
+// take less horizontal scroll. Tailwind's md breakpoint is 768px.
+const isDesktop = useMediaQuery('(min-width: 768px)')
+const cellSize = computed(() => (isDesktop.value ? 44 : 36))
 
 const fallbackSections = { class: 'Class', hero: 'Hero', spec: 'Spec' } as const
 

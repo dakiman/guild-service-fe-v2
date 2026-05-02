@@ -29,6 +29,11 @@ const props = defineProps<{
   cellSize: number
   cols: number
   rows: number
+  /** Subtract from every node's display_col before drawing — matches the
+      normalization TalentTreeColumn does for the node icons. */
+  colOffset?: number
+  /** Subtract from every node's display_row before drawing. */
+  rowOffset?: number
 }>()
 
 const width = computed(() => props.cols * props.cellSize)
@@ -40,23 +45,25 @@ const nodeMap = computed(() => {
   return m
 })
 
-const edgeLines = computed(() =>
-  props.edges
+const edgeLines = computed(() => {
+  const colOff = props.colOffset ?? 0
+  const rowOff = props.rowOffset ?? 0
+  return props.edges
     .map((e) => {
       const from = nodeMap.value.get(e.from)
       const to = nodeMap.value.get(e.to)
       if (!from || !to) return null
       const half = props.cellSize / 2
       const iconHalf = (props.cellSize - 8) / 2
-      const x1 = from.display_col * props.cellSize + half
-      const y1 = from.display_row * props.cellSize + half + iconHalf
-      const x2 = to.display_col * props.cellSize + half
-      const y2 = to.display_row * props.cellSize + half - iconHalf
+      const x1 = (from.display_col - colOff) * props.cellSize + half
+      const y1 = (from.display_row - rowOff) * props.cellSize + half + iconHalf
+      const x2 = (to.display_col - colOff) * props.cellSize + half
+      const y2 = (to.display_row - rowOff) * props.cellSize + half - iconHalf
       const bothPicked = props.pickedIds.has(from.id) && props.pickedIds.has(to.id)
       return { from: from.id, to: to.id, x1, y1, x2, y2, bothPicked }
     })
-    .filter((e): e is NonNullable<typeof e> => e !== null),
-)
+    .filter((e): e is NonNullable<typeof e> => e !== null)
+})
 </script>
 
 <style scoped>
