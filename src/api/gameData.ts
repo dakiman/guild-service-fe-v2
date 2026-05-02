@@ -1,5 +1,9 @@
 import { api } from './client'
-import type { RaidInstancesResponse, MythicKeystoneDungeonsResponse } from '@/types/gameData'
+import type {
+  RaidInstancesResponse,
+  MythicKeystoneDungeonsResponse,
+  RealmsResponse,
+} from '@/types/gameData'
 
 export type RaidInstanceScope = 'current' | 'all'
 export type MythicSeasonScope = 'current'
@@ -36,5 +40,12 @@ export async function getMythicKeystoneDungeons(
       headers: REVALIDATE_HEADERS,
     },
   )
+  return res.data
+}
+
+export async function getRealms(): Promise<RealmsResponse> {
+  const res = await api.get<RealmsResponse>('/game-data/realms', {
+    headers: REVALIDATE_HEADERS,
+  })
   return res.data
 }

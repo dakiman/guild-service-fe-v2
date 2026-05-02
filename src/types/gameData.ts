@@ -51,3 +51,13 @@ export interface MythicKeystoneDungeonsResponse {
 export interface RaidInstancesResponse {
   instances: RaidInstanceGameData[]
 }
+
+export interface RealmGameData {
+  slug: string
+  name: string
+  region: import('./api').Region
+}
+
+export interface RealmsResponse {
+  realms: RealmGameData[]
+}
