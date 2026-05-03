@@ -11,13 +11,13 @@
       <div class="card bg-base-200 shadow-sm">
         <div class="card-body p-4">
           <h2 class="card-title text-base">Find a character</h2>
-          <LookupForm kind="character" @submit="onCharacterSubmit" />
+          <LookupForm kind="character" @submit="onCharacterSubmit" @pick="onCharacterSubmit" />
         </div>
       </div>
       <div class="card bg-base-200 shadow-sm">
         <div class="card-body p-4">
           <h2 class="card-title text-base">Find a guild</h2>
-          <LookupForm kind="guild" @submit="onGuildSubmit" />
+          <LookupForm kind="guild" @submit="onGuildSubmit" @pick="onGuildSubmit" />
         </div>
       </div>
     </section>
