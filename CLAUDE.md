@@ -45,6 +45,8 @@ Components rendering possibly-stale resources call `useStaleAutoRefresh` to trig
 
 `pages/character/CharacterDungeonsTab.vue` is a leaf route (`character-dungeons`, path `/dungeons`). It composes `components/character/pve/DungeonsHeadline.vue` (M+ score colored from `rating.color`, season name, three "Timed N+" KPI pills — same numbers `MythicPlusKpiTiles` used to compute) on top of a local view-switcher between `MythicPlusBestPerDungeon` and `MythicPlusAllRuns`. The view-switcher is local-state DaisyUI `ma-tab`s — NOT routes (same pattern the old `MythicPlusSection` used; just relocated into the page).
 
+`MythicPlusAllRuns.vue` renders one card per run with a click-to-expand header (chevron + dungeon name + keystone pill + on-time chip + duration + timestamp + spec/ilvl member pills); the affix row and members table live in a wrapper animated via `grid-template-rows: 0fr ↔ 1fr` (no `v-show`). Expanded state is component-local (`Set<runId>`) — not persisted across navigations. Each run header is a `<button>` toggle, so all decorative children inside it (member pills, chevron, name) are non-interactive `<span>`s — `<ul>`/`<li>` and `<h3>` were both rejected as invalid phrasing-content during review.
+
 ### Raids tab
 
 `pages/character/CharacterRaidsTab.vue` is a leaf route (`character-raids`, path `/raids`). It composes `components/character/pve/RaidsHeadline.vue` (hero `{killed}/{total} {diff}` for the highest-progress instance via `useBestRaidProgression`, plus an `N · H · M` chip row counting that same instance's progress at all three difficulties) on top of `RaidProgressionSection` (per-instance cards, difficulty tabs, `BossRow` portraits — unchanged).

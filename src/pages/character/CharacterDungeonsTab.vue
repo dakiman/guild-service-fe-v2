@@ -40,6 +40,7 @@
       <MythicPlusAllRuns
         v-else
         :runs="character.dungeon_runs"
+        :dungeons="dungeons"
         :affixes="affixes"
         :current-season="currentSeason"
       />
