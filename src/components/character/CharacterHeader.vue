@@ -46,7 +46,7 @@
           </span>
         </div>
 
-        <CharacterStatPills :character="character" class="mt-1" />
+        <CharacterStatPills :character="character" :achievements-enabled="achievementsEnabled" class="mt-1" />
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@ import { CLASSES, CLASS_COLORS, RACES } from '@/utils/wowConstants'
 import { displayGuildName, displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'
 import type { CharacterResource } from '@/types/character'
 
-const props = defineProps<{ character: CharacterResource }>()
+const props = defineProps<{ character: CharacterResource; achievementsEnabled?: boolean }>()
 
 const className = computed(() => CLASSES[props.character.class_id] ?? 'Unknown')
 const classColor = computed(() => CLASS_COLORS[props.character.class_id] ?? '#888')

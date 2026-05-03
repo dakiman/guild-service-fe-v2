@@ -28,15 +28,17 @@
       <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">Raid</span>
       <span class="font-bold text-ma-gold tabular-nums">{{ raidProgressionLabel }}</span>
     </RouterLink>
-    <RouterLink
-      :to="achievementsRoute"
-      class="ma-stat-pill ma-stat-pill-link"
+    <component
+      :is="achievementsEnabled ? RouterLink : 'div'"
+      :to="achievementsEnabled ? achievementsRoute : undefined"
+      class="ma-stat-pill"
+      :class="achievementsEnabled ? 'ma-stat-pill-link' : ''"
       title="Achievements"
     >
       <Trophy class="w-4 h-4 text-ma-gold" />
       <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">Achievements</span>
       <span class="font-bold text-ma-gold tabular-nums">{{ formatNumber(character.achievement_points) }}</span>
-    </RouterLink>
+    </component>
   </div>
 </template>
 
@@ -47,7 +49,7 @@ import { Shield, Skull, Swords, Trophy } from 'lucide-vue-next'
 import { useBestRaidProgression, shortDifficulty } from '@/composables/useBestRaidProgression'
 import type { CharacterResource } from '@/types/character'
 
-const props = defineProps<{ character: CharacterResource }>()
+const props = defineProps<{ character: CharacterResource; achievementsEnabled?: boolean }>()
 
 const mythicRating = computed(() => {
   const rating = props.character.mythic_plus_rating?.rating
