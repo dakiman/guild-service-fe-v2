@@ -96,6 +96,7 @@ export interface CharacterTalents {
 
 export interface MythicPlusRating {
   rating: number
+  color: string | null
   per_spec: Record<string, number>
 }
 
