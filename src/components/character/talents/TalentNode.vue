@@ -67,19 +67,16 @@ const nodeStyle = computed(() => {
   border-radius: 9999px;
 }
 .talent-node--choice {
-  clip-path: polygon(
-    30% 0%, 70% 0%,
-    100% 30%, 100% 70%,
-    70% 100%, 30% 100%,
-    0% 70%, 0% 30%
-  );
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 .talent-node--picked {
   opacity: 1;
-  box-shadow: 0 0 8px var(--talent-glow, rgb(255 255 255 / 0.4));
+  box-shadow:
+    inset 0 0 0 2px var(--talent-glow),
+    0 0 4px var(--talent-glow);
 }
 .talent-node--unpicked {
-  opacity: 0.35;
+  opacity: 0.4;
 }
 .talent-node__icon {
   display: block;

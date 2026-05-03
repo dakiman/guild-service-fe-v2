@@ -47,22 +47,22 @@
             <p v-if="!talents[key].length" class="text-base-content/60 text-sm">None</p>
             <ul v-else class="flex flex-col gap-1">
               <li v-for="t in talents[key]" :key="`${key}-${t.id}`">
-                <WowheadLink :spell-id="t.spell_id">
-                  {{ t.rank }}/{{ t.max_rank }}
-                </WowheadLink>
+                <WowheadLink :spell-id="t.spell_id"> {{ t.rank }}/{{ t.max_rank }} </WowheadLink>
               </li>
             </ul>
           </section>
         </div>
-        <p class="text-xs text-base-content/50 mt-3">
-          Full tree not available for this spec yet.
-        </p>
+        <p class="text-xs text-base-content/50 mt-3">Full tree not available for this spec yet.</p>
       </div>
 
       <!-- Full tree -->
       <div v-else-if="topology" class="mt-3 flex flex-col gap-4">
         <TalentSummaryStrip :refs="summaryRefs" :class-color="classColor" />
-        <div class="flex flex-col md:flex-row gap-6 min-w-0">
+        <div
+          ref="treeWrapper"
+          class="flex gap-6 min-w-0"
+          :class="sideBySide ? 'flex-row justify-evenly' : 'flex-col items-center'"
+        >
           <TalentTreeColumn
             title="Class"
             :nodes="topology.class_nodes"
@@ -79,6 +79,7 @@
             :picked="talents.hero"
             :class-color="classColor"
             :cell-size="cellSize"
+            hoist-entry
           />
           <TalentTreeColumn
             title="Spec"
@@ -87,23 +88,40 @@
             :picked="talents.spec"
             :class-color="classColor"
             :cell-size="cellSize"
+            hoist-entry
           />
         </div>
       </div>
 
       <!-- Empty (low-level char) -->
-      <p v-else class="text-base-content/60 text-sm mt-3">
-        No talents picked yet.
-      </p>
+      <p v-else class="text-base-content/60 text-sm mt-3">No talents picked yet.</p>
 
       <!-- PvP row (independent of tree fetch state) -->
-      <section v-if="!classic && talents.pvp && talents.pvp.length" class="mt-4">
-        <h3 class="text-sm font-semibold uppercase tracking-wide text-base-content/70 mb-2">
-          PvP
+      <section v-if="!classic && talents.pvp && talents.pvp.length" class="mt-6">
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-base-content/70 mb-3">
+          PvP Talents
         </h3>
-        <ul class="flex flex-wrap gap-2">
-          <li v-for="p in talents.pvp" :key="`pvp-${p.slot}`">
-            <WowheadLink :spell-id="p.spell_id">Slot {{ p.slot + 1 }}</WowheadLink>
+        <ul class="flex flex-wrap gap-3">
+          <li
+            v-for="p in talents.pvp"
+            :key="`pvp-${p.slot}`"
+            class="flex items-center gap-3 bg-base-300/60 border border-base-content/10 rounded-lg px-3 py-2 hover:border-base-content/30 transition-colors"
+          >
+            <TalentNode
+              :spell-id="p.spell_id"
+              :is-picked="true"
+              :is-choice="false"
+              :class-color="classColor"
+              :cell-size="36"
+            />
+            <div class="flex flex-col min-w-0">
+              <span class="text-xs uppercase tracking-wide text-base-content/50">
+                Slot {{ p.slot + 1 }}
+              </span>
+              <span class="text-sm font-medium leading-tight truncate">
+                {{ p.name || `Spell ${p.spell_id}` }}
+              </span>
+            </div>
           </li>
         </ul>
       </section>
@@ -113,16 +131,18 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useMediaQuery } from '@vueuse/core'
+import { useElementSize, useMediaQuery } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import WowheadLink from '@/components/wow/WowheadLink.vue'
 import TalentSummaryStrip from './TalentSummaryStrip.vue'
 import TalentTreeColumn from './TalentTreeColumn.vue'
+import TalentNode from './TalentNode.vue'
 import { useTalentTree } from '@/composables/useTalentTree'
 import { computeTalentSummary } from '@/composables/useTalentSummary'
 import { useWowheadRefresh } from '@/composables/useWowhead'
 import { CLASS_COLORS } from '@/utils/wowConstants'
 import type { CharacterTalents } from '@/types/character'
+import type { TalentNode as TalentNodeT } from '@/types/talents'
 
 const props = defineProps<{
   talents: CharacterTalents
@@ -135,10 +155,9 @@ const props = defineProps<{
 
 const justCopied = ref(false)
 
-// Tighter cells on mobile so wide spec trees (some go to ~22 columns)
-// take less horizontal scroll. Tailwind's md breakpoint is 768px.
+const treeWrapper = ref<HTMLElement | null>(null)
+const { width: wrapperWidth } = useElementSize(treeWrapper)
 const isDesktop = useMediaQuery('(min-width: 768px)')
-const cellSize = computed(() => (isDesktop.value ? 44 : 36))
 
 const fallbackSections = { class: 'Class', hero: 'Hero', spec: 'Spec' } as const
 
@@ -161,9 +180,7 @@ const treeUnavailable = computed(() => {
 const activeHero = computed(() => {
   if (!topology.value) return null
   const pickedIds = new Set((props.talents.hero ?? []).map((t) => t.id))
-  return (
-    topology.value.hero_trees.find((h) => h.nodes.some((n) => pickedIds.has(n.id))) ?? null
-  )
+  return topology.value.hero_trees.find((h) => h.nodes.some((n) => pickedIds.has(n.id))) ?? null
 })
 
 const summaryRefs = computed(() => {
@@ -174,6 +191,51 @@ const summaryRefs = computed(() => {
 const classColor = computed(() => {
   if (!props.classId) return null
   return CLASS_COLORS[props.classId] ?? null
+})
+
+// Auto-fit cell size to the available container width so wide spec trees
+// (~22 cols) don't introduce per-column horizontal scrollbars. Floors to a
+// tappable minimum and caps so cells don't blow up on ultrawide. When even
+// the minimum can't fit three columns side-by-side, stack vertically.
+const COL_GAP_PX = 24 // tailwind gap-6
+const CELL_MIN = 24
+const CELL_MAX = 48
+function colCount(nodes: TalentNodeT[] | undefined): number {
+  if (!nodes || nodes.length === 0) return 0
+  const cols = nodes.map((n) => n.display_col)
+  return Math.max(...cols) - Math.min(...cols) + 1
+}
+const colCounts = computed(() => {
+  if (!topology.value) return { classCols: 0, heroCols: 0, specCols: 0 }
+  return {
+    classCols: colCount(topology.value.class_nodes),
+    heroCols: activeHero.value ? colCount(activeHero.value.nodes) : 0,
+    specCols: colCount(topology.value.spec_nodes),
+  }
+})
+// Side-by-side only if all three columns fit at CELL_MIN. Below that, stack.
+const sideBySide = computed(() => {
+  const w = wrapperWidth.value
+  if (w === 0) return isDesktop.value
+  const { classCols, heroCols, specCols } = colCounts.value
+  const total = classCols + heroCols + specCols
+  if (total === 0) return isDesktop.value
+  const needed = total * CELL_MIN + 2 * COL_GAP_PX
+  return w >= needed
+})
+const cellSize = computed(() => {
+  const w = wrapperWidth.value
+  if (!topology.value || w === 0) return isDesktop.value ? 44 : 36
+  const { classCols, heroCols, specCols } = colCounts.value
+  // Side-by-side fits total cols + 2 gaps; stacked fits the widest column
+  // (since each column gets the full wrapper width).
+  const denom = sideBySide.value
+    ? classCols + heroCols + specCols
+    : Math.max(classCols, heroCols, specCols)
+  if (denom === 0) return sideBySide.value ? 44 : 36
+  const usable = sideBySide.value ? Math.max(0, w - 2 * COL_GAP_PX) : w
+  const fit = Math.floor(usable / denom)
+  return Math.max(CELL_MIN, Math.min(CELL_MAX, fit))
 })
 
 function filterEdges(edges: { from: number; to: number }[], nodes: { id: number }[]) {
