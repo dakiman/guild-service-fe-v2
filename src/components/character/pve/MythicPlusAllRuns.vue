@@ -47,58 +47,65 @@
         </span>
       </button>
 
-      <div :id="runBodyId(run)" v-show="isOpen(run)" class="mt-3">
-        <div v-if="run.affixes.length" class="flex flex-wrap gap-1 mb-3">
-          <AffixIcon
-            v-for="affix in run.affixes"
-            :key="affix.id"
-            :affix-id="affix.id"
-            :affixes="affixes"
-          />
-        </div>
+      <div
+        :id="runBodyId(run)"
+        class="grid transition-[grid-template-rows] duration-150 ease-out"
+        :class="isOpen(run) ? 'grid-rows-[1fr] mt-3' : 'grid-rows-[0fr]'"
+        :aria-hidden="!isOpen(run)"
+      >
+        <div class="overflow-hidden min-h-0">
+          <div v-if="run.affixes.length" class="flex flex-wrap gap-1 mb-3">
+            <AffixIcon
+              v-for="affix in run.affixes"
+              :key="affix.id"
+              :affix-id="affix.id"
+              :affixes="affixes"
+            />
+          </div>
 
-        <div v-if="run.members.length" class="overflow-x-auto">
-          <table class="w-full text-xs">
-            <thead>
-              <tr class="text-[10px] uppercase tracking-wider text-ma-muted/70">
-                <th class="text-left px-2 py-1 font-medium">Name</th>
-                <th class="text-left px-2 py-1 font-medium">Realm</th>
-                <th class="text-left px-2 py-1 font-medium">Spec</th>
-                <th class="text-right px-2 py-1 font-medium">iLvl</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(member, idx) in run.members"
-                :key="`${member.character_region}:${member.character_realm}:${member.character_name}:${idx}`"
-                class="border-t border-ma-border/15"
-              >
-                <td class="px-2 py-1">
-                  <RouterLink
-                    :to="memberRoute(member)"
-                    class="font-semibold hover:underline transition-colors"
-                    :style="{ color: memberColor(member) }"
-                  >
-                    {{ displayName(member.character_name) }}
-                  </RouterLink>
-                </td>
-                <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm, member.character_realm_display) }}</td>
-                <td class="px-2 py-1 text-ma-muted/70">
-                  <span class="inline-flex items-center gap-1.5">
-                    <SpecIcon
-                      :spec-id="member.spec_id"
-                      :fallback-class-id="member.spec_id != null ? SPEC_TO_CLASS[member.spec_id] ?? null : null"
-                      :size="18"
-                    />
-                    <span>{{ member.spec_name }}</span>
-                  </span>
-                </td>
-                <td class="px-2 py-1 text-right tabular-nums">{{ member.equipped_item_level }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-if="run.members.length" class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="text-[10px] uppercase tracking-wider text-ma-muted/70">
+                  <th class="text-left px-2 py-1 font-medium">Name</th>
+                  <th class="text-left px-2 py-1 font-medium">Realm</th>
+                  <th class="text-left px-2 py-1 font-medium">Spec</th>
+                  <th class="text-right px-2 py-1 font-medium">iLvl</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(member, idx) in run.members"
+                  :key="`${member.character_region}:${member.character_realm}:${member.character_name}:${idx}`"
+                  class="border-t border-ma-border/15"
+                >
+                  <td class="px-2 py-1">
+                    <RouterLink
+                      :to="memberRoute(member)"
+                      class="font-semibold hover:underline transition-colors"
+                      :style="{ color: memberColor(member) }"
+                    >
+                      {{ displayName(member.character_name) }}
+                    </RouterLink>
+                  </td>
+                  <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm, member.character_realm_display) }}</td>
+                  <td class="px-2 py-1 text-ma-muted/70">
+                    <span class="inline-flex items-center gap-1.5">
+                      <SpecIcon
+                        :spec-id="member.spec_id"
+                        :fallback-class-id="member.spec_id != null ? SPEC_TO_CLASS[member.spec_id] ?? null : null"
+                        :size="18"
+                      />
+                      <span>{{ member.spec_name }}</span>
+                    </span>
+                  </td>
+                  <td class="px-2 py-1 text-right tabular-nums">{{ member.equipped_item_level }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p v-else class="text-xs text-ma-muted/60 italic m-0">No member data recorded.</p>
         </div>
-        <p v-else class="text-xs text-ma-muted/60 italic m-0">No member data recorded.</p>
       </div>
     </div>
   </div>
