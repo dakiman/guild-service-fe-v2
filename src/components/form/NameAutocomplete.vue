@@ -7,7 +7,6 @@ import ClassIcon from '@/components/wow/ClassIcon.vue'
 import FactionBadge from '@/components/wow/FactionBadge.vue'
 import { displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'
 import type { CharacterSuggestion, GuildSuggestion, Region } from '@/types/api'
-import type { Faction } from '@/types/wow'
 
 type Suggestion =
   | (CharacterSuggestion & { _kind: 'character' })
@@ -169,8 +168,8 @@ const showEmpty = computed(
           @mouseenter="highlightIndex = i"
         >
           <FactionBadge
-            v-if="s.faction"
-            :faction="(s.faction as Faction)"
+            v-if="s.faction === 'Alliance' || s.faction === 'Horde'"
+            :faction="s.faction"
             :size="16"
             class="shrink-0"
           />
