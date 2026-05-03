@@ -200,10 +200,13 @@ const classColor = computed(() => {
 const COL_GAP_PX = 24 // tailwind gap-6
 const CELL_MIN = 24
 const CELL_MAX = 48
+// Count unique columns rather than span — TalentTreeColumn packs sparse
+// Blizzard coords (e.g. Sub Rogue class jumping 7 → 11) into a dense
+// 0..N-1 sequence before render, so the column's true on-screen width is
+// the unique count, not the raw max-min+1 span.
 function colCount(nodes: TalentNodeT[] | undefined): number {
   if (!nodes || nodes.length === 0) return 0
-  const cols = nodes.map((n) => n.display_col)
-  return Math.max(...cols) - Math.min(...cols) + 1
+  return new Set(nodes.map((n) => n.display_col)).size
 }
 const colCounts = computed(() => {
   if (!topology.value) return { classCols: 0, heroCols: 0, specCols: 0 }

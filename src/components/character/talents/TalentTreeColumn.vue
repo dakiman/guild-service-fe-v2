@@ -32,8 +32,6 @@
         :cell-size="cellSize"
         :cols="cols"
         :rows="rows"
-        :col-offset="colOffset"
-        :row-offset="rowOffset"
       />
       <TalentNode
         v-for="node in gridNodes"
@@ -43,8 +41,8 @@
         :is-choice="node.type === 'choice'"
         :rank-label="rankLabelFor(node)"
         :class-color="classColor"
-        :row="node.display_row - rowOffset"
-        :col="node.display_col - colOffset"
+        :row="node.display_row"
+        :col="node.display_col"
         :cell-size="cellSize"
       />
     </div>
@@ -84,7 +82,7 @@ const entryNodes = computed(() => {
     .sort((a, b) => a.display_col - b.display_col)
 })
 
-const gridNodes = computed(() => {
+const rawGridNodes = computed(() => {
   if (entryRow.value === null) return props.nodes
   return props.nodes.filter((n) => n.display_row !== entryRow.value)
 })
@@ -97,27 +95,36 @@ const gridEdges = computed(() => {
   return props.edges.filter((e) => !entryIds.has(e.from) && !entryIds.has(e.to))
 })
 
-// Blizzard's display_row / display_col are absolute coords across the
-// whole talent-tree response, so a single subtree (e.g. spec) often
-// starts at col=9 or row=1 with cols 0..8 / row 0 unused. Normalize
-// each subtree to start at (0, 0) so the column doesn't render a
-// large blank gutter on its left/top edge.
-const colOffset = computed(() =>
-  gridNodes.value.length === 0 ? 0 : Math.min(...gridNodes.value.map((n) => n.display_col)),
-)
-const rowOffset = computed(() =>
-  gridNodes.value.length === 0 ? 0 : Math.min(...gridNodes.value.map((n) => n.display_row)),
-)
-const cols = computed(() =>
-  gridNodes.value.length === 0
-    ? 1
-    : Math.max(...gridNodes.value.map((n) => n.display_col)) - colOffset.value + 1,
-)
-const rows = computed(() =>
-  gridNodes.value.length === 0
-    ? 1
-    : Math.max(...gridNodes.value.map((n) => n.display_row)) - rowOffset.value + 1,
-)
+// Pack rows/cols to a dense 0..N-1 sequence keyed off the unique values
+// present in the grid. Blizzard's display coords are absolute across the
+// full tree response and can leave both an outer gutter (e.g. spec starts
+// at col=15) and inner gaps (e.g. Sub Rogue class jumps 7 → 11 over three
+// empty cols). Without packing, the rendered grid bloats to the worst-case
+// span and auto-fit shrinks every cell to fit, even though most of that
+// width is empty. Edges still join by node id so visual connectivity is
+// preserved across the collapsed gaps.
+const gridNodes = computed(() => {
+  const raw = rawGridNodes.value
+  if (raw.length === 0) return []
+  const uniqueRows = Array.from(new Set(raw.map((n) => n.display_row))).sort((a, b) => a - b)
+  const uniqueCols = Array.from(new Set(raw.map((n) => n.display_col))).sort((a, b) => a - b)
+  const rowMap = new Map(uniqueRows.map((r, i) => [r, i] as const))
+  const colMap = new Map(uniqueCols.map((c, i) => [c, i] as const))
+  return raw.map((n) => ({
+    ...n,
+    display_row: rowMap.get(n.display_row)!,
+    display_col: colMap.get(n.display_col)!,
+  }))
+})
+
+const cols = computed(() => {
+  if (gridNodes.value.length === 0) return 1
+  return Math.max(...gridNodes.value.map((n) => n.display_col)) + 1
+})
+const rows = computed(() => {
+  if (gridNodes.value.length === 0) return 1
+  return Math.max(...gridNodes.value.map((n) => n.display_row)) + 1
+})
 
 const gridStyle = computed(() => ({
   position: 'relative' as const,
