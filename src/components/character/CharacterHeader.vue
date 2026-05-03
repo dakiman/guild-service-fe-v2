@@ -31,11 +31,11 @@
         </p>
 
         <div class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="text-base-content/70">Level {{ character.level }}</span>
+          <span class="text-base-content/70">{{ raceName }}</span>
           <span class="font-semibold" :style="{ color: classColor }">
             {{ className }}
           </span>
-          <span class="text-base-content/70">{{ raceName }}</span>
-          <span class="text-base-content/70">Level {{ character.level }}</span>
           <span v-if="character.active_specialization" class="inline-flex items-center gap-1.5">
             <SpecIcon
               :spec-id="character.active_specialization_id"
