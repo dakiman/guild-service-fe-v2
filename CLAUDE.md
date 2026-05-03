@@ -41,15 +41,21 @@ Components rendering possibly-stale resources call `useStaleAutoRefresh` to trig
 
 `AchievementsList.vue` is the only virtualized list (`@tanstack/vue-virtual`, fixed **56px rows, overscan 8**) — characters can carry 30k achievements. Loads via `useInfiniteQuery` against `GET /characters/{region}/{realm}/{name}/achievements` (server-side join + cursor pagination, default 100/page, filters out `Feats of Strength` by default); `api/achievements.ts` wraps it. The watch on `virtualizer.getVirtualItems()` calls `fetchNextPage()` when the last virtual row is within **~200px** of `getTotalSize()` — scroll triggers prefetch without a sentinel. The "Include Feats of Strength" checkbox toggles `includeFeats`, which **participates in the query key**, so TanStack treats it as a fresh query (no manual reset). BE row carries resolved `name` and `category_name`, so Wowhead's `power.js` is no longer load-bearing for the inline label (still hydrates the hover tooltip).
 
-### PvE tab (single-page, raider.io-style)
+### Dungeons tab
 
-`pages/character/CharacterPveTab.vue` is a **leaf route — no subtabs; the old `character-pve-raids` and `character-pve-mythic` route names are gone**. Composes three sections under `components/character/pve/`: `PveHeadlineStrip` (M+ score + raid progression headline), `RaidProgressionSection` (per-instance cards, difficulty tabs, `BossRow` portraits), `MythicPlusSection` (KPI tiles + local view-switcher between `MythicPlusBestPerDungeon` and `MythicPlusAllRuns`). View-switcher uses local-state tabs, NOT routes — spec collapsed the routed-subtab indirection.
+`pages/character/CharacterDungeonsTab.vue` is a leaf route (`character-dungeons`, path `/dungeons`). It composes `components/character/pve/DungeonsHeadline.vue` (M+ score colored from `rating.color`, season name, three "Timed N+" KPI pills — same numbers `MythicPlusKpiTiles` used to compute) on top of a local view-switcher between `MythicPlusBestPerDungeon` and `MythicPlusAllRuns`. The view-switcher is local-state DaisyUI `ma-tab`s — NOT routes (same pattern the old `MythicPlusSection` used; just relocated into the page).
+
+### Raids tab
+
+`pages/character/CharacterRaidsTab.vue` is a leaf route (`character-raids`, path `/raids`). It composes `components/character/pve/RaidsHeadline.vue` (hero `{killed}/{total} {diff}` for the highest-progress instance via `useBestRaidProgression`, plus an `N · H · M` chip row counting that same instance's progress at all three difficulties) on top of `RaidProgressionSection` (per-instance cards, difficulty tabs, `BossRow` portraits — unchanged).
+
+### PvE game-data endpoints
 
 PvE game-data comes from two public endpoints:
 - `GET /api/v1/game-data/raid-instances?expansion=current` → `{ instances: [...] }`
 - `GET /api/v1/game-data/mythic-keystone-dungeons?season=current` → `{ dungeons: [...], affixes: { "<id>": {...} }, season: null }`
 
-Affixes ride along on the dungeons response keyed by id (`Record<number, KeystoneAffixGameData>`) so `<AffixIcon>` does O(1) lookup. Neither uses a `data` envelope (matches BE convention). `composables/usePveGameData.ts` exposes `useRaidInstances()` and `useMythicDungeons()` with `staleTime: Infinity` + `gcTime: 24h` (responses change only on patch). `api/gameData.ts` wraps the calls; types in `src/types/gameData.ts`. The affix dictionary is passed down from section to `AffixIcon` — no per-icon query coupling.
+Affixes ride along on the dungeons response keyed by id (`Record<number, KeystoneAffixGameData>`) so `<AffixIcon>` does O(1) lookup. Neither uses a `data` envelope (matches BE convention). `composables/usePveGameData.ts` exposes `useRaidInstances()` and `useMythicDungeons()` with `staleTime: Infinity` + `gcTime: 24h` (responses change only on patch). `api/gameData.ts` wraps the calls; types in `src/types/gameData.ts`. The affix dictionary is passed down from page to `AffixIcon` — no per-icon query coupling.
 
 ### HTTP client & auth
 
