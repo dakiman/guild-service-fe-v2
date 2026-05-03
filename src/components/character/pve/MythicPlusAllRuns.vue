@@ -98,6 +98,7 @@
             </tbody>
           </table>
         </div>
+        <p v-else class="text-xs text-ma-muted/60 italic m-0">No member data recorded.</p>
       </div>
     </div>
   </div>
