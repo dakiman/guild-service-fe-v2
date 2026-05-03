@@ -7,7 +7,7 @@
     />
 
     <template v-else-if="character">
-      <CharacterHeader :character="character" />
+      <CharacterHeader :character="character" :achievements-enabled="meta?.feature_flags?.achievements !== false" />
 
       <div class="flex flex-wrap items-center gap-3">
         <StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
@@ -96,7 +96,8 @@ provideCharacterContext({
 
 const tabs = computed<TabDescriptor[]>(() => {
   const params = { region: region.value, realm: realm.value, name: name.value }
-  return [
+  const achievementsEnabled = meta.value?.feature_flags?.achievements !== false
+  const result: TabDescriptor[] = [
     { label: 'Summary',      to: { name: 'character-summary', params },      icon: Sparkles },
     { label: 'Talents',      to: { name: 'character-talents', params },      icon: BookOpen },
     { label: 'Titles',       to: { name: 'character-titles', params },       icon: Crown },
@@ -121,8 +122,11 @@ const tabs = computed<TabDescriptor[]>(() => {
       icon: Swords,
     },
     { label: 'Reputations',  to: { name: 'character-reputations', params },  icon: Star },
-    { label: 'Achievements', to: { name: 'character-achievements', params }, icon: Trophy },
   ]
+  if (achievementsEnabled) {
+    result.push({ label: 'Achievements', to: { name: 'character-achievements', params }, icon: Trophy })
+  }
+  return result
 })
 
 const canToggleRecruitment = computed(() => {
