@@ -26,77 +26,25 @@
       <section aria-labelledby="guilds-heading" class="space-y-4">
         <h2 id="guilds-heading" class="text-xl font-semibold">Guilds</h2>
 
-        <div class="card bg-base-200 shadow-sm">
-          <div class="card-body p-4">
-            <h3 class="card-title text-base">Recently searched</h3>
+        <GuildSummaryCard
+          title="Recently searched"
+          :items="guildsQuery.data.value?.recently_searched"
+          :is-pending="guildsQuery.isPending.value"
+          :is-error="guildsQuery.isError.value"
+          :error="guildsQuery.error.value"
+          :on-retry="() => guildsQuery.refetch()"
+          empty-message="No recent guild searches."
+        />
 
-            <div v-if="guildsQuery.isPending.value" class="space-y-2 mt-2">
-              <div v-for="i in 3" :key="i" class="skeleton h-6 w-full"></div>
-            </div>
-
-            <ErrorState
-              v-else-if="guildsQuery.isError.value"
-              :error="guildsQuery.error.value"
-              @retry="guildsQuery.refetch()"
-            />
-
-            <ul v-else-if="guildsQuery.data.value?.recently_searched.length" class="space-y-1 mt-2">
-              <li v-for="g in guildsQuery.data.value.recently_searched" :key="g.id">
-                <router-link
-                  :to="{
-                    name: 'guild-detail',
-                    params: { region: g.region, realm: g.realm, name: g.name },
-                  }"
-                  class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
-                >
-                  <FactionBadge v-if="g.faction" :faction="g.faction" />
-                  <span class="font-bold">{{ displayName(g.name, g.display_name) }}</span>
-                  <span class="text-base-content/70 text-sm">
-                    on {{ displayRealm(g.realm, g.display_realm) }} ({{ g.region.toUpperCase() }})
-                  </span>
-                </router-link>
-              </li>
-            </ul>
-
-            <p v-else class="text-base-content/60 text-sm mt-2">No recent guild searches.</p>
-          </div>
-        </div>
-
-        <div class="card bg-base-200 shadow-sm">
-          <div class="card-body p-4">
-            <h3 class="card-title text-base">Most popular</h3>
-
-            <div v-if="guildsQuery.isPending.value" class="space-y-2 mt-2">
-              <div v-for="i in 3" :key="i" class="skeleton h-6 w-full"></div>
-            </div>
-
-            <ErrorState
-              v-else-if="guildsQuery.isError.value"
-              :error="guildsQuery.error.value"
-              @retry="guildsQuery.refetch()"
-            />
-
-            <ul v-else-if="guildsQuery.data.value?.most_popular.length" class="space-y-1 mt-2">
-              <li v-for="g in guildsQuery.data.value.most_popular" :key="g.id">
-                <router-link
-                  :to="{
-                    name: 'guild-detail',
-                    params: { region: g.region, realm: g.realm, name: g.name },
-                  }"
-                  class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
-                >
-                  <FactionBadge v-if="g.faction" :faction="g.faction" />
-                  <span class="font-bold">{{ displayName(g.name, g.display_name) }}</span>
-                  <span class="text-base-content/70 text-sm">
-                    on {{ displayRealm(g.realm, g.display_realm) }} ({{ g.region.toUpperCase() }})
-                  </span>
-                </router-link>
-              </li>
-            </ul>
-
-            <p v-else class="text-base-content/60 text-sm mt-2">No popular guilds yet.</p>
-          </div>
-        </div>
+        <GuildSummaryCard
+          title="Most popular"
+          :items="guildsQuery.data.value?.most_popular"
+          :is-pending="guildsQuery.isPending.value"
+          :is-error="guildsQuery.isError.value"
+          :error="guildsQuery.error.value"
+          :on-retry="() => guildsQuery.refetch()"
+          empty-message="No popular guilds yet."
+        />
       </section>
 
       <section aria-labelledby="characters-heading" class="space-y-4">
@@ -186,10 +134,10 @@ import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
 import { fetchPopularGuilds } from '@/api/guilds'
 import { fetchPopularCharacters } from '@/api/characters'
-import FactionBadge from '@/components/wow/FactionBadge.vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import LookupForm from '@/components/form/LookupForm.vue'
+import GuildSummaryCard from '@/components/guild/GuildSummaryCard.vue'
 import { displayName, displayRealm } from '@/utils/display'
 import type { Region } from '@/types/api'
 

@@ -1,6 +1,12 @@
 import { api } from './client'
 import { NotFoundError, SyncPendingError } from '@/types/api'
-import type { GuildLookupResult, GuildMember, GuildResource, GuildSummary } from '@/types/guild'
+import type {
+  GuildDiscoverData,
+  GuildLookupResult,
+  GuildMember,
+  GuildResource,
+  GuildSummary,
+} from '@/types/guild'
 import type { Paginated, Region } from '@/types/api'
 
 export async function fetchGuild(
@@ -41,5 +47,10 @@ export async function fetchPopularGuilds(): Promise<{
     recently_searched: GuildSummary[]
     most_popular: GuildSummary[]
   }>('/guilds/popular')
+  return res.data
+}
+
+export async function fetchDiscoverGuilds(): Promise<GuildDiscoverData> {
+  const res = await api.get<GuildDiscoverData>('/guilds/discover')
   return res.data
 }

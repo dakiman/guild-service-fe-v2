@@ -11,6 +11,21 @@ export interface GuildSummary {
   faction: Faction
 }
 
+export interface GuildSummaryWithMetric extends GuildSummary {
+  metric: number
+  metric_label: 'achievement_points' | 'member_count' | 'created_timestamp'
+}
+
+export interface GuildDiscoverData {
+  recently_searched: GuildSummary[]
+  most_popular: GuildSummary[]
+  top_achievement_points: GuildSummaryWithMetric[]
+  largest_by_members: GuildSummaryWithMetric[]
+  recently_created: GuildSummaryWithMetric[]
+  faction_split: Record<'Alliance' | 'Horde', number>
+  region_breakdown: Array<{ region: Region; alliance: number; horde: number }>
+}
+
 export interface GuildResource extends GuildSummary {
   achievement_points: number
   member_count: number

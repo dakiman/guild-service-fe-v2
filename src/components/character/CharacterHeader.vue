@@ -36,8 +36,13 @@
           </span>
           <span class="text-base-content/70">{{ raceName }}</span>
           <span class="text-base-content/70">Level {{ character.level }}</span>
-          <span v-if="character.active_specialization" class="badge badge-outline">
-            {{ character.active_specialization }}
+          <span v-if="character.active_specialization" class="inline-flex items-center gap-1.5">
+            <SpecIcon
+              :spec-id="character.active_specialization_id"
+              :fallback-class-id="character.class_id"
+              :size="20"
+            />
+            <span>{{ character.active_specialization }}</span>
           </span>
         </div>
 
@@ -51,6 +56,7 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import FactionBadge from '@/components/wow/FactionBadge.vue'
+import SpecIcon from '@/components/wow/SpecIcon.vue'
 import CharacterStatPills from '@/components/character/CharacterStatPills.vue'
 import { CLASSES, CLASS_COLORS, RACES } from '@/utils/wowConstants'
 import { displayGuildName, displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'

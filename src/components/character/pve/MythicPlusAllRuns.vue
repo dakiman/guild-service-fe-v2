@@ -56,7 +56,16 @@
                 </RouterLink>
               </td>
               <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm, member.character_realm_display) }}</td>
-              <td class="px-2 py-1 text-ma-muted/70">{{ member.spec_name }}</td>
+              <td class="px-2 py-1 text-ma-muted/70">
+                <span class="inline-flex items-center gap-1.5">
+                  <SpecIcon
+                    :spec-id="member.spec_id"
+                    :fallback-class-id="member.spec_id != null ? SPEC_TO_CLASS[member.spec_id] ?? null : null"
+                    :size="18"
+                  />
+                  <span>{{ member.spec_name }}</span>
+                </span>
+              </td>
               <td class="px-2 py-1 text-right tabular-nums">{{ member.equipped_item_level }}</td>
             </tr>
           </tbody>
@@ -70,6 +79,7 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import AffixIcon from './AffixIcon.vue'
+import SpecIcon from '@/components/wow/SpecIcon.vue'
 import type { DungeonRun, DungeonRunMember } from '@/types/character'
 import type { KeystoneAffixGameData } from '@/types/gameData'
 import { CLASS_COLORS, SPEC_TO_CLASS } from '@/utils/wowConstants'
