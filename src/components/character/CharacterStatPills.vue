@@ -69,8 +69,8 @@ const routeParams = computed(() => ({
 }))
 
 const summaryRoute = computed(() => ({ name: 'character-summary', params: routeParams.value }))
-const mythicPlusRoute = computed(() => ({ name: 'character-pve', params: routeParams.value }))
-const raidRoute = computed(() => ({ name: 'character-pve', params: routeParams.value }))
+const mythicPlusRoute = computed(() => ({ name: 'character-dungeons', params: routeParams.value }))
+const raidRoute = computed(() => ({ name: 'character-raids', params: routeParams.value }))
 const achievementsRoute = computed(() => ({
   name: 'character-achievements',
   params: routeParams.value,
