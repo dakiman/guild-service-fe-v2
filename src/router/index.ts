@@ -97,6 +97,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/character/CharacterPveTab.vue'),
       },
       {
+        path: 'dungeons',
+        name: 'character-dungeons',
+        component: () => import('@/pages/character/CharacterDungeonsTab.vue'),
+      },
+      {
+        path: 'raids',
+        name: 'character-raids',
+        component: () => import('@/pages/character/CharacterRaidsTab.vue'),
+      },
+      {
         path: 'reputations',
         name: 'character-reputations',
         component: () => import('@/pages/character/CharacterReputationsTab.vue'),

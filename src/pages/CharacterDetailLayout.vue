@@ -52,7 +52,7 @@ import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
 import { provideCharacterContext } from '@/composables/useCharacterContext'
 import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
-import { Sparkles, BookOpen, Crown, Gem, Skull, Star, Trophy } from 'lucide-vue-next'
+import { Sparkles, BookOpen, Crown, Gem, Skull, Swords, Star, Trophy } from 'lucide-vue-next'
 import CharacterHeader from '@/components/character/CharacterHeader.vue'
 import CharacterTabStrip, {
   type TabDescriptor,
@@ -111,9 +111,14 @@ const tabs = computed<TabDescriptor[]>(() => {
       ],
     },
     {
-      label: 'Dungeons & Raids',
-      to: { name: 'character-pve', params },
+      label: 'Dungeons',
+      to: { name: 'character-dungeons', params },
       icon: Skull,
+    },
+    {
+      label: 'Raids',
+      to: { name: 'character-raids', params },
+      icon: Swords,
     },
     { label: 'Reputations',  to: { name: 'character-reputations', params },  icon: Star },
     { label: 'Achievements', to: { name: 'character-achievements', params }, icon: Trophy },
