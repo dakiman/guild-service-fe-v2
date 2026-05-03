@@ -30,6 +30,21 @@
         </span>
         <span class="text-sm text-ma-muted/70 tabular-nums">{{ formatDuration(run.duration) }}</span>
         <span class="text-xs text-ma-muted/50 tabular-nums">{{ formatTimestamp(run.completed_timestamp) }}</span>
+        <span class="flex flex-wrap items-center gap-1">
+          <span
+            v-for="(member, idx) in run.members"
+            :key="`pill:${run.id}:${idx}`"
+            class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full border border-ma-border/30 bg-ma-card/40 text-[11px] text-ma-muted/80"
+            :title="`${displayName(member.character_name)} • ${formatRealm(member.character_realm, member.character_realm_display)}`"
+          >
+            <SpecIcon
+              :spec-id="member.spec_id"
+              :fallback-class-id="member.spec_id != null ? SPEC_TO_CLASS[member.spec_id] ?? null : null"
+              :size="14"
+            />
+            <span class="tabular-nums">{{ member.equipped_item_level }}</span>
+          </span>
+        </span>
       </button>
 
       <div :id="runBodyId(run)" v-show="isOpen(run)" class="mt-3">
