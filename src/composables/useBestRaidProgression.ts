@@ -19,7 +19,7 @@ const DIFFICULTY_PRIORITY: { key: 'mythic' | 'heroic' | 'normal' | 'lfr'; label:
   { key: 'lfr',    label: 'LFR' },
 ]
 
-function matchesDifficulty(
+export function matchesDifficulty(
   row: RaidEncounterProgress,
   key: (typeof DIFFICULTY_PRIORITY)[number]['key'],
 ): boolean {

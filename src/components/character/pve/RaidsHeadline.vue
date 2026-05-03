@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue'
 import { useRaidInstances } from '@/composables/usePveGameData'
-import { useBestRaidProgression, shortDifficulty } from '@/composables/useBestRaidProgression'
+import { useBestRaidProgression, shortDifficulty, matchesDifficulty } from '@/composables/useBestRaidProgression'
 import type { RaidEncounterProgress } from '@/types/character'
 
 const props = defineProps<{
@@ -46,10 +46,6 @@ const DIFFICULTY_CHIPS: { label: 'N' | 'H' | 'M'; key: 'normal' | 'heroic' | 'my
   { label: 'H', key: 'heroic' },
   { label: 'M', key: 'mythic' },
 ]
-
-function matchesDifficulty(row: RaidEncounterProgress, key: 'normal' | 'heroic' | 'mythic'): boolean {
-  return row.difficulty.toLowerCase().includes(key)
-}
 
 const secondaryRow = computed<DifficultyChip[] | null>(() => {
   const h = headline.value
