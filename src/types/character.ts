@@ -10,6 +10,8 @@ export interface CharacterSummary {
   name: string
   realm: string
   region: Region
+  display_name?: string | null
+  display_realm?: string | null
   class_id: number
   level: number
   faction: Faction
@@ -82,6 +84,7 @@ export interface PvpTalentEntry {
   slot: number
   talent_id: number
   spell_id: number
+  name: string
 }
 
 export interface CharacterTalents {
@@ -180,6 +183,7 @@ export interface DungeonRunMember {
   character_id: number
   character_name: string
   character_realm: string
+  character_realm_display?: string | null
   character_region: Region
   spec_id: number | null
   spec_name: string
@@ -234,6 +238,8 @@ export interface CharacterResource {
   name: string
   realm: string
   region: Region
+  display_name?: string | null
+  display_realm?: string | null
   game_version: GameVersion
   gender: string
   faction: Faction

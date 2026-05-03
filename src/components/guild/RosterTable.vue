@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import RaceIcon from '@/components/wow/RaceIcon.vue'
 import { CLASSES, RACES } from '@/utils/wowConstants'
+import { displayName } from '@/utils/display'
 import type { Paginated } from '@/types/api'
 import type { GuildMember } from '@/types/guild'
 
@@ -79,7 +80,7 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
             <td colspan="5" class="text-center text-base-content/60">No members match your filter.</td>
           </tr>
           <tr v-for="m in filteredRows" :key="m.id">
-            <td class="font-medium">{{ m.name }}</td>
+            <td class="font-medium">{{ displayName(m.name, m.display_name) }}</td>
             <td>
               <span class="inline-flex items-center gap-2">
                 <ClassIcon :class-id="m.class_id" />

@@ -49,12 +49,13 @@
               <td class="px-2 py-1">
                 <RouterLink
                   :to="memberRoute(member)"
-                  class="text-ma-text hover:text-ma-gold transition-colors"
+                  class="font-semibold hover:underline transition-colors"
+                  :style="{ color: memberColor(member) }"
                 >
-                  {{ member.character_name }}
+                  {{ displayName(member.character_name) }}
                 </RouterLink>
               </td>
-              <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm) }}</td>
+              <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm, member.character_realm_display) }}</td>
               <td class="px-2 py-1 text-ma-muted/70">{{ member.spec_name }}</td>
               <td class="px-2 py-1 text-right tabular-nums">{{ member.equipped_item_level }}</td>
             </tr>
@@ -71,6 +72,8 @@ import { RouterLink } from 'vue-router'
 import AffixIcon from './AffixIcon.vue'
 import type { DungeonRun, DungeonRunMember } from '@/types/character'
 import type { KeystoneAffixGameData } from '@/types/gameData'
+import { CLASS_COLORS, SPEC_TO_CLASS } from '@/utils/wowConstants'
+import { displayName } from '@/utils/display'
 
 const props = defineProps<{
   runs: DungeonRun[]
@@ -89,7 +92,14 @@ function memberRoute(member: DungeonRunMember) {
   }
 }
 
-function formatRealm(slug: string): string {
+function memberColor(member: DungeonRunMember): string | undefined {
+  if (member.spec_id == null) return undefined
+  const classId = SPEC_TO_CLASS[member.spec_id]
+  return classId != null ? CLASS_COLORS[classId] : undefined
+}
+
+function formatRealm(slug: string, raw?: string | null): string {
+  if (raw && raw.length > 0) return raw
   return slug
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))

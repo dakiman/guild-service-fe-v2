@@ -6,6 +6,8 @@ export interface GuildSummary {
   name: string
   realm: string
   region: Region
+  display_name?: string | null
+  display_realm?: string | null
   faction: Faction
 }
 
@@ -22,6 +24,8 @@ export interface GuildMember {
   guild_id: number
   name: string
   realm: string
+  display_name?: string | null
+  display_realm?: string | null
   level: number
   class_id: number
   race_id: number

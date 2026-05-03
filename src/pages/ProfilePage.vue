@@ -61,8 +61,8 @@
             <ClassIcon :class-id="character.class_id" />
             <div class="flex-1 min-w-0">
               <div class="text-sm">
-                <span class="font-bold">{{ character.name }}</span>
-                <span> on {{ character.realm }} ({{ character.region.toUpperCase() }}) — L{{ character.level }}</span>
+                <span class="font-bold">{{ displayName(character.name, character.display_name) }}</span>
+                <span> on {{ displayRealm(character.realm, character.display_realm) }} ({{ character.region.toUpperCase() }}) — L{{ character.level }}</span>
               </div>
             </div>
             <router-link
@@ -106,6 +106,7 @@ import { toggleRecruitment } from '@/api/characters'
 import RegionSelect from '@/components/form/RegionSelect.vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import { env } from '@/utils/env'
+import { displayName, displayRealm } from '@/utils/display'
 import type { Region } from '@/types/api'
 import { getErrorMessage } from '@/utils/errors'
 

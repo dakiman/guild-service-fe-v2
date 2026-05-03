@@ -50,9 +50,9 @@
                   class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
                 >
                   <FactionBadge v-if="g.faction" :faction="g.faction" />
-                  <span class="font-bold">{{ displayName(g.name) }}</span>
+                  <span class="font-bold">{{ displayName(g.name, g.display_name) }}</span>
                   <span class="text-base-content/70 text-sm">
-                    on {{ displayRealm(g.realm) }} ({{ g.region.toUpperCase() }})
+                    on {{ displayRealm(g.realm, g.display_realm) }} ({{ g.region.toUpperCase() }})
                   </span>
                 </router-link>
               </li>
@@ -86,9 +86,9 @@
                   class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
                 >
                   <FactionBadge v-if="g.faction" :faction="g.faction" />
-                  <span class="font-bold">{{ displayName(g.name) }}</span>
+                  <span class="font-bold">{{ displayName(g.name, g.display_name) }}</span>
                   <span class="text-base-content/70 text-sm">
-                    on {{ displayRealm(g.realm) }} ({{ g.region.toUpperCase() }})
+                    on {{ displayRealm(g.realm, g.display_realm) }} ({{ g.region.toUpperCase() }})
                   </span>
                 </router-link>
               </li>
@@ -129,9 +129,9 @@
                   class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
                 >
                   <ClassIcon :class-id="c.class_id" />
-                  <span class="font-bold">{{ displayName(c.name) }}</span>
+                  <span class="font-bold">{{ displayName(c.name, c.display_name) }}</span>
                   <span class="text-base-content/70 text-sm">
-                    · {{ displayRealm(c.realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
+                    · {{ displayRealm(c.realm, c.display_realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
                   </span>
                 </router-link>
               </li>
@@ -165,9 +165,9 @@
                   class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
                 >
                   <ClassIcon :class-id="c.class_id" />
-                  <span class="font-bold">{{ displayName(c.name) }}</span>
+                  <span class="font-bold">{{ displayName(c.name, c.display_name) }}</span>
                   <span class="text-base-content/70 text-sm">
-                    · {{ displayRealm(c.realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
+                    · {{ displayRealm(c.realm, c.display_realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
                   </span>
                 </router-link>
               </li>

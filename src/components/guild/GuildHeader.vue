@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import FactionBadge from '@/components/wow/FactionBadge.vue'
+import { displayGuildName, displayRealm } from '@/utils/display'
 import type { GuildResource } from '@/types/guild'
 
 const props = defineProps<{ guild: GuildResource }>()
+
+const guildDisplay = computed(() => displayGuildName(props.guild.name, props.guild.display_name))
 
 // Blizzard convention: created_timestamp is a unix epoch in milliseconds.
 // If the value is unexpectedly small (seconds), it'll still render a valid date
@@ -20,7 +23,7 @@ const memberCount = computed(() => props.guild.member_count.toLocaleString())
 const achievementPoints = computed(() => props.guild.achievement_points.toLocaleString())
 
 const realmDisplay = computed(() =>
-  `${props.guild.realm} · ${props.guild.region.toUpperCase()}`,
+  `${displayRealm(props.guild.realm, props.guild.display_realm)} · ${props.guild.region.toUpperCase()}`,
 )
 </script>
 
@@ -29,7 +32,7 @@ const realmDisplay = computed(() =>
     <div class="card-body gap-4">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div class="flex flex-col gap-1">
-          <h1 class="text-3xl font-bold leading-tight">{{ guild.name }}</h1>
+          <h1 class="text-3xl font-bold leading-tight">{{ guildDisplay }}</h1>
           <p class="text-base-content/70">{{ realmDisplay }}</p>
         </div>
         <FactionBadge :faction="guild.faction" />

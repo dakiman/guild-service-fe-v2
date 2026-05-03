@@ -33,7 +33,6 @@
         </button>
       </div>
 
-      <CharacterStatPills :character="character" />
       <CharacterTabStrip :tabs="tabs" />
       <router-view />
     </template>
@@ -55,7 +54,6 @@ import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
 import { Sparkles, BookOpen, Crown, Gem, Skull, Star, Trophy } from 'lucide-vue-next'
 import CharacterHeader from '@/components/character/CharacterHeader.vue'
-import CharacterStatPills from '@/components/character/CharacterStatPills.vue'
 import CharacterTabStrip, {
   type TabDescriptor,
 } from '@/components/character/CharacterTabStrip.vue'
