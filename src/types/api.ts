@@ -52,3 +52,23 @@ export class ThrottledError extends Error {
     this.retryAfter = retryAfter
   }
 }
+
+export interface CharacterSuggestion {
+  region: Region
+  realm: string
+  display_realm: string | null
+  name: string
+  display_name: string | null
+  class_id: number
+  level: number
+  faction: string | null
+}
+
+export interface GuildSuggestion {
+  region: Region
+  realm: string
+  display_realm: string | null
+  name: string
+  display_name: string | null
+  faction: string
+}

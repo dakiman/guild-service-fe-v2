@@ -7,7 +7,7 @@ import type {
   GuildResource,
   GuildSummary,
 } from '@/types/guild'
-import type { Paginated, Region } from '@/types/api'
+import type { GuildSuggestion, Paginated, Region } from '@/types/api'
 
 export async function fetchGuild(
   region: Region,
@@ -53,4 +53,11 @@ export async function fetchPopularGuilds(): Promise<{
 export async function fetchDiscoverGuilds(): Promise<GuildDiscoverData> {
   const res = await api.get<GuildDiscoverData>('/guilds/discover')
   return res.data
+}
+
+export async function suggestGuilds(q: string): Promise<GuildSuggestion[]> {
+  const res = await api.get<{ suggestions: GuildSuggestion[] }>('/guilds/suggest', {
+    params: { q },
+  })
+  return res.data.suggestions
 }

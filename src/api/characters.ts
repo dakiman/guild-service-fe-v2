@@ -6,7 +6,7 @@ import type {
   CharacterResponse,
   CharacterSummary,
 } from '@/types/character'
-import type { Region } from '@/types/api'
+import type { CharacterSuggestion, Region } from '@/types/api'
 
 export async function fetchCharacter(
   region: Region,
@@ -49,6 +49,13 @@ export async function fetchPopularCharacters(): Promise<{
     most_popular: CharacterSummary[]
   }>('/characters/popular')
   return res.data
+}
+
+export async function suggestCharacters(q: string): Promise<CharacterSuggestion[]> {
+  const res = await api.get<{ suggestions: CharacterSuggestion[] }>('/characters/suggest', {
+    params: { q },
+  })
+  return res.data.suggestions
 }
 
 export async function toggleRecruitment(id: number): Promise<CharacterResource> {
