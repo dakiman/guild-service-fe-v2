@@ -92,11 +92,6 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
-        path: 'pve',
-        name: 'character-pve',
-        component: () => import('@/pages/character/CharacterPveTab.vue'),
-      },
-      {
         path: 'dungeons',
         name: 'character-dungeons',
         component: () => import('@/pages/character/CharacterDungeonsTab.vue'),
