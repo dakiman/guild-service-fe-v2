@@ -16,6 +16,13 @@
           class="w-4 h-4 shrink-0 text-ma-muted/70 transition-transform duration-150"
           :class="{ 'rotate-90': isOpen(run) }"
         />
+        <img
+          v-if="dungeonIcons[run.dungeon_id]"
+          :src="dungeonIcons[run.dungeon_id]"
+          :alt="run.dungeon_name"
+          class="w-4 h-4 rounded shrink-0"
+          loading="lazy"
+        />
         <span class="font-semibold flex-1 text-ma-text">{{ run.dungeon_name }}</span>
         <span class="ma-stat-pill !py-1 !px-2 text-sm font-bold">
           <span class="text-ma-gold">+{{ run.keystone_level }}</span>
@@ -118,12 +125,13 @@ import { ChevronRight } from 'lucide-vue-next'
 import AffixIcon from './AffixIcon.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
 import type { DungeonRun, DungeonRunMember } from '@/types/character'
-import type { KeystoneAffixGameData } from '@/types/gameData'
+import type { KeystoneAffixGameData, MythicKeystoneDungeonGameData } from '@/types/gameData'
 import { CLASS_COLORS, SPEC_TO_CLASS } from '@/utils/wowConstants'
 import { displayName } from '@/utils/display'
 
 const props = defineProps<{
   runs: DungeonRun[]
+  dungeons: MythicKeystoneDungeonGameData[]
   affixes: Record<number, KeystoneAffixGameData> | undefined | null
   currentSeason: number | null
 }>()
@@ -169,6 +177,14 @@ function formatRealm(slug: string, raw?: string | null): string {
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ')
 }
+
+const dungeonIcons = computed<Record<number, string>>(() => {
+  const map: Record<number, string> = {}
+  for (const d of props.dungeons) {
+    if (d.media_url) map[d.id] = d.media_url
+  }
+  return map
+})
 
 const seasonRuns = computed<DungeonRun[]>(() => {
   if (props.currentSeason == null) return props.runs
