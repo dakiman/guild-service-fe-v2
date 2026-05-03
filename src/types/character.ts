@@ -268,7 +268,7 @@ export interface CharacterResource {
   guild: GuildSummary | null
   dungeon_runs: DungeonRun[]
   mounts: Mount[] | null
-  pets: Pet[] | null
+  pets?: Pet[] | null
   toys: Toy[] | null
   last_searched_at: string | null
   mythics_synced_at: string | null
@@ -289,7 +289,11 @@ export interface MetaBlock {
     titles: FreshnessState
     reputations: FreshnessState
     collections: FreshnessState
-    achievements: FreshnessState
+    achievements?: FreshnessState
+  }
+  feature_flags: {
+    achievements: boolean
+    pets: boolean
   }
 }
 
