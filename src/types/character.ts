@@ -137,7 +137,7 @@ export interface CharacterTitle {
   game_data?: CharacterTitleGameData
 }
 
-export type ReputationStanding =
+export type ClassicStanding =
   | 'hated'
   | 'hostile'
   | 'unfriendly'
@@ -146,6 +146,8 @@ export type ReputationStanding =
   | 'honored'
   | 'revered'
   | 'exalted'
+
+export type ReputationStanding = string
 
 export interface Expansion {
   id: number

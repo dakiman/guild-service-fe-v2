@@ -6,9 +6,9 @@
       </span>
       <div class="flex items-baseline gap-2">
         <span class="text-4xl font-bold tabular-nums text-ma-gold">
-          {{ exaltedCount }} / {{ total }}
+          {{ heroValue }}
         </span>
-        <span class="text-sm text-ma-muted/60">exalted</span>
+        <span class="text-sm text-ma-muted/60">{{ heroLabel }}</span>
       </div>
     </div>
     <div v-if="standingBars.length" class="flex flex-col gap-1.5">
@@ -33,8 +33,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Reputation, ReputationStanding } from '@/types/character'
-import { STANDING_ORDER, standingColor, standingLabel } from '@/utils/reputationStanding'
+import type { Reputation } from '@/types/character'
+import { standingColor, standingLabel, standingSortKey, isRenownBased, highestRenown } from '@/utils/reputationStanding'
 
 const props = defineProps<{
   entries: Reputation[]
@@ -42,10 +42,24 @@ const props = defineProps<{
 }>()
 
 const total = computed(() => props.entries.length)
-const exaltedCount = computed(() => props.entries.filter((r) => r.standing === 'exalted').length)
+const standings = computed(() => props.entries.map((r) => r.standing))
+const renownBased = computed(() => isRenownBased(standings.value))
+
+const heroValue = computed(() => {
+  if (renownBased.value) {
+    return `Renown ${highestRenown(standings.value)}`
+  }
+  const exalted = props.entries.filter((r) => r.standing === 'exalted').length
+  return `${exalted} / ${total.value}`
+})
+
+const heroLabel = computed(() => {
+  if (renownBased.value) return 'highest'
+  return 'exalted'
+})
 
 interface StandingBar {
-  standing: ReputationStanding
+  standing: string
   label: string
   color: string
   count: number
@@ -53,13 +67,13 @@ interface StandingBar {
 }
 
 const standingBars = computed<StandingBar[]>(() => {
-  const counts = new Map<ReputationStanding, number>()
+  const counts = new Map<string, number>()
   for (const rep of props.entries) {
     counts.set(rep.standing, (counts.get(rep.standing) ?? 0) + 1)
   }
   const t = props.entries.length || 1
   return Array.from(counts.entries())
-    .sort((a, b) => STANDING_ORDER[b[0]] - STANDING_ORDER[a[0]])
+    .sort((a, b) => standingSortKey(b[0]) - standingSortKey(a[0]))
     .map(([standing, count]) => ({
       standing,
       label: standingLabel(standing),

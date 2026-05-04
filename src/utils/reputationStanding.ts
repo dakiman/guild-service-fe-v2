@@ -1,6 +1,6 @@
-import type { ReputationStanding } from '@/types/character'
+import type { ClassicStanding } from '@/types/character'
 
-export const STANDING_ORDER: Record<ReputationStanding, number> = {
+const CLASSIC_ORDER: Record<ClassicStanding, number> = {
   hated: 1,
   hostile: 2,
   unfriendly: 3,
@@ -11,7 +11,7 @@ export const STANDING_ORDER: Record<ReputationStanding, number> = {
   exalted: 8,
 }
 
-const COLOR_MAP: Record<ReputationStanding, string> = {
+const CLASSIC_COLORS: Record<ClassicStanding, string> = {
   hated: 'red-700',
   hostile: 'red-500',
   unfriendly: 'orange-500',
@@ -22,14 +22,70 @@ const COLOR_MAP: Record<ReputationStanding, string> = {
   exalted: 'amber-400',
 }
 
-export function standingColor(standing: ReputationStanding): string {
-  return COLOR_MAP[standing]
+function isClassic(standing: string): standing is ClassicStanding {
+  return standing in CLASSIC_ORDER
 }
 
-export function standingLabel(standing: ReputationStanding): string {
+export function parseRenown(standing: string): number | null {
+  const m = standing.match(/^renown (\d+)$/i)
+  return m ? parseInt(m[1], 10) : null
+}
+
+export function parseLevel(standing: string): number | null {
+  const m = standing.match(/^level (\d+)$/i)
+  return m ? parseInt(m[1], 10) : null
+}
+
+export function standingColor(standing: string): string {
+  if (isClassic(standing)) return CLASSIC_COLORS[standing]
+
+  const renown = parseRenown(standing)
+  if (renown !== null) {
+    if (renown >= 20) return 'amber-400'
+    if (renown >= 10) return 'violet-400'
+    if (renown >= 5) return 'blue-400'
+    return 'emerald-500'
+  }
+
+  const level = parseLevel(standing)
+  if (level !== null) {
+    if (level >= 40) return 'amber-400'
+    if (level >= 20) return 'violet-400'
+    return 'blue-400'
+  }
+
+  return 'gray-400'
+}
+
+export function standingLabel(standing: string): string {
   return standing.charAt(0).toUpperCase() + standing.slice(1)
 }
 
-export function compareByStanding(a: ReputationStanding, b: ReputationStanding): number {
-  return STANDING_ORDER[b] - STANDING_ORDER[a]
+export function standingSortKey(standing: string): number {
+  if (isClassic(standing)) return CLASSIC_ORDER[standing]
+
+  const renown = parseRenown(standing)
+  if (renown !== null) return 100 + renown
+
+  const level = parseLevel(standing)
+  if (level !== null) return 100 + level
+
+  return 50
+}
+
+export function compareByStanding(a: string, b: string): number {
+  return standingSortKey(b) - standingSortKey(a)
+}
+
+export function isRenownBased(standings: string[]): boolean {
+  return standings.some((s) => parseRenown(s) !== null || parseLevel(s) !== null)
+}
+
+export function highestRenown(standings: string[]): number {
+  let max = 0
+  for (const s of standings) {
+    const r = parseRenown(s) ?? parseLevel(s)
+    if (r !== null && r > max) max = r
+  }
+  return max
 }
