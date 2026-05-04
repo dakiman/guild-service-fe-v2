@@ -7,13 +7,13 @@ import FactionBadge from '@/components/wow/FactionBadge.vue'
 import { CLASS_COLORS, STALE_DATA_DAYS } from '@/utils/wowConstants'
 import { displayName } from '@/utils/display'
 import { useTableSort } from '@/composables/useTableSort'
-import type { Paginated } from '@/types/api'
+import type { Paginated, Region } from '@/types/api'
 import type { GuildMember } from '@/types/guild'
 
 const props = defineProps<{
   members: Paginated<GuildMember>
   page: number
-  filterText?: string
+  region: Region
 }>()
 
 const emit = defineEmits<{ pageChange: [page: number] }>()
@@ -21,16 +21,10 @@ const emit = defineEmits<{ pageChange: [page: number] }>()
 const currentPage = computed(() => props.members.current_page)
 const lastPage = computed(() => props.members.last_page)
 
-const filteredRows = computed(() => {
-  const rows = props.members.data
-  const q = (props.filterText ?? '').trim().toLowerCase()
-  if (!q) return rows
-  return rows.filter((m) => m.name.toLowerCase().includes(q))
-})
-
 // Flatten nested mythic_plus_rating onto a top-level sort key.
+// Filter is applied server-side; rows arriving here are already filtered.
 const sortableRows = computed(() =>
-  filteredRows.value.map((m) => ({
+  props.members.data.map((m) => ({
     ...m,
     mythic_plus_score: m.mythic_plus_rating?.rating ?? null,
   })),
@@ -99,7 +93,7 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
             >
               Name<span class="text-base-content/50">{{ sortGlyph('name') }}</span>
             </th>
-            <th class="w-8 text-center">Cls</th>
+            <th class="w-8 text-center">Class</th>
             <th class="w-8 text-center hidden sm:table-cell">Spec</th>
             <th class="w-8 text-center">Race</th>
             <th class="w-8 text-center hidden sm:table-cell">Side</th>
@@ -154,8 +148,17 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
             <td colspan="9" class="text-center text-base-content/60">No members match your filter.</td>
           </tr>
           <tr v-for="m in sortedRows" :key="m.id">
-            <td class="font-medium" :style="{ color: classColor(m.class_id) }">
-              {{ displayName(m.name, m.display_name) }}
+            <td class="font-medium">
+              <router-link
+                :to="{
+                  name: 'character-summary',
+                  params: { region, realm: m.realm, name: m.name },
+                }"
+                :style="{ color: classColor(m.class_id) }"
+                class="hover:underline focus-visible:underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary rounded-sm"
+              >
+                {{ displayName(m.name, m.display_name) }}
+              </router-link>
             </td>
             <td class="text-center">
               <ClassIcon :class-id="m.class_id" :size="18" />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
+import { refDebounced } from '@vueuse/core'
 import GuildHeader from '@/components/guild/GuildHeader.vue'
 import RosterTable from '@/components/guild/RosterTable.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
@@ -18,14 +19,23 @@ const name = toRef(props, 'name')
 const page = ref(1)
 const perPage = 50
 const filterText = ref('')
+const debouncedFilter = refDebounced(filterText, 250)
 
-const lookup = useGuildLookup(region, realm, name, page, perPage)
+// Reset to page 1 when the filter changes so a search starting on page 7
+// doesn't return an empty page if results don't span that far.
+watch(debouncedFilter, () => {
+  page.value = 1
+})
+
+const lookup = useGuildLookup(region, realm, name, page, perPage, debouncedFilter)
 
 const guild = computed(() => lookup.data.value?.guild ?? null)
 const members = computed(() => lookup.data.value?.members ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
 
-useStaleAutoRefresh(isStale, () => ['guild', region.value, realm.value, name.value, page.value, perPage])
+useStaleAutoRefresh(isStale, () => [
+  'guild', region.value, realm.value, name.value, page.value, perPage, debouncedFilter.value,
+])
 
 const showError = computed(
   () => !!lookup.error.value && !lookup.isFetching.value,
@@ -61,7 +71,7 @@ const showError = computed(
       <RosterTable
         :members="members"
         :page="page"
-        :filter-text="filterText"
+        :region="region"
         @page-change="page = $event"
       />
     </template>
