@@ -29,10 +29,9 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import { exchangeOAuthCode } from '@/api/blizzard'
+import { takeOAuthPending } from '@/utils/oauthPending'
 import { useAuthStore } from '@/stores/auth'
-import { env } from '@/utils/env'
 import PollingState from '@/components/feedback/PollingState.vue'
-import type { Region } from '@/types/api'
 import { getErrorMessage } from '@/utils/errors'
 
 const route = useRoute()
@@ -42,25 +41,31 @@ const auth = useAuthStore()
 const status = ref<'processing' | 'success' | 'error'>('processing')
 const message = ref('')
 
-const VALID_REGIONS: Region[] = ['eu', 'us', 'kr', 'tw']
-
 onMounted(async () => {
-  const code = route.query.code as string | undefined
-  const stateParam = route.query.state as string | undefined
-  const region = VALID_REGIONS.includes(stateParam as Region) ? (stateParam as Region) : undefined
+  const code = typeof route.query.code === 'string' ? route.query.code : undefined
+  const stateParam = typeof route.query.state === 'string' ? route.query.state : undefined
+  const pending = takeOAuthPending()
 
-  if (!code || !region) {
+  if (!code || !stateParam || !pending) {
     status.value = 'error'
-    message.value = 'Missing code or region in callback URL.'
+    message.value =
+      'Battle.net session is missing or expired. Start the sync again from your profile.'
+    return
+  }
+
+  if (pending.state !== stateParam) {
+    status.value = 'error'
+    message.value =
+      'Battle.net session does not match. Start the sync again from your profile.'
     return
   }
 
   try {
-    await exchangeOAuthCode(region, code, env.blizzardRedirectUri)
+    await exchangeOAuthCode(pending.region, code, pending.redirectUri, pending.state)
     toast.success('Battle.net sync started — your characters will appear shortly.')
     status.value = 'success'
-    // BE returns 202 + Retry-After. Schedule a delayed fetchMe so the profile reflects
-    // the synced characters once the background job finishes.
+    // BE returns 202 + Retry-After. Schedule a delayed fetchMe so the profile
+    // reflects the synced characters once the background job finishes.
     setTimeout(() => auth.fetchMe(), 8000)
     router.push({ name: 'profile' })
   } catch (err) {

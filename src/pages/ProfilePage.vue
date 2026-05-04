@@ -39,7 +39,13 @@
             </div>
             <RegionSelect v-model="oauthRegion" />
           </label>
-          <button type="button" class="btn btn-primary" @click="startOAuth">
+          <button
+            type="button"
+            class="btn btn-primary"
+            :disabled="oauthBusy"
+            @click="startOAuth"
+          >
+            <span v-if="oauthBusy" class="loading loading-spinner loading-xs" />
             Sync from Battle.net
           </button>
         </div>
@@ -103,6 +109,8 @@ import { computed, reactive, ref } from 'vue'
 import { toast } from 'vue-sonner'
 import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
+import { mintOAuthState } from '@/api/blizzard'
+import { setOAuthPending } from '@/utils/oauthPending'
 import RegionSelect from '@/components/form/RegionSelect.vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import { env } from '@/utils/env'
@@ -118,16 +126,31 @@ const oauthRegion = ref<Region>(((user.value?.bnet_region as Region) ?? 'eu'))
 
 const recruitmentBusy = reactive<Record<number, boolean>>({})
 
-function startOAuth() {
-  // Pass the chosen region via the OAuth `state` param so the callback knows which
-  // /{region}/blizzard-oauth endpoint to POST to without needing a separate query param.
-  const url = new URL(`https://${oauthRegion.value}.battle.net/oauth/authorize`)
-  url.searchParams.set('response_type', 'code')
-  url.searchParams.set('client_id', env.blizzardClientId)
-  url.searchParams.set('redirect_uri', env.blizzardRedirectUri)
-  url.searchParams.set('scope', 'openid wow.profile')
-  url.searchParams.set('state', oauthRegion.value)
-  window.location.href = url.toString()
+const oauthBusy = ref(false)
+
+async function startOAuth() {
+  if (oauthBusy.value) return
+  oauthBusy.value = true
+  try {
+    const { state } = await mintOAuthState(oauthRegion.value, env.blizzardRedirectUri)
+    setOAuthPending({
+      region: oauthRegion.value,
+      state,
+      redirectUri: env.blizzardRedirectUri,
+    })
+    const url = new URL(`https://${oauthRegion.value}.battle.net/oauth/authorize`)
+    url.searchParams.set('response_type', 'code')
+    url.searchParams.set('client_id', env.blizzardClientId)
+    url.searchParams.set('redirect_uri', env.blizzardRedirectUri)
+    url.searchParams.set('scope', 'openid wow.profile')
+    url.searchParams.set('state', state)
+    window.location.href = url.toString()
+  } catch (err) {
+    oauthBusy.value = false
+    toast.error(getErrorMessage(err, 'Failed to start Battle.net sync.'))
+  }
+  // No `finally` — on success we redirect away, so resetting oauthBusy
+  // would be a no-op. Error branch resets explicitly above.
 }
 
 async function onToggleRecruitment(id: number) {
