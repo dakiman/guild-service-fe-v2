@@ -272,11 +272,12 @@ public function show(string $region, string $realm, string $guild, GuildService 
     $perPage = (int) $request->query('per_page', '50');
     $members = $result->members()
         ->with(['character:id,equipped_item_level,mythic_plus_rating,mythic_plus_rating_color,active_specialization_id,updated_at'])
-        ->paginate($perPage);
+        ->paginate($perPage)
+        ->through(fn ($member) => (new GuildMemberResource($member))->toArray($request));
 
     $response = response()->json([
         'guild' => new GuildResource($result),
-        'members' => GuildMemberResource::collection($members)->response()->getData(true),
+        'members' => $members,
     ]);
 
     if ($result->isStale()) {
