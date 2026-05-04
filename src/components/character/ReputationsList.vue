@@ -1,14 +1,31 @@
 <template>
   <div class="flex flex-col gap-4">
-    <template v-if="currentGroup">
-      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
+    <details v-if="currentGroup" class="group" open>
+      <summary class="flex items-center justify-between cursor-pointer select-none rounded-lg px-4 py-3 ma-card-inner hover:brightness-110 transition">
+        <span class="text-sm font-medium">{{ currentGroup.label }}</span>
+        <div class="flex items-center gap-3">
+          <span class="text-[11px] text-ma-muted/60 tabular-nums">
+            {{ currentGroup.entries.length }} factions
+          </span>
+          <svg
+            class="size-4 text-ma-muted/50 transition-transform group-open:rotate-90"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </div>
+      </summary>
+      <div class="mt-2 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
         <ReputationRow
           v-for="rep in currentGroupSorted"
           :key="rep.faction_id"
           :rep="rep"
         />
       </div>
-    </template>
+    </details>
 
     <ReputationExpansionGroup
       v-for="group in olderGroups"

@@ -66,7 +66,6 @@
               v-for="affix in run.affixes"
               :key="affix.id"
               :affix-id="affix.id"
-              :affixes="affixes"
             />
           </div>
 
@@ -125,14 +124,14 @@ import { ChevronRight } from 'lucide-vue-next'
 import AffixIcon from './AffixIcon.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
 import type { DungeonRun, DungeonRunMember } from '@/types/character'
-import type { KeystoneAffixGameData, MythicKeystoneDungeonGameData } from '@/types/gameData'
+import type { MythicKeystoneDungeonGameData } from '@/types/gameData'
 import { CLASS_COLORS, SPEC_TO_CLASS } from '@/utils/wowConstants'
 import { displayName } from '@/utils/display'
+import { useWowheadRefresh } from '@/composables/useWowhead'
 
 const props = defineProps<{
   runs: DungeonRun[]
   dungeons: MythicKeystoneDungeonGameData[]
-  affixes: Record<number, KeystoneAffixGameData> | undefined | null
   currentSeason: number | null
 }>()
 
@@ -194,6 +193,8 @@ const seasonRuns = computed<DungeonRun[]>(() => {
 const sortedRuns = computed<DungeonRun[]>(() =>
   [...seasonRuns.value].sort((a, b) => b.completed_timestamp - a.completed_timestamp),
 )
+
+useWowheadRefresh(sortedRuns)
 
 function formatDuration(ms: number): string {
   const totalSeconds = Math.floor(ms / 1000)

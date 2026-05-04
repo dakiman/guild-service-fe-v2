@@ -34,14 +34,12 @@
         v-if="activeView === 'best'"
         :runs="character.dungeon_runs"
         :dungeons="dungeons"
-        :affixes="affixes"
         :current-season="currentSeason"
       />
       <MythicPlusAllRuns
         v-else
         :runs="character.dungeon_runs"
         :dungeons="dungeons"
-        :affixes="affixes"
         :current-season="currentSeason"
       />
     </template>
@@ -75,6 +73,5 @@ const activeView = ref<ViewDescriptor['key']>('best')
 const { data, isLoading, isError, refetch } = useMythicDungeons()
 
 const dungeons = computed(() => data.value?.dungeons ?? [])
-const affixes = computed(() => data.value?.affixes ?? {})
 const currentSeason = computed<number | null>(() => data.value?.season?.id ?? null)
 </script>

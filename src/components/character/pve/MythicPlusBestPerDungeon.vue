@@ -46,7 +46,6 @@
                 v-for="affix in row.bestRun.affixes"
                 :key="affix.id"
                 :affix-id="affix.id"
-                :affixes="affixes"
               />
             </div>
             <span v-else class="text-ma-muted/40">—</span>
@@ -61,12 +60,12 @@
 import { computed } from 'vue'
 import AffixIcon from './AffixIcon.vue'
 import type { DungeonRun } from '@/types/character'
-import type { MythicKeystoneDungeonGameData, KeystoneAffixGameData } from '@/types/gameData'
+import type { MythicKeystoneDungeonGameData } from '@/types/gameData'
+import { useWowheadRefresh } from '@/composables/useWowhead'
 
 const props = defineProps<{
   runs: DungeonRun[]
   dungeons: MythicKeystoneDungeonGameData[]
-  affixes: Record<number, KeystoneAffixGameData> | undefined | null
   currentSeason: number | null
 }>()
 
@@ -79,6 +78,8 @@ const seasonRuns = computed<DungeonRun[]>(() => {
   if (props.currentSeason == null) return props.runs
   return props.runs.filter((run) => run.season === props.currentSeason)
 })
+
+useWowheadRefresh(seasonRuns)
 
 const rows = computed<BestRow[]>(() => {
   const sorted = [...props.dungeons].sort((a, b) => a.name.localeCompare(b.name))

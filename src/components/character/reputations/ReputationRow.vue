@@ -33,15 +33,15 @@
       {{ metricLabel }}
     </span>
     <div class="w-full">
-      <div class="w-full rounded-full overflow-hidden h-1" style="background: rgba(var(--ma-border), 0.15)">
+      <div class="w-full rounded-full overflow-hidden h-1 ring-1 ring-ma-border/20" style="background: rgba(var(--ma-border), 0.15)">
         <div
           class="h-full rounded-full transition-all"
           :class="`bg-${color}`"
           :style="{ width: barWidth }"
         />
       </div>
-      <span class="text-[9px] tabular-nums text-ma-muted/50 mt-0.5 block">
-        {{ rep.value.toLocaleString() }} / {{ rep.max.toLocaleString() }}
+      <span v-if="currentProgress.cap > 0" class="text-[9px] tabular-nums text-ma-muted/50 mt-0.5 block">
+        {{ currentProgress.current.toLocaleString() }} / {{ currentProgress.cap.toLocaleString() }}
       </span>
     </div>
   </div>
@@ -90,9 +90,17 @@ const metricLabel = computed(() => {
   return standingLabel(props.rep.standing)
 })
 
+const currentProgress = computed(() => {
+  const { value, max } = props.rep
+  if (max <= 0) return { current: value, cap: 0 }
+  if (value <= max) return { current: value, cap: max }
+  return { current: value % max, cap: max }
+})
+
 const barWidth = computed(() => {
-  if (props.rep.max <= 0) return '100%'
-  const pct = Math.min((props.rep.value / props.rep.max) * 100, 100)
+  const { current, cap } = currentProgress.value
+  if (cap <= 0) return '100%'
+  const pct = Math.min((current / cap) * 100, 100)
   return `${pct}%`
 })
 </script>
