@@ -200,8 +200,11 @@ class GuildMemberResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $character = $this->whenLoaded('character');
-        $hasCharacter = $character && $character->exists;
+        // Use relationLoaded() (not whenLoaded()) for conditional logic — whenLoaded()
+        // returns a MissingValue object with no `exists` property. This mirrors the
+        // Plan-5 convention documented in backend/CLAUDE.md.
+        $hasCharacter = $this->relationLoaded('character') && $this->character !== null;
+        $character = $hasCharacter ? $this->character : null;
 
         return [
             'id' => $this->id,
