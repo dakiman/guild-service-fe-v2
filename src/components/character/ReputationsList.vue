@@ -1,10 +1,6 @@
 <template>
   <div class="flex flex-col gap-4">
     <template v-if="currentGroup">
-      <ReputationsHeadline
-        :entries="currentGroup.entries"
-        :expansion-name="currentGroup.label"
-      />
       <div class="flex flex-col gap-2">
         <ReputationRow
           v-for="rep in currentGroupSorted"
@@ -27,9 +23,10 @@
 import { computed } from 'vue'
 import type { Reputation } from '@/types/character'
 import { compareByStanding } from '@/utils/reputationStanding'
-import ReputationsHeadline from './reputations/ReputationsHeadline.vue'
 import ReputationRow from './reputations/ReputationRow.vue'
 import ReputationExpansionGroup from './reputations/ReputationExpansionGroup.vue'
+
+const PINNED_FACTION_IDS = [2744]
 
 const props = defineProps<{
   entries: Reputation[] | null
@@ -74,6 +71,9 @@ const currentGroup = computed<ExpansionGroup | null>(() => {
 const currentGroupSorted = computed<Reputation[]>(() => {
   if (!currentGroup.value) return []
   return [...currentGroup.value.entries].sort((a, b) => {
+    const pinnedA = PINNED_FACTION_IDS.includes(a.faction_id) ? 0 : 1
+    const pinnedB = PINNED_FACTION_IDS.includes(b.faction_id) ? 0 : 1
+    if (pinnedA !== pinnedB) return pinnedA - pinnedB
     const s = compareByStanding(a.standing, b.standing)
     if (s !== 0) return s
     return a.faction_name.localeCompare(b.faction_name)
