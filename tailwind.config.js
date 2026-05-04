@@ -4,8 +4,9 @@ import daisyui from 'daisyui'
 export default {
   content: ['./index.html', './src/**/*.{vue,ts,tsx}'],
   safelist: [
-    { pattern: /^bg-(red-(500|700)|orange-500|gray-400|emerald-500|blue-400|violet-400|amber-400)$/ },
+    { pattern: /^bg-(red-(500|700)|orange-500|gray-400|emerald-500|blue-400|violet-400|amber-400)(\/\d+)?$/ },
     { pattern: /^text-(red-(500|700)|orange-500|gray-400|emerald-500|blue-400|violet-400|amber-400)$/ },
+    { pattern: /^ring-(red-(500|700)|orange-500|gray-400|emerald-500|blue-400|violet-400|amber-400)$/ },
   ],
   theme: {
     extend: {

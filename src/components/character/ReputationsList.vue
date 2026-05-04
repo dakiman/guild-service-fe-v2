@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <template v-if="currentGroup">
-      <div class="flex flex-col gap-2">
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
         <ReputationRow
           v-for="rep in currentGroupSorted"
           :key="rep.faction_id"
