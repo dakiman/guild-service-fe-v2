@@ -91,8 +91,11 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
             <th
               role="columnheader"
               :aria-sort="ariaSort('name')"
-              class="cursor-pointer select-none"
+              tabindex="0"
+              class="cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
               @click="toggle('name')"
+              @keydown.enter.prevent="toggle('name')"
+              @keydown.space.prevent="toggle('name')"
             >
               Name<span class="text-base-content/50">{{ sortGlyph('name') }}</span>
             </th>
@@ -103,32 +106,44 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
             <th
               role="columnheader"
               :aria-sort="ariaSort('level')"
-              class="text-right cursor-pointer select-none w-12"
+              tabindex="0"
+              class="text-right cursor-pointer select-none w-12 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
               @click="toggle('level')"
+              @keydown.enter.prevent="toggle('level')"
+              @keydown.space.prevent="toggle('level')"
             >
               Lvl<span class="text-base-content/50">{{ sortGlyph('level') }}</span>
             </th>
             <th
               role="columnheader"
               :aria-sort="ariaSort('equipped_item_level')"
-              class="text-right cursor-pointer select-none w-14 hidden sm:table-cell"
+              tabindex="0"
+              class="text-right cursor-pointer select-none w-14 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
               @click="toggle('equipped_item_level')"
+              @keydown.enter.prevent="toggle('equipped_item_level')"
+              @keydown.space.prevent="toggle('equipped_item_level')"
             >
               iLvl<span class="text-base-content/50">{{ sortGlyph('equipped_item_level') }}</span>
             </th>
             <th
               role="columnheader"
               :aria-sort="ariaSort('mythic_plus_score')"
-              class="text-right cursor-pointer select-none w-16 hidden sm:table-cell"
+              tabindex="0"
+              class="text-right cursor-pointer select-none w-16 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
               @click="toggle('mythic_plus_score')"
+              @keydown.enter.prevent="toggle('mythic_plus_score')"
+              @keydown.space.prevent="toggle('mythic_plus_score')"
             >
               M+<span class="text-base-content/50">{{ sortGlyph('mythic_plus_score') }}</span>
             </th>
             <th
               role="columnheader"
               :aria-sort="ariaSort('rank')"
-              class="text-right cursor-pointer select-none w-12"
+              tabindex="0"
+              class="text-right cursor-pointer select-none w-12 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
               @click="toggle('rank')"
+              @keydown.enter.prevent="toggle('rank')"
+              @keydown.space.prevent="toggle('rank')"
             >
               Rank<span class="text-base-content/50">{{ sortGlyph('rank') }}</span>
             </th>
@@ -162,7 +177,7 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
             <td class="text-right tabular-nums">{{ m.level }}</td>
             <td
               class="text-right tabular-nums hidden sm:table-cell"
-              :class="{ 'italic text-base-content/50': isStaleSync(m.synced_at) }"
+              :class="{ 'italic opacity-70': isStaleSync(m.synced_at) }"
             >
               <template v-if="m.equipped_item_level != null">{{ m.equipped_item_level }}</template>
               <span v-else class="text-base-content/40">—</span>
