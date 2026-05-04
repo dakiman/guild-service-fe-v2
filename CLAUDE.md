@@ -75,6 +75,18 @@ Affixes ride along on the dungeons response keyed by id (`Record<number, Keyston
 
 `index.html` loads `https://wow.zamimg.com/widgets/power.js` (correct CDN is `zamimg.com`, not `zamzig.com` — a stale build once had this wrong and silently broke all tooltips). Components render anchors with `:data-wowhead="item=123"` / `spell=123`. **`src/utils/wowhead.ts` (`buildWowheadHref`) is the single source of truth for the URL fragment** — `WowheadLink.vue` and any bypassing component (currently only `EquipmentSlot.vue`) call this helper. `EquipmentSlot.vue` emits raw `<a data-wowhead>` instead of `<WowheadLink>` because it needs a sized icon-anchor (slot icon) plus a separate text-anchor with `q{quality_id}` color class — power.js injects the icon into the empty anchor at the chosen size. After tooltip-bearing content re-renders (e.g. on query resolve), call `useWowheadRefresh(deps)` from `src/composables/useWowhead.ts` — it waits for `window.$WowheadPower` then invokes `refreshLinks()` on dep changes.
 
+### Icon sources
+
+**Runtime CDN — race icons.** `https://wow.zamimg.com/images/wow/icons/{size}/race_{slug}_{gender}.jpg` where `{size}` ∈ `large` (56px) / `medium` (36px) / `small` (18px), `{slug}` is lowercase no-separators (`bloodelf`, `nightelf`, `kultiran`, `lightforgeddraenei`, `magharorc`, `darkirondwarf`, `earthendwarf`, etc.), and `{gender}` ∈ `male` / `female`. The `race_id → slug` map lives in `src/utils/wowConstants.ts` as `RACE_WOWHEAD_SLUGS`; default gender per race is in `RACE_DEFAULT_GENDERS`. `RaceIcon.vue` composes the URL and falls back to a styled initial-badge on (a) unknown slug or (b) image load error. Notable slug quirks: Forsaken/Undead (race_id 5) → `scourge`; Earthen (84/85) → `earthendwarf`. The `wow.zamimg.com` domain is already trusted (Wowhead tooltip widget loads `power.js` from it).
+
+**Manual reference catalogs (do not hotlink).** Fandom blocks programmatic fetches and may block hotlinking. Use these only as human-browsable references during development:
+
+- https://wowpedia.fandom.com/wiki/Wowpedia:WoW_Icons — top-level index of every icon category
+- https://wowpedia.fandom.com/wiki/Wowpedia:List_of_humanoid_icons — race / humanoid icon catalog with PascalCase slugs (`NightElf`, `BloodElf`, `KulTiran`, `MagharOrc`, etc.)
+- https://wowpedia.fandom.com/wiki/Wowpedia:List_of_small_icons — `ObjectIconsAtlas.png` reference (faction sigils, currency icons, miscellaneous small UI icons). Extract sprites manually if a new icon is needed.
+
+**Local sprite sheets — class & spec icons.** Shipped in `src/assets/wow/` (`classes-sprite.png` 256×256, `specs-sprite.png` 448×384, both 64px tiles) so they're stable across CDN changes. Coordinate maps and helpers in `src/utils/wowIcons.ts`. `ClassIcon.vue` and `SpecIcon.vue` consume these.
+
 ### Component layout
 
 - `src/pages/*` — route targets (one file per route).

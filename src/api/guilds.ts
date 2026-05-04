@@ -15,11 +15,14 @@ export async function fetchGuild(
   name: string,
   perPage = 50,
   page = 1,
+  filter = '',
 ): Promise<GuildLookupResult> {
   const res = await api.get<{ guild: GuildResource; members: Paginated<GuildMember> }>(
     `/guilds/${region}/${realm}/${name}`,
     {
-      params: { per_page: perPage, page },
+      params: filter
+        ? { per_page: perPage, page, filter }
+        : { per_page: perPage, page },
       validateStatus: (s) => s === 200 || s === 202 || s === 404,
     },
   )

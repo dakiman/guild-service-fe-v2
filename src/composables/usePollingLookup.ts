@@ -35,10 +35,12 @@ export function useGuildLookup(
   name: Ref<string>,
   page: Ref<number>,
   perPage = 50,
+  filter?: Ref<string>,
 ) {
   return useQuery({
-    queryKey: ['guild', region, realm, name, page, perPage] as const,
-    queryFn: () => fetchGuild(region.value, realm.value, name.value, perPage, page.value),
+    queryKey: ['guild', region, realm, name, page, perPage, filter ?? ''] as const,
+    queryFn: () =>
+      fetchGuild(region.value, realm.value, name.value, perPage, page.value, filter?.value ?? ''),
     enabled: () => !!region.value && !!realm.value && !!name.value,
     retry: (failureCount, error) => {
       if (error instanceof SyncPendingError) return failureCount < MAX_POLLING_ATTEMPTS

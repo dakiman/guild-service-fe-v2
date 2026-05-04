@@ -75,11 +75,79 @@ export const RACES: Record<number, string> = {
   24: 'Pandaren',
   25: 'Pandaren',
   26: 'Pandaren',
-  27: 'Nighborne',
+  27: 'Nightborne',
   28: 'Highmountain Tauren',
   29: 'Void Elf',
   30: 'Lightforged Draenei',
+  31: 'Zandalari Troll',
+  32: 'Kul Tiran',
+  34: 'Dark Iron Dwarf',
+  35: 'Vulpera',
+  36: "Mag'har Orc",
+  37: 'Mechagnome',
+  52: 'Dracthyr',
+  70: 'Dracthyr',
+  84: 'Earthen',
+  85: 'Earthen',
 }
+
+// Wowhead zamimg URL slug per race_id (lowercase, no separators).
+// Source: https://wow.zamimg.com/images/wow/icons/{size}/race_{slug}_{gender}.jpg
+export const RACE_WOWHEAD_SLUGS: Record<number, string> = {
+  1: 'human',
+  2: 'orc',
+  3: 'dwarf',
+  4: 'nightelf',
+  5: 'scourge',           // Wowhead spells Forsaken as 'scourge'
+  6: 'tauren',
+  7: 'gnome',
+  8: 'troll',
+  9: 'goblin',
+  10: 'bloodelf',
+  11: 'draenei',
+  22: 'worgen',
+  24: 'pandaren',
+  25: 'pandaren',
+  26: 'pandaren',
+  27: 'nightborne',
+  28: 'highmountaintauren',
+  29: 'voidelf',
+  30: 'lightforgeddraenei',
+  31: 'zandalaritroll',
+  32: 'kultiran',
+  34: 'darkirondwarf',
+  35: 'vulpera',
+  36: 'magharorc',
+  37: 'mechagnome',
+  52: 'dracthyr',
+  70: 'dracthyr',
+  84: 'earthendwarf',
+  85: 'earthendwarf',
+}
+
+export const RACE_DEFAULT_GENDERS: Record<number, 'male' | 'female'> = {
+  1: 'male', 2: 'male', 3: 'male', 4: 'female', 5: 'male', 6: 'male', 7: 'male',
+  8: 'male', 9: 'male', 10: 'female', 11: 'male', 22: 'male', 24: 'male',
+  25: 'male', 26: 'male', 27: 'female', 28: 'male', 29: 'male', 30: 'male',
+  31: 'male', 32: 'male', 34: 'male', 35: 'male', 36: 'male', 37: 'male',
+  52: 'male', 70: 'male', 84: 'male', 85: 'male',
+}
+
+// Mirrors backend RaceFaction map. Server is the authority; this map is only
+// used for client-only contexts (e.g. test fixtures) — at runtime, faction
+// comes from the API response.
+export const RACE_FACTIONS: Record<number, 'Alliance' | 'Horde' | null> = {
+  1: 'Alliance', 3: 'Alliance', 4: 'Alliance', 7: 'Alliance', 11: 'Alliance',
+  22: 'Alliance', 25: 'Alliance', 29: 'Alliance', 30: 'Alliance', 32: 'Alliance',
+  34: 'Alliance', 37: 'Alliance', 52: 'Alliance', 85: 'Alliance',
+  2: 'Horde', 5: 'Horde', 6: 'Horde', 8: 'Horde', 9: 'Horde', 10: 'Horde',
+  26: 'Horde', 27: 'Horde', 28: 'Horde', 31: 'Horde', 35: 'Horde', 36: 'Horde',
+  70: 'Horde', 84: 'Horde',
+  24: null, // Neutral Pandaren
+}
+
+// Days after which character-derived data (iLvl, M+) is rendered as stale.
+export const STALE_DATA_DAYS = 7
 
 export const FACTION_COLORS: Record<'Alliance' | 'Horde', string> = {
   Alliance: '#0078FF',

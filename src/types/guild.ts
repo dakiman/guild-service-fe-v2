@@ -45,6 +45,11 @@ export interface GuildMember {
   class_id: number
   race_id: number
   rank: number
+  faction: 'Alliance' | 'Horde' | null
+  equipped_item_level: number | null
+  mythic_plus_rating: { rating: number; color: string | null } | null
+  active_specialization_id: number | null
+  synced_at: string | null
 }
 
 export interface GuildLookupResult {
