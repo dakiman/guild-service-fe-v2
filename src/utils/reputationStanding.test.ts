@@ -67,8 +67,8 @@ describe('reputationStanding', () => {
       expect(isRenownBased(['exalted', 'honored'])).toBe(false)
     })
 
-    it('finds highest renown', () => {
-      expect(highestRenown(['renown 16', 'renown 3', 'renown 11'])).toBe(16)
+    it('finds highest renown (ignores level standings)', () => {
+      expect(highestRenown(['renown 16', 'renown 3', 'level 30'])).toBe(16)
     })
   })
 })

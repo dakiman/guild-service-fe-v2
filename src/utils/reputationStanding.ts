@@ -84,7 +84,7 @@ export function isRenownBased(standings: string[]): boolean {
 export function highestRenown(standings: string[]): number {
   let max = 0
   for (const s of standings) {
-    const r = parseRenown(s) ?? parseLevel(s)
+    const r = parseRenown(s)
     if (r !== null && r > max) max = r
   }
   return max
