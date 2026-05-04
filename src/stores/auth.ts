@@ -8,6 +8,11 @@ export const useAuthStore = defineStore('auth', () => {
   const token = useStorage<string | null>('auth.token', null)
   const user = ref<User | null>(null)
 
+  let _resolveReady: () => void
+  const ready = new Promise<void>((r) => {
+    _resolveReady = r
+  })
+
   const isAuthenticated = computed(() => !!token.value && !!user.value)
 
   async function login(email: string, password: string) {
@@ -23,11 +28,16 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchMe() {
-    if (!token.value) return
+    if (!token.value) {
+      _resolveReady()
+      return
+    }
     try {
       user.value = await AuthApi.fetchMe()
     } catch {
       clearSession()
+    } finally {
+      _resolveReady()
     }
   }
 
@@ -46,5 +56,5 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
-  return { token, user, isAuthenticated, login, register, fetchMe, logout, clearSession }
+  return { token, user, isAuthenticated, ready, login, register, fetchMe, logout, clearSession }
 })

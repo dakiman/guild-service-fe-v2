@@ -8,6 +8,7 @@ export interface User {
   bnet_tag: string | null
   bnet_region: string | null
   bnet_synced_at: string | null
+  bnet_sync_status: 'syncing' | null
   characters: CharacterSummary[]
 }
 
