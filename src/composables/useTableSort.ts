@@ -2,7 +2,7 @@ import { computed, ref, type Ref } from 'vue'
 
 export type SortDir = 'asc' | 'desc'
 
-export function useTableSort<T extends Record<string, unknown>>(
+export function useTableSort<T extends object>(
   source: Ref<T[]>,
   initialKey: keyof T | null,
 ) {
