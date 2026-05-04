@@ -57,6 +57,37 @@
     border-radius: 8px;
   }
 
+  /* Hero banner — character inset render as blurred backdrop. */
+  .ma-hero-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid rgba(var(--ma-border) / 0.3);
+    box-shadow:
+      0 4px 30px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(var(--ma-violet) / 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  .ma-hero-banner__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 20%;
+    filter: blur(3px) brightness(0.4);
+    transform: scale(1.15);
+  }
+  .ma-hero-banner__accent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+  .ma-hero-banner__content {
+    position: relative;
+    z-index: 1;
+  }
+
   /* Stat pill row sitting above the tab strip (REPORT J6). */
   .ma-stat-pill {
     display: inline-flex;

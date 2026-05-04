@@ -7,7 +7,11 @@
     />
 
     <template v-else-if="character">
-      <CharacterHeader :character="character" :achievements-enabled="meta?.feature_flags?.achievements !== false" />
+      <CharacterHeader
+        :character="character"
+        :achievements-enabled="meta?.feature_flags?.achievements !== false"
+        :synced-at="character.synced_at"
+      />
 
       <div class="flex flex-wrap items-center gap-3">
         <StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
