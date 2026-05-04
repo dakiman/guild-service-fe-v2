@@ -1,7 +1,7 @@
 import { api } from './client'
 import type { Region } from '@/types/api'
 
-export interface OAuthStateResponse {
+interface OAuthStateResponse {
   state: string
   expires_in: number
 }

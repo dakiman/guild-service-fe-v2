@@ -146,11 +146,10 @@ async function startOAuth() {
     url.searchParams.set('state', state)
     window.location.href = url.toString()
   } catch (err) {
-    oauthBusy.value = false
     toast.error(getErrorMessage(err, 'Failed to start Battle.net sync.'))
+  } finally {
+    oauthBusy.value = false
   }
-  // No `finally` — on success we redirect away, so resetting oauthBusy
-  // would be a no-op. Error branch resets explicitly above.
 }
 
 async function onToggleRecruitment(id: number) {
