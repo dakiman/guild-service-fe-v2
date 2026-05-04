@@ -127,7 +127,7 @@ const showEmpty = computed(
 </script>
 
 <template>
-  <div class="relative">
+  <div>
     <input
       ref="inputEl"
       type="text"
@@ -147,7 +147,7 @@ const showEmpty = computed(
 
     <div
       v-if="open"
-      class="absolute left-0 mt-1 z-20 min-w-full w-max max-w-[calc(100vw-2rem)] rounded-md bg-base-100 border border-base-300 shadow-lg max-h-72 overflow-auto"
+      class="absolute left-0 right-0 mt-1 z-20 rounded-md bg-base-100 border border-base-300 shadow-lg max-h-72 overflow-auto"
       role="listbox"
     >
       <div v-if="showLoading" class="p-3 space-y-2">

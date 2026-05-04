@@ -31,7 +31,7 @@ function onPick(payload: { region: Region; realm: string; name: string }) {
 
 <template>
   <form class="flex flex-col gap-2" @submit.prevent="onSubmit">
-    <div class="flex gap-2">
+    <div class="flex gap-2 relative">
       <NameAutocomplete
         v-model="name"
         :kind="kind"
