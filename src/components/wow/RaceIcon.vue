@@ -1,6 +1,23 @@
 <template>
+  <img
+    v-if="src && !imgError"
+    :src="src"
+    :width="size"
+    :height="size"
+    :title="name"
+    :alt="name"
+    class="inline-block align-middle rounded-sm"
+    loading="lazy"
+    @error="imgError = true"
+  />
   <span
-    class="inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold text-white bg-neutral"
+    v-else
+    class="inline-flex items-center justify-center rounded text-white font-bold align-middle bg-neutral"
+    :style="{
+      width: `${size}px`,
+      height: `${size}px`,
+      fontSize: `${Math.max(10, Math.floor(size * 0.55))}px`,
+    }"
     :title="name"
   >
     {{ initial }}
@@ -8,10 +25,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { RACES } from '@/utils/wowConstants'
+import { computed, ref } from 'vue'
+import { RACES, RACE_WOWHEAD_SLUGS, RACE_DEFAULT_GENDERS } from '@/utils/wowConstants'
 
-const props = defineProps<{ raceId: number }>()
+const props = withDefaults(
+  defineProps<{
+    raceId: number
+    gender?: 'male' | 'female'
+    size?: number
+  }>(),
+  { size: 24 },
+)
+
+const imgError = ref(false)
 const name = computed(() => RACES[props.raceId] ?? 'Unknown')
 const initial = computed(() => (name.value[0] ?? '?').toUpperCase())
+
+const slug = computed(() => RACE_WOWHEAD_SLUGS[props.raceId])
+const resolvedGender = computed(
+  () => props.gender ?? RACE_DEFAULT_GENDERS[props.raceId] ?? 'male',
+)
+
+const src = computed(() => {
+  if (!slug.value) return null
+  return `https://wow.zamimg.com/images/wow/icons/medium/race_${slug.value}_${resolvedGender.value}.jpg`
+})
 </script>
