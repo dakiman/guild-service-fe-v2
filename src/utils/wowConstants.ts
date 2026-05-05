@@ -222,7 +222,7 @@ export const SPEC_ROLES: Record<number, 'tank' | 'healer' | 'dps'> = {
   // Mage
   62: 'dps', 63: 'dps', 64: 'dps',
   // Monk
-  268: 'tank', 269: 'healer', 270: 'dps',
+  268: 'tank', 269: 'dps', 270: 'healer',
   // Paladin
   65: 'healer', 66: 'tank', 70: 'dps',
   // Priest
