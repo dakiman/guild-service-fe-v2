@@ -14,6 +14,10 @@ defineProps<{
 function defaultFormat(v: number): string {
   return v.toLocaleString(undefined, { maximumFractionDigits: 1 })
 }
+
+function displayName(name: string): string {
+  return name.charAt(0).toUpperCase() + name.slice(1)
+}
 </script>
 
 <template>
@@ -48,7 +52,7 @@ function defaultFormat(v: number): string {
             class="flex-1 truncate text-sm font-medium hover:underline"
             :style="{ color: CLASS_COLORS[entry.class_id] }"
           >
-            {{ entry.name }}
+            {{ displayName(entry.name) }}
           </RouterLink>
 
           <!-- Value -->
