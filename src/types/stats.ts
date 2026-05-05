@@ -36,4 +36,61 @@ export interface CharacterStatsResponse {
     item_level: TopPerformer[]
     achievement_points: TopPerformer[]
   }
+  avg_achievement_points: number
+  most_popular_spec: { spec_id: number; class_id: number; count: number } | null
+}
+
+export interface RaidBossKills {
+  encounter_id: number
+  name: string
+  kills_by_class: Record<string, number>
+}
+
+export interface RaidKillsData {
+  instance_id: number
+  name: string
+  bosses: RaidBossKills[]
+}
+
+export interface RaidKillStatsResponse {
+  raids: RaidKillsData[]
+}
+
+export interface TopKeyDungeon {
+  dungeon_id: number
+  dungeon_name: string
+  key_level: number
+  duration: number
+  character: {
+    name: string
+    realm: string
+    region: string
+    class_id: number | null
+  } | null
+}
+
+export interface TopKeysResponse {
+  dungeons: TopKeyDungeon[]
+}
+
+export interface RunMember {
+  name: string
+  realm: string
+  region: string
+  spec_id: number | null
+  spec_name: string | null
+  class_id: number | null
+  ilvl: number | null
+}
+
+export interface TopRun {
+  id: number
+  dungeon_id: number
+  dungeon_name: string
+  keystone_level: number
+  duration: number
+  is_completed_on_time: boolean
+  affixes: Record<string, unknown>[]
+  completed_at: string
+  members: RunMember[]
 }
