@@ -1,0 +1,50 @@
+<script setup lang="ts">
+import StatMiniCard from '@/components/stats/StatMiniCard.vue'
+import { useGuildStats } from '@/composables/useGuildStats'
+
+const props = defineProps<{
+  region: string
+  realm: string
+  name: string
+}>()
+
+const { data, isLoading } = useGuildStats(props.region, props.realm, props.name)
+</script>
+
+<template>
+  <div v-if="isLoading" class="text-xs text-[#665533] py-2">Loading stats...</div>
+
+  <template v-else-if="data">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+      <StatMiniCard label="Members" :value="data.member_count" />
+      <StatMiniCard
+        label="Avg iLvl"
+        :value="data.avg_item_level.toFixed(1)"
+        tooltip="Max level characters with raid or M+ activity"
+      />
+      <StatMiniCard
+        label="Avg M+ Rating"
+        :value="data.avg_mythic_plus_rating.toFixed(0)"
+        tooltip="Max level characters with raid or M+ activity"
+      />
+      <StatMiniCard
+        v-if="data.top_mythic_plus"
+        label="Top M+"
+        :value="data.top_mythic_plus.rating.toFixed(0)"
+        :subtitle="data.top_mythic_plus.character.name"
+      />
+      <StatMiniCard label="Tanks" :value="data.role_coverage.tank" />
+      <StatMiniCard label="Healers" :value="data.role_coverage.healer" />
+    </div>
+
+    <div v-if="data.best_keys.length" class="stats-card mb-4">
+      <h3 class="stats-card-title mb-3">Best Keys</h3>
+      <div class="flex flex-col gap-1.5">
+        <div v-for="k in data.best_keys" :key="k.dungeon_id" class="flex items-center justify-between">
+          <span class="text-xs text-[#e0d0b0] truncate">{{ k.dungeon_name }}</span>
+          <span class="text-sm font-bold text-[#ffcc88]">+{{ k.key_level }}</span>
+        </div>
+      </div>
+    </div>
+  </template>
+</template>
