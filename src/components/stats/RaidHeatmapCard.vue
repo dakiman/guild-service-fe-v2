@@ -74,7 +74,7 @@ const { data, isLoading } = useRaidKillStats(difficulty)
           <div v-for="classId in CLASS_IDS" :key="classId"
             class="w-[28px] flex items-center justify-center">
             <div v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
-              class="rounded-full"
+              class="heatmap-dot rounded-full"
               :title="`${CLASS_ABBREV[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
               :style="dotStyle(classId, boss.kills_by_class[String(classId)] ?? 0, getMaxInRow(boss.kills_by_class))" />
           </div>
@@ -85,3 +85,12 @@ const { data, isLoading } = useRaidKillStats(difficulty)
     <div v-else class="text-xs text-[#665533] italic py-4 text-center">No raid data</div>
   </div>
 </template>
+
+<style scoped>
+.heatmap-dot {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.heatmap-dot:hover {
+  transform: scale(1.4);
+}
+</style>

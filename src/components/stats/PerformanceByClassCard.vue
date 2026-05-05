@@ -97,6 +97,7 @@ function roleLabel(role: string): string {
           class="flex-1 h-[10px] rounded bg-[rgba(0,0,0,0.3)] border border-[rgba(92,74,50,0.3)] overflow-hidden flex items-center"
         >
           <div
+            class="perf-bar"
             :style="innerGlowStyle(entry.class_id, (entry.avg_mythic_plus_rating / maxRating) * 100)"
           />
         </div>
@@ -114,3 +115,22 @@ function roleLabel(role: string): string {
     </div>
   </div>
 </template>
+
+<style scoped>
+.perf-bar {
+  position: relative;
+  overflow: hidden;
+}
+.perf-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transform: translateX(-100%);
+  animation: bar-shimmer 1.2s ease-out 0.3s forwards;
+}
+@keyframes bar-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+</style>
