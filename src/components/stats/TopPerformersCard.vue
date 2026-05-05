@@ -21,23 +21,28 @@ function displayName(name: string): string {
 </script>
 
 <template>
-  <div class="card border border-base-content/5 bg-base-200 shadow-md">
-    <div class="card-body">
-      <h2 class="card-title text-lg">{{ title }}</h2>
+  <div class="stats-card">
+    <div class="p-2">
+      <h2 class="stats-card-title text-lg mb-4">{{ title }}</h2>
       <div class="flex flex-col gap-1.5">
         <div
           v-for="(entry, index) in entries"
           :key="`${entry.region}-${entry.realm}-${entry.name}`"
-          class="flex items-center gap-3 rounded-md bg-base-100 px-3 py-2"
+          class="flex items-center gap-3 rounded-md px-3 py-2"
+          style="background: rgba(0, 0, 0, 0.25)"
         >
           <!-- Rank -->
           <span
             class="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold"
-            :class="{
-              'bg-yellow-500/20 text-yellow-400': index === 0,
-              'bg-gray-400/20 text-gray-300': index === 1,
-              'bg-amber-700/20 text-amber-600': index === 2,
-              'bg-base-300 text-base-content/50': index > 2,
+            :style="{
+              backgroundColor: index === 0 ? 'rgba(255, 204, 136, 0.2)'
+                : index === 1 ? 'rgba(192, 192, 192, 0.2)'
+                : index === 2 ? 'rgba(205, 127, 50, 0.2)'
+                : 'rgba(0, 0, 0, 0.3)',
+              color: index === 0 ? '#ffcc88'
+                : index === 1 ? '#c0c0c0'
+                : index === 2 ? '#cd7f32'
+                : '#665533',
             }"
           >
             {{ index + 1 }}
@@ -56,12 +61,12 @@ function displayName(name: string): string {
           </RouterLink>
 
           <!-- Value -->
-          <span class="text-sm font-semibold tabular-nums">
+          <span class="text-sm font-semibold tabular-nums" style="color: #e0d0b0">
             {{ (formatValue ?? defaultFormat)(entry.value) }}
           </span>
         </div>
 
-        <p v-if="entries.length === 0" class="text-sm text-base-content/50 py-2 text-center">
+        <p v-if="entries.length === 0" class="text-sm py-2 text-center" style="color: #665533">
           No data yet
         </p>
       </div>

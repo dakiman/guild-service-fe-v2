@@ -4,19 +4,22 @@ defineProps<{
   value: string | number
   subtitle?: string
   accentColor?: string
+  tooltip?: string
 }>()
 </script>
 
 <template>
   <div
-    class="rounded-lg border border-base-content/5 bg-base-100 p-4 shadow-sm transition-all hover:shadow-md hover:border-base-content/10"
-    :style="accentColor ? { borderLeftWidth: '3px', borderLeftColor: accentColor } : undefined"
+    class="stats-card p-4 transition-all hover:brightness-110"
+    :class="{ 'stats-border-accent': accentColor }"
+    :style="accentColor ? { '--stats-accent': accentColor } as any : undefined"
+    :title="tooltip"
   >
-    <p class="text-xs font-medium uppercase tracking-wide text-base-content/60">
+    <p class="stats-label font-medium uppercase tracking-wide">
       {{ label }}
     </p>
-    <p class="mt-1 text-2xl font-bold">{{ value }}</p>
-    <p v-if="subtitle" class="mt-0.5 text-xs text-base-content/50">
+    <p class="stats-value mt-1 text-2xl">{{ value }}</p>
+    <p v-if="subtitle" class="mt-0.5 text-xs stats-muted">
       {{ subtitle }}
     </p>
   </div>
