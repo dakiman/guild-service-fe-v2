@@ -1,126 +1,158 @@
 <template>
-  <div class="flex flex-col gap-3">
+  <div>
     <div v-if="seasonRuns.length === 0" class="ma-card p-6 text-sm text-ma-muted/70">
       No mythic+ runs recorded this season.
     </div>
-    <div v-for="run in sortedRuns" :key="run.id" class="ma-card p-4">
+    <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
       <button
+        v-for="run in sortedRuns"
+        :key="run.id"
         type="button"
-        class="flex flex-wrap items-center gap-3 w-full text-left"
-        :aria-expanded="isOpen(run)"
-        :aria-controls="runBodyId(run)"
-        @click="toggle(run)"
+        class="ma-card p-3 text-left transition-colors hover:border-ma-border/60 hover:bg-ma-card/80 flex flex-col gap-2"
+        @click="openRun(run)"
       >
-        <ChevronRight
-          aria-hidden="true"
-          class="w-4 h-4 shrink-0 text-ma-muted/70 transition-transform duration-150"
-          :class="{ 'rotate-90': isOpen(run) }"
-        />
-        <img
-          v-if="dungeonIcons[run.dungeon_id]"
-          :src="dungeonIcons[run.dungeon_id]"
-          :alt="run.dungeon_name"
-          class="w-4 h-4 rounded shrink-0"
-          loading="lazy"
-        />
-        <span class="font-semibold flex-1 text-ma-text">{{ run.dungeon_name }}</span>
-        <span class="ma-stat-pill !py-1 !px-2 text-sm font-bold">
-          <span class="text-ma-gold">+{{ run.keystone_level }}</span>
-        </span>
-        <span
-          class="text-xs px-2 py-0.5 rounded border"
-          :class="run.is_completed_on_time
-            ? 'border-emerald-400/40 text-emerald-300'
-            : 'border-red-400/40 text-red-300'"
-        >
-          {{ run.is_completed_on_time ? 'On time' : 'Over time' }}
-        </span>
-        <span class="text-sm text-ma-muted/70 tabular-nums">{{ formatDuration(run.duration) }}</span>
-        <span class="text-xs text-ma-muted/50 tabular-nums">{{ formatTimestamp(run.completed_timestamp) }}</span>
-        <span class="flex flex-wrap items-center gap-1">
+        <div class="flex items-center gap-2 min-w-0">
+          <img
+            v-if="dungeonIcons[run.dungeon_id]"
+            :src="dungeonIcons[run.dungeon_id]"
+            :alt="run.dungeon_name"
+            class="w-5 h-5 rounded shrink-0"
+            loading="lazy"
+          />
+          <span class="font-semibold text-sm text-ma-text truncate">{{ run.dungeon_name }}</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="font-bold" :class="run.is_completed_on_time ? 'text-ma-gold' : 'text-ma-muted/70'">
+            +{{ run.keystone_level }}
+          </span>
+          <span
+            class="px-1.5 py-0.5 rounded border text-[10px]"
+            :class="run.is_completed_on_time
+              ? 'border-emerald-400/40 text-emerald-300'
+              : 'border-red-400/40 text-red-300'"
+          >
+            {{ run.is_completed_on_time ? 'On time' : 'Over time' }}
+          </span>
+          <span class="text-ma-muted/70 tabular-nums ml-auto">{{ formatDuration(run.duration) }}</span>
+        </div>
+        <div class="flex items-center gap-0.5 overflow-hidden">
           <span
             v-for="(member, idx) in run.members"
             :key="`pill:${run.id}:${idx}`"
-            class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full border border-ma-border/30 bg-ma-card/40 text-[11px] text-ma-muted/80"
+            class="inline-flex items-center gap-px px-0.5 rounded-full border border-ma-border/30 bg-ma-card/40 text-[9px] leading-tight text-ma-muted/80"
             :title="`${displayName(member.character_name)} • ${formatRealm(member.character_realm, member.character_realm_display)}`"
           >
             <SpecIcon
               :spec-id="member.spec_id"
               :fallback-class-id="member.spec_id != null ? SPEC_TO_CLASS[member.spec_id] ?? null : null"
-              :size="14"
+              :size="10"
             />
             <span class="tabular-nums">{{ member.equipped_item_level }}</span>
           </span>
-        </span>
-      </button>
-
-      <div
-        :id="runBodyId(run)"
-        class="grid transition-[grid-template-rows] duration-150 ease-out"
-        :class="isOpen(run) ? 'grid-rows-[1fr] mt-3' : 'grid-rows-[0fr]'"
-        :aria-hidden="!isOpen(run)"
-      >
-        <div class="overflow-hidden min-h-0">
-          <div v-if="run.affixes.length" class="flex flex-wrap gap-1 mb-3">
-            <AffixIcon
-              v-for="affix in run.affixes"
-              :key="affix.id"
-              :affix-id="affix.id"
-            />
-          </div>
-
-          <div v-if="run.members.length" class="overflow-x-auto">
-            <table class="w-full text-xs">
-              <thead>
-                <tr class="text-[10px] uppercase tracking-wider text-ma-muted/70">
-                  <th class="text-left px-2 py-1 font-medium">Name</th>
-                  <th class="text-left px-2 py-1 font-medium">Realm</th>
-                  <th class="text-left px-2 py-1 font-medium">Spec</th>
-                  <th class="text-right px-2 py-1 font-medium">iLvl</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(member, idx) in run.members"
-                  :key="`${member.character_region}:${member.character_realm}:${member.character_name}:${idx}`"
-                  class="border-t border-ma-border/15"
-                >
-                  <td class="px-2 py-1">
-                    <RouterLink
-                      :to="memberRoute(member)"
-                      class="font-semibold hover:underline transition-colors"
-                      :style="{ color: memberColor(member) }"
-                    >
-                      {{ displayName(member.character_name) }}
-                    </RouterLink>
-                  </td>
-                  <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm, member.character_realm_display) }}</td>
-                  <td class="px-2 py-1 text-ma-muted/70">
-                    <span class="inline-flex items-center gap-1.5">
-                      <SpecIcon
-                        :spec-id="member.spec_id"
-                        :fallback-class-id="member.spec_id != null ? SPEC_TO_CLASS[member.spec_id] ?? null : null"
-                        :size="18"
-                      />
-                      <span>{{ member.spec_name }}</span>
-                    </span>
-                  </td>
-                  <td class="px-2 py-1 text-right tabular-nums">{{ member.equipped_item_level }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p v-else class="text-xs text-ma-muted/60 italic m-0">No member data recorded.</p>
         </div>
-      </div>
+      </button>
     </div>
+
+    <dialog
+      ref="dialogRef"
+      class="backdrop:bg-black/60 bg-transparent p-0 m-auto max-w-lg w-full"
+      @click="onBackdropClick"
+    >
+      <div v-if="selectedRun" class="ma-card p-5 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <img
+            v-if="dungeonIcons[selectedRun.dungeon_id]"
+            :src="dungeonIcons[selectedRun.dungeon_id]"
+            :alt="selectedRun.dungeon_name"
+            class="w-7 h-7 rounded shrink-0"
+          />
+          <span class="font-semibold text-lg text-ma-text flex-1">{{ selectedRun.dungeon_name }}</span>
+          <button
+            type="button"
+            class="text-ma-muted/70 hover:text-ma-text transition-colors p-1"
+            aria-label="Close"
+            @click="closeDialog"
+          >
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3 text-sm">
+          <span class="font-bold" :class="selectedRun.is_completed_on_time ? 'text-ma-gold' : 'text-ma-muted/70'">
+            +{{ selectedRun.keystone_level }}
+          </span>
+          <span
+            class="px-2 py-0.5 rounded border text-xs"
+            :class="selectedRun.is_completed_on_time
+              ? 'border-emerald-400/40 text-emerald-300'
+              : 'border-red-400/40 text-red-300'"
+          >
+            {{ selectedRun.is_completed_on_time ? 'On time' : 'Over time' }}
+          </span>
+          <span class="text-ma-muted/70 tabular-nums">{{ formatDuration(selectedRun.duration) }}</span>
+          <span class="text-ma-muted/50 tabular-nums text-xs ml-auto">{{ formatTimestamp(selectedRun.completed_timestamp) }}</span>
+        </div>
+
+        <div v-if="selectedRun.affixes.length" class="flex flex-wrap gap-1">
+          <AffixIcon
+            v-for="affix in selectedRun.affixes"
+            :key="affix.id"
+            :affix-id="affix.id"
+          />
+        </div>
+
+        <div v-if="selectedRun.members.length" class="overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="text-[10px] uppercase tracking-wider text-ma-muted/70">
+                <th class="text-left px-2 py-1 font-medium">Name</th>
+                <th class="text-left px-2 py-1 font-medium">Realm</th>
+                <th class="text-left px-2 py-1 font-medium">Spec</th>
+                <th class="text-right px-2 py-1 font-medium">iLvl</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(member, idx) in selectedRun.members"
+                :key="`${member.character_region}:${member.character_realm}:${member.character_name}:${idx}`"
+                class="border-t border-ma-border/15"
+              >
+                <td class="px-2 py-1">
+                  <RouterLink
+                    :to="memberRoute(member)"
+                    class="font-semibold hover:underline transition-colors"
+                    :style="{ color: memberColor(member) }"
+                    @click="closeDialog"
+                  >
+                    {{ displayName(member.character_name) }}
+                  </RouterLink>
+                </td>
+                <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm, member.character_realm_display) }}</td>
+                <td class="px-2 py-1 text-ma-muted/70">
+                  <span class="inline-flex items-center gap-1.5">
+                    <SpecIcon
+                      :spec-id="member.spec_id"
+                      :fallback-class-id="member.spec_id != null ? SPEC_TO_CLASS[member.spec_id] ?? null : null"
+                      :size="18"
+                    />
+                    <span>{{ member.spec_name }}</span>
+                  </span>
+                </td>
+                <td class="px-2 py-1 text-right tabular-nums">{{ member.equipped_item_level }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p v-else class="text-xs text-ma-muted/60 italic m-0">No member data recorded.</p>
+      </div>
+    </dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { ChevronRight } from 'lucide-vue-next'
+import { X } from 'lucide-vue-next'
 import AffixIcon from './AffixIcon.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
 import type { DungeonRun, DungeonRunMember } from '@/types/character'
@@ -135,21 +167,21 @@ const props = defineProps<{
   currentSeason: number | null
 }>()
 
-const expanded = ref<Set<number>>(new Set())
+const dialogRef = ref<HTMLDialogElement | null>(null)
+const selectedRun = ref<DungeonRun | null>(null)
 
-function isOpen(run: DungeonRun): boolean {
-  return expanded.value.has(run.id)
+function openRun(run: DungeonRun): void {
+  selectedRun.value = run
+  dialogRef.value?.showModal()
 }
 
-function toggle(run: DungeonRun): void {
-  const next = new Set(expanded.value)
-  if (next.has(run.id)) next.delete(run.id)
-  else next.add(run.id)
-  expanded.value = next
+function closeDialog(): void {
+  dialogRef.value?.close()
+  selectedRun.value = null
 }
 
-function runBodyId(run: DungeonRun): string {
-  return `mplus-run-body-${run.id}`
+function onBackdropClick(e: MouseEvent): void {
+  if (e.target === dialogRef.value) closeDialog()
 }
 
 function memberRoute(member: DungeonRunMember) {
