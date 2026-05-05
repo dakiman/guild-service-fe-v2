@@ -7,94 +7,148 @@ const props = defineProps<{
 }>()
 
 const total = computed(() => props.horde + props.alliance)
-const hordePct = computed(() => (total.value > 0 ? (props.horde / total.value) * 100 : 50))
-const alliancePct = computed(() => (total.value > 0 ? (props.alliance / total.value) * 100 : 50))
-
-function compactNumber(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
-  return n.toString()
-}
+const hordePercent = computed(() => (total.value > 0 ? (props.horde / total.value) * 100 : 50))
+const alliancePercent = computed(() => (total.value > 0 ? (props.alliance / total.value) * 100 : 50))
 </script>
 
 <template>
-  <div class="card border border-base-content/5 bg-base-200 shadow-md overflow-hidden">
-    <div class="relative h-44 sm:h-36">
-      <!-- Horde side -->
-      <div
-        class="absolute inset-0 flex items-center"
-        :style="{
-          clipPath: `polygon(0 0, ${hordePct + 3}% 0, ${hordePct - 3}% 100%, 0 100%)`,
-          background: 'linear-gradient(135deg, #B30000 0%, #8B0000 100%)',
-        }"
-      >
-        <div class="flex items-center gap-3 pl-5 sm:pl-8">
-          <div
-            class="h-14 w-14 flex-shrink-0 opacity-90"
-            :style="{
-              backgroundColor: '#ff4444',
-              WebkitMaskImage: 'url(/factions/horde.png)',
-              maskImage: 'url(/factions/horde.png)',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat',
-              WebkitMaskPosition: 'center',
-              maskPosition: 'center',
-              WebkitMaskSize: 'contain',
-              maskSize: 'contain',
-            }"
-          />
-          <div class="flex flex-col">
-            <span class="text-2xl font-bold text-red-100">{{ compactNumber(horde) }}</span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-red-300">Horde</span>
-            <span class="text-xs text-red-300/70 tabular-nums">{{ hordePct.toFixed(1) }}%</span>
-          </div>
+  <div class="stats-card">
+    <h3 class="stats-card-title mb-4">Faction Balance</h3>
+
+    <div class="flex items-center justify-between mb-3">
+      <!-- Horde emblem + count -->
+      <div class="flex items-center gap-3">
+        <div class="faction-emblem faction-emblem--horde">
+          <img src="/factions/horde.png" alt="Horde" class="w-8 h-8 object-contain" />
+        </div>
+        <div>
+          <div class="text-xl font-bold text-[#ff4444]">{{ horde.toLocaleString() }}</div>
+          <div class="text-xs text-[#aa6666]">Horde</div>
         </div>
       </div>
 
-      <!-- Alliance side -->
-      <div
-        class="absolute inset-0 flex items-center justify-end"
-        :style="{
-          clipPath: `polygon(${hordePct + 3}% 0, 100% 0, 100% 100%, ${hordePct - 3}% 100%)`,
-          background: 'linear-gradient(135deg, #0060CC 0%, #0078FF 100%)',
-        }"
-      >
-        <div class="flex items-center gap-3 pr-5 sm:pr-8">
-          <div class="flex flex-col items-end">
-            <span class="text-2xl font-bold text-blue-100">{{ compactNumber(alliance) }}</span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-blue-300">Alliance</span>
-            <span class="text-xs text-blue-300/70 tabular-nums">{{ alliancePct.toFixed(1) }}%</span>
-          </div>
-          <div
-            class="h-14 w-14 flex-shrink-0 opacity-90"
-            :style="{
-              backgroundColor: '#66aaff',
-              WebkitMaskImage: 'url(/factions/alliance.png)',
-              maskImage: 'url(/factions/alliance.png)',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat',
-              WebkitMaskPosition: 'center',
-              maskPosition: 'center',
-              WebkitMaskSize: 'contain',
-              maskSize: 'contain',
-            }"
-          />
+      <!-- Alliance emblem + count -->
+      <div class="flex items-center gap-3">
+        <div>
+          <div class="text-xl font-bold text-[#3399ff] text-right">{{ alliance.toLocaleString() }}</div>
+          <div class="text-xs text-[#6688aa] text-right">Alliance</div>
+        </div>
+        <div class="faction-emblem faction-emblem--alliance">
+          <img src="/factions/alliance.png" alt="Alliance" class="w-8 h-8 object-contain" />
         </div>
       </div>
+    </div>
 
-      <!-- Diagonal divider line -->
-      <div
-        class="absolute inset-0 pointer-events-none"
-        :style="{
-          background: `linear-gradient(
-            to bottom,
-            transparent calc(${hordePct}% - 1px),
-            oklch(var(--bc) / 0.15) calc(${hordePct}% - 1px),
-            oklch(var(--bc) / 0.15) calc(${hordePct}% + 1px),
-            transparent calc(${hordePct}% + 1px)
-          )`,
-          clipPath: `polygon(${hordePct + 3}% 0, ${hordePct + 3.3}% 0, ${hordePct - 2.7}% 100%, ${hordePct - 3}% 100%)`,
-        }"
-      />
+    <!-- Territory bar -->
+    <div class="territory-bar">
+      <div class="territory-horde" :style="{ width: hordePercent + '%' }"></div>
+      <div class="territory-alliance" :style="{ width: alliancePercent + '%' }"></div>
+      <div class="battle-line" :style="{ left: hordePercent + '%' }"></div>
+    </div>
+
+    <div class="flex justify-between mt-1.5">
+      <span class="text-xs font-semibold text-[#aa6666]">{{ hordePercent.toFixed(1) }}%</span>
+      <span class="text-xs font-semibold text-[#6688aa]">{{ alliancePercent.toFixed(1) }}%</span>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Emblem circles */
+.faction-emblem {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: emblem-glow 4s ease-in-out infinite;
+}
+
+.faction-emblem--horde {
+  background: radial-gradient(circle, #4a1010, #1a0505);
+  border: 2px solid #6b2020;
+  --glow-color: rgba(180, 40, 40, 0.4);
+}
+
+.faction-emblem--alliance {
+  background: radial-gradient(circle, #0a2244, #050f1a);
+  border: 2px solid #2255aa;
+  --glow-color: rgba(40, 100, 200, 0.4);
+}
+
+/* Territory bar */
+.territory-bar {
+  position: relative;
+  height: 28px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  border: 1px solid #5c4a32;
+}
+
+.territory-horde {
+  height: 100%;
+  background: linear-gradient(135deg, #4a0a0a, #7a1515, #5a0e0e);
+  background-size: 100% 100%;
+  position: relative;
+}
+
+/* Horde diagonal hatch overlay */
+.territory-horde::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 4px,
+    rgba(255, 100, 100, 0.08) 4px,
+    rgba(255, 100, 100, 0.08) 8px
+  );
+}
+
+.territory-alliance {
+  height: 100%;
+  background: linear-gradient(135deg, #0a2244, #153a6a, #0e2a55);
+  position: relative;
+}
+
+/* Alliance diagonal hatch overlay (opposite direction) */
+.territory-alliance::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(100, 150, 255, 0.08) 4px,
+    rgba(100, 150, 255, 0.08) 8px
+  );
+}
+
+/* Gold battle line at split point */
+.battle-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #cc7700, #ffaa00, #cc7700);
+  box-shadow: 0 0 6px rgba(255, 170, 0, 0.7);
+  z-index: 1;
+  animation: battle-pulse 3s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes battle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes emblem-glow {
+  0%, 100% { box-shadow: 0 0 14px var(--glow-color); }
+  50% { box-shadow: 0 0 22px var(--glow-color); }
+}
+</style>
