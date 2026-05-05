@@ -13,36 +13,50 @@
         :synced-at="character.synced_at"
       />
 
-      <div class="flex flex-wrap items-center gap-3">
-        <SyncingBadge v-if="isSyncing" />
-        <StaleBadge v-else-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
-        <FreshnessChips v-if="meta" :freshness="meta.freshness" />
-        <button
-          v-if="character.talent_loadout_code"
-          type="button"
-          class="btn btn-sm btn-ghost"
-          @click="onCopyLoadout"
-        >
-          Copy loadout
-        </button>
-        <button
-          v-if="canToggleRecruitment"
-          type="button"
-          class="btn btn-sm"
-          :class="character.recruitment ? 'btn-success' : 'btn-outline'"
-          :disabled="isToggling"
-          @click="onToggleRecruitment"
-        >
-          <span v-if="isToggling" class="loading loading-spinner loading-xs" />
-          {{ character.recruitment ? 'Looking for guild' : 'Not looking for guild' }}
-        </button>
-      </div>
+      <template v-if="isSyncing">
+        <PollingState
+          message="Syncing character data…"
+          subtext="We're fetching this character's full profile from Blizzard. This page will update automatically."
+          :queue-depth="meta?.queue_depth"
+        />
+      </template>
 
-      <CharacterTabStrip :tabs="tabs" />
-      <router-view />
+      <template v-else>
+        <div class="flex flex-wrap items-center gap-3">
+          <StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
+          <FreshnessChips v-if="meta" :freshness="meta.freshness" />
+          <button
+            v-if="character.talent_loadout_code"
+            type="button"
+            class="btn btn-sm btn-ghost"
+            @click="onCopyLoadout"
+          >
+            Copy loadout
+          </button>
+          <button
+            v-if="canToggleRecruitment"
+            type="button"
+            class="btn btn-sm"
+            :class="character.recruitment ? 'btn-success' : 'btn-outline'"
+            :disabled="isToggling"
+            @click="onToggleRecruitment"
+          >
+            <span v-if="isToggling" class="loading loading-spinner loading-xs" />
+            {{ character.recruitment ? 'Looking for guild' : 'Not looking for guild' }}
+          </button>
+        </div>
+
+        <CharacterTabStrip :tabs="tabs" />
+        <router-view />
+      </template>
     </template>
 
-    <PollingState v-else :attempt="lookup.failureCount.value" :max-attempts="12" />
+    <PollingState
+      v-else
+      :attempt="lookup.failureCount.value"
+      :max-attempts="12"
+      :queue-depth="pollingQueueDepth"
+    />
   </div>
 </template>
 
@@ -54,10 +68,10 @@ import { toast } from 'vue-sonner'
 import { useCharacterLookup } from '@/composables/usePollingLookup'
 import { useWowheadRefresh } from '@/composables/useWowhead'
 import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
-import { useSyncPolling } from '@/composables/useSyncPolling'
 import { provideCharacterContext } from '@/composables/useCharacterContext'
 import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
+import { SyncPendingError } from '@/types/api'
 import { Sparkles, BookOpen, Crown, Gem, Skull, Swords, Star, Trophy } from 'lucide-vue-next'
 import CharacterHeader from '@/components/character/CharacterHeader.vue'
 import CharacterTabStrip, {
@@ -65,7 +79,6 @@ import CharacterTabStrip, {
 } from '@/components/character/CharacterTabStrip.vue'
 import PollingState from '@/components/feedback/PollingState.vue'
 import StaleBadge from '@/components/feedback/StaleBadge.vue'
-import SyncingBadge from '@/components/feedback/SyncingBadge.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import FreshnessChips from '@/components/feedback/FreshnessChips.vue'
 import type { Region } from '@/types/api'
@@ -86,11 +99,17 @@ const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
 const isSyncing = computed(() => lookup.data.value?.isSyncing ?? false)
 const isClassic = computed(() => character.value?.game_version === 'classic')
+const pollingQueueDepth = computed(() => {
+  const err = lookup.error.value
+  return err instanceof SyncPendingError ? err.queueDepth : undefined
+})
 
 useWowheadRefresh(() => character.value)
 useWowheadRefresh(() => route.fullPath)
-useStaleAutoRefresh(isStale, () => ['character', region.value, realm.value, name.value])
-useSyncPolling(isSyncing, () => ['character', region.value, realm.value, name.value])
+useStaleAutoRefresh(
+  computed(() => isStale.value && !isSyncing.value),
+  () => ['character', region.value, realm.value, name.value],
+)
 
 // The layout v-if-gates <router-view> on `character` non-null, so children
 // observing the context never see null. Cast away the union here.

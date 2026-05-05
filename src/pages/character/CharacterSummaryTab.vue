@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-6">
     <MirroredEquipmentLayout
       :equipment="character.equipment"
-      :render-url="character.media.main"
+      :render-url="character.media?.main"
       :character-name="character.name"
     />
     <ProfessionsStrip :entries="character.professions" />

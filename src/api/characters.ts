@@ -18,7 +18,11 @@ export async function fetchCharacter(
   })
 
   if (res.status === 202) {
-    throw new SyncPendingError(parseInt(res.headers['retry-after'] ?? '5', 10) * 1000)
+    const body = res.data as { queue_depth?: number } | undefined
+    throw new SyncPendingError(
+      parseInt(res.headers['retry-after'] ?? '10', 10) * 1000,
+      body?.queue_depth ?? 0,
+    )
   }
 
   if (res.status === 404) {

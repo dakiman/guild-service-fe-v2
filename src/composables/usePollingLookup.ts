@@ -19,11 +19,17 @@ export function useCharacterLookup(
     enabled: () => !!region.value && !!realm.value && !!name.value,
     retry: (failureCount, error) => {
       if (error instanceof SyncPendingError) return failureCount < MAX_POLLING_ATTEMPTS
-      // All other typed errors (NotFound, Throttled, …) must bubble to the UI immediately.
       return false
     },
     retryDelay: (_count, error) =>
       error instanceof SyncPendingError ? error.retryAfter : DEFAULT_RETRY_DELAY,
+    refetchInterval: (query) => {
+      const data = query.state.data
+      if (!data?.isSyncing) return false
+      const depth = data.meta?.queue_depth ?? 0
+      if (depth > 100) return 60_000
+      return 30_000
+    },
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   })

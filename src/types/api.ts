@@ -30,10 +30,12 @@ export interface Paginated<T> {
 
 export class SyncPendingError extends Error {
   readonly retryAfter: number
-  constructor(retryAfter: number) {
+  readonly queueDepth: number
+  constructor(retryAfter: number, queueDepth = 0) {
     super('SYNC_PENDING')
     this.name = 'SyncPendingError'
     this.retryAfter = retryAfter
+    this.queueDepth = queueDepth
   }
 }
 

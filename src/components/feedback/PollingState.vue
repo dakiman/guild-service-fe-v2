@@ -4,6 +4,9 @@
       <span class="loading loading-spinner loading-lg text-primary" />
       <p class="text-base-content font-medium">{{ message ?? defaultMessage }}</p>
       <p class="text-sm text-base-content/60">{{ subtext ?? defaultSubtext }}</p>
+      <p v-if="queueDepth && queueDepth > 0" class="text-xs text-base-content/50">
+        ~{{ queueDepth.toLocaleString() }} jobs in queue
+      </p>
       <p v-if="attempt !== undefined" class="text-xs text-base-content/50">
         Attempt {{ attempt }} of {{ maxAttempts ?? 12 }}
       </p>
@@ -15,6 +18,7 @@
 defineProps<{
   attempt?: number
   maxAttempts?: number
+  queueDepth?: number
   message?: string
   subtext?: string
 }>()

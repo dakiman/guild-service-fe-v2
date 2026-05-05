@@ -283,6 +283,7 @@ export interface MetaBlock {
   forced_refresh: boolean
   sync_status: 'syncing' | 'complete'
   poll_after?: number
+  queue_depth?: number
   freshness: {
     profile: FreshnessState
     mythic_plus: FreshnessState
