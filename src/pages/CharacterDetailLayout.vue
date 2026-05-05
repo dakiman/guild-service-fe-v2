@@ -14,7 +14,8 @@
       />
 
       <div class="flex flex-wrap items-center gap-3">
-        <StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
+        <SyncingBadge v-if="isSyncing" />
+        <StaleBadge v-else-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
         <FreshnessChips v-if="meta" :freshness="meta.freshness" />
         <button
           v-if="character.talent_loadout_code"
@@ -53,6 +54,7 @@ import { toast } from 'vue-sonner'
 import { useCharacterLookup } from '@/composables/usePollingLookup'
 import { useWowheadRefresh } from '@/composables/useWowhead'
 import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
+import { useSyncPolling } from '@/composables/useSyncPolling'
 import { provideCharacterContext } from '@/composables/useCharacterContext'
 import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
@@ -63,6 +65,7 @@ import CharacterTabStrip, {
 } from '@/components/character/CharacterTabStrip.vue'
 import PollingState from '@/components/feedback/PollingState.vue'
 import StaleBadge from '@/components/feedback/StaleBadge.vue'
+import SyncingBadge from '@/components/feedback/SyncingBadge.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import FreshnessChips from '@/components/feedback/FreshnessChips.vue'
 import type { Region } from '@/types/api'
@@ -81,11 +84,13 @@ const lookup = useCharacterLookup(region, realm, name)
 const character = computed(() => lookup.data.value?.data ?? null)
 const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
+const isSyncing = computed(() => lookup.data.value?.isSyncing ?? false)
 const isClassic = computed(() => character.value?.game_version === 'classic')
 
 useWowheadRefresh(() => character.value)
 useWowheadRefresh(() => route.fullPath)
 useStaleAutoRefresh(isStale, () => ['character', region.value, realm.value, name.value])
+useSyncPolling(isSyncing, () => ['character', region.value, realm.value, name.value])
 
 // The layout v-if-gates <router-view> on `character` non-null, so children
 // observing the context never see null. Cast away the union here.
@@ -94,6 +99,7 @@ provideCharacterContext({
   meta: meta as ComputedRef<MetaBlock>,
   freshness: computed(() => (meta.value ? meta.value.freshness : ({} as MetaBlock['freshness']))),
   isStale,
+  isSyncing,
   isClassic,
   refetch: () => lookup.refetch(),
 })
