@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp } from 'lucide-vue-next'
 import LookupForm from '@/components/form/LookupForm.vue'
 import StatsHeroCard from '@/components/stats/StatsHeroCard.vue'
 import StatMiniCard from '@/components/stats/StatMiniCard.vue'
+import FactionSplitCard from '@/components/stats/FactionSplitCard.vue'
 import PerformanceByClassCard from '@/components/stats/PerformanceByClassCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
 import { useCharacterStats } from '@/composables/useCharacterStats'
@@ -43,18 +44,27 @@ const topRace = computed(() => {
   return { name: RACES[top.race_id] ?? `Race ${top.race_id}`, count: top.count }
 })
 
-const topSpec = computed(() => {
-  if (!stats.value?.spec_distribution.length) return { name: '—', count: 0 }
-  const top = stats.value.spec_distribution[0]
-  const className = CLASSES[top.class_id] ?? ''
-  return { name: className, count: top.count, classId: top.class_id }
+const topClass = computed(() => {
+  if (!stats.value?.class_distribution.length) return { name: '—', count: 0, classId: 0 }
+  const top = stats.value.class_distribution.reduce((a, b) => a.count > b.count ? a : b)
+  return { name: CLASSES[top.class_id] ?? '', count: top.count, classId: top.class_id }
+})
+
+const totalSpecs = computed(() => {
+  if (!stats.value?.spec_distribution.length) return 0
+  return stats.value.spec_distribution.length
+})
+
+const totalRaces = computed(() => {
+  if (!stats.value?.race_distribution.length) return 0
+  return stats.value.race_distribution.length
 })
 </script>
 
 <template>
   <div class="flex flex-col gap-6">
     <!-- Collapsible Search -->
-    <div class="card bg-base-200 shadow-sm">
+    <div class="card border border-base-content/5 bg-base-200 shadow-sm">
       <button
         class="flex w-full items-center justify-between px-6 py-3 text-left"
         @click="searchOpen = !searchOpen"
@@ -82,16 +92,17 @@ const topSpec = computed(() => {
       <!-- Hero: Class Distribution Donut -->
       <StatsHeroCard :distribution="stats.class_distribution" :total="stats.total_characters" />
 
+      <!-- Faction Split -->
+      <FactionSplitCard
+        :horde="stats.faction_distribution.horde"
+        :alliance="stats.faction_distribution.alliance"
+      />
+
       <!-- Summary KPI Grid -->
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatMiniCard
           label="Total Characters"
           :value="stats.total_characters.toLocaleString()"
-        />
-        <StatMiniCard
-          label="Faction Split"
-          :value="`${stats.faction_distribution.horde}H / ${stats.faction_distribution.alliance}A`"
-          :subtitle="`${((stats.faction_distribution.horde / stats.total_characters) * 100).toFixed(0)}% Horde`"
         />
         <StatMiniCard
           label="Avg Item Level"
@@ -104,13 +115,23 @@ const topSpec = computed(() => {
         <StatMiniCard
           label="Top Race"
           :value="topRace.name"
-          :subtitle="`${topRace.count} characters`"
+          :subtitle="`${topRace.count.toLocaleString()} characters`"
         />
         <StatMiniCard
           label="Top Class"
-          :value="topSpec.name"
-          :subtitle="`${topSpec.count} characters (by spec)`"
-          :accent-color="topSpec.classId ? CLASS_COLORS[topSpec.classId] : undefined"
+          :value="topClass.name"
+          :subtitle="`${topClass.count.toLocaleString()} characters`"
+          :accent-color="topClass.classId ? CLASS_COLORS[topClass.classId] : undefined"
+        />
+        <StatMiniCard
+          label="Active Specs"
+          :value="totalSpecs"
+          subtitle="unique specializations"
+        />
+        <StatMiniCard
+          label="Races Represented"
+          :value="totalRaces"
+          subtitle="unique races"
         />
       </div>
 

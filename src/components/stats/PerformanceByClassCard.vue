@@ -26,7 +26,7 @@ function formatIlvl(ilvl: number): string {
 </script>
 
 <template>
-  <div class="card bg-base-200 shadow-sm">
+  <div class="card border border-base-content/5 bg-base-200 shadow-md">
     <div class="card-body">
       <h2 class="card-title text-lg">Performance by Class</h2>
       <div class="flex flex-col gap-2">

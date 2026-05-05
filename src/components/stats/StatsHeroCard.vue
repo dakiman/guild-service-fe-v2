@@ -7,6 +7,7 @@ import {
   Tooltip,
 } from 'chart.js'
 import { CLASSES, CLASS_COLORS } from '@/utils/wowConstants'
+import ClassIcon from '@/components/wow/ClassIcon.vue'
 import type { ClassDistribution } from '@/types/stats'
 
 ChartJS.register(ArcElement, Tooltip)
@@ -15,6 +16,11 @@ const props = defineProps<{
   distribution: ClassDistribution[]
   total: number
 }>()
+
+function compactNumber(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
+  return n.toString()
+}
 
 const sortedDistribution = computed(() =>
   [...props.distribution].sort((a, b) => b.count - a.count),
@@ -57,7 +63,7 @@ const chartOptions = computed(() => ({
       callbacks: {
         label: (ctx: { parsed: number; label: string }) => {
           const pct = ((ctx.parsed / props.total) * 100).toFixed(1)
-          return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`
+          return ` ${ctx.label}: ${ctx.parsed.toLocaleString()} (${pct}%)`
         },
       },
     },
@@ -66,36 +72,47 @@ const chartOptions = computed(() => ({
 </script>
 
 <template>
-  <div class="card bg-base-200 shadow-sm">
+  <div class="card border border-base-content/5 bg-base-200 shadow-md">
     <div class="card-body">
       <h2 class="card-title text-lg">Class Distribution</h2>
       <div class="flex flex-col items-center gap-6 lg:flex-row lg:items-start">
         <!-- Chart -->
-        <div class="relative h-64 w-64 flex-shrink-0">
+        <div class="relative h-72 w-72 flex-shrink-0">
           <Doughnut :data="chartData" :options="chartOptions" />
           <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold">{{ total }}</span>
+            <span class="text-3xl font-bold">{{ compactNumber(total) }}</span>
             <span class="text-xs text-base-content/60">characters</span>
           </div>
         </div>
 
-        <!-- Legend -->
-        <div class="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3">
+        <!-- Legend with stats -->
+        <div class="flex flex-col gap-1.5 w-full">
           <div
             v-for="item in sortedDistribution"
             :key="item.class_id"
-            class="flex items-center gap-2"
+            class="flex items-center gap-3 rounded-md bg-base-100/50 px-3 py-1.5"
           >
+            <ClassIcon :class-id="item.class_id" :size="20" />
             <span
-              class="h-3 w-3 rounded-full flex-shrink-0"
-              :style="{ backgroundColor: CLASS_COLORS[item.class_id] }"
-            />
-            <span class="text-sm whitespace-nowrap">
+              class="w-28 text-sm font-medium truncate"
+              :style="{ color: CLASS_COLORS[item.class_id] }"
+            >
               {{ CLASSES[item.class_id] }}
             </span>
-            <span class="text-sm font-semibold text-base-content/70">
-              {{ item.count }}
+            <span class="text-sm font-semibold tabular-nums w-12 text-right">
+              {{ compactNumber(item.count) }}
             </span>
+            <span class="text-xs text-base-content/40 tabular-nums w-10 text-right">
+              {{ ((item.count / total) * 100).toFixed(1) }}%
+            </span>
+            <div class="ml-auto flex items-center gap-3">
+              <span class="text-xs text-base-content/50 tabular-nums">
+                {{ item.avg_ilvl.toFixed(0) }} ilvl
+              </span>
+              <span class="text-xs text-base-content/50 tabular-nums">
+                {{ item.avg_mythic_plus_rating.toFixed(0) }} m+
+              </span>
+            </div>
           </div>
         </div>
       </div>
