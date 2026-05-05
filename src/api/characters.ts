@@ -32,11 +32,13 @@ export async function fetchCharacter(
   const { data, meta } = res.data
   const headerStale = res.headers['x-data-staleness'] === 'stale'
   const metaStale = meta?.freshness?.profile === 'stale'
+  const headerSyncing = res.headers['x-sync-status'] === 'syncing'
 
   return {
     data,
     meta,
     isStale: metaStale || headerStale,
+    isSyncing: headerSyncing || meta?.sync_status === 'syncing',
   }
 }
 

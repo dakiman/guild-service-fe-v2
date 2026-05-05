@@ -257,7 +257,7 @@ export interface CharacterResource {
   talent_tree_id: number | null
   talent_loadout_code: string | null
   mythic_plus_rating: MythicPlusRating | null
-  media: { avatar: string; inset: string; main: string }
+  media: { avatar: string; inset: string; main: string } | null
   talents: CharacterTalents
   equipment: EquipmentItem[]
   stats: CharacterStats | null
@@ -281,6 +281,8 @@ export interface CharacterResource {
 export interface MetaBlock {
   game_version: GameVersion
   forced_refresh: boolean
+  sync_status: 'syncing' | 'complete'
+  poll_after?: number
   freshness: {
     profile: FreshnessState
     mythic_plus: FreshnessState
@@ -308,4 +310,5 @@ export interface CharacterLookupResult {
   data: CharacterResource
   meta: MetaBlock
   isStale: boolean
+  isSyncing: boolean
 }
