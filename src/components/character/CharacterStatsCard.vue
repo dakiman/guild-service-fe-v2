@@ -2,7 +2,12 @@
   <div class="ma-card p-6">
     <h3 class="ma-text-heading mb-4 text-lg">Detailed stats</h3>
 
-    <div v-if="!stats" class="text-ma-muted/80 text-sm">
+    <div v-if="isSyncingSlice" class="flex items-center gap-2 text-ma-muted/80 text-sm">
+      <span class="loading loading-spinner loading-xs" />
+      Syncing stats…
+    </div>
+
+    <div v-else-if="!stats" class="text-ma-muted/80 text-sm">
       Stats not available yet — refresh shortly.
     </div>
 
@@ -19,9 +24,13 @@
 
 <script setup lang="ts">
 import { computed, defineComponent, h } from 'vue'
+import { useCharacterContext } from '@/composables/useCharacterContext'
 import type { CharacterStats } from '@/types/character'
 
 const props = defineProps<{ stats: CharacterStats | null }>()
+
+const { freshness } = useCharacterContext()
+const isSyncingSlice = computed(() => freshness.value.stats === 'never_synced')
 
 const primaryStatLabel = computed(() => {
   if (!props.stats) return '—'

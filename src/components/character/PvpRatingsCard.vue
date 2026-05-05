@@ -1,7 +1,11 @@
 <template>
   <div class="ma-card p-4">
     <h3 class="ma-text-heading text-sm uppercase tracking-wider mb-3">PvP</h3>
-    <div v-if="!brackets || brackets.length === 0" class="text-ma-muted/70 text-sm">
+    <div v-if="isSyncingSlice" class="flex items-center gap-2 text-ma-muted/70 text-sm">
+      <span class="loading loading-spinner loading-xs" />
+      Syncing PvP data…
+    </div>
+    <div v-else-if="!brackets || brackets.length === 0" class="text-ma-muted/70 text-sm">
       No ranked PvP this season.
     </div>
     <ul v-else class="flex flex-col gap-2">
@@ -24,11 +28,15 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useCharacterContext } from '@/composables/useCharacterContext'
 import type { PvpBracketStats } from '@/types/character'
 
 const props = defineProps<{
   brackets: PvpBracketStats[] | null
 }>()
+
+const { freshness } = useCharacterContext()
+const isSyncingSlice = computed(() => freshness.value.pvp === 'never_synced')
 
 const sortedBrackets = computed(() =>
   [...(props.brackets ?? [])].sort((a, b) => b.rating - a.rating)

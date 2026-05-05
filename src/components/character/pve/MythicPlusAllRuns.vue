@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div v-if="seasonRuns.length === 0" class="ma-card p-6 text-sm text-ma-muted/70">
+    <div v-if="isSyncingSlice && seasonRuns.length === 0" class="ma-card p-6 text-sm text-ma-muted/70 flex items-center gap-2">
+      <span class="loading loading-spinner loading-xs" />
+      Syncing dungeon data…
+    </div>
+    <div v-else-if="seasonRuns.length === 0" class="ma-card p-6 text-sm text-ma-muted/70">
       No mythic+ runs recorded this season.
     </div>
     <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -160,6 +164,7 @@ import type { MythicKeystoneDungeonGameData } from '@/types/gameData'
 import { CLASS_COLORS, SPEC_TO_CLASS } from '@/utils/wowConstants'
 import { displayName } from '@/utils/display'
 import { useWowheadRefresh } from '@/composables/useWowhead'
+import { useCharacterContext } from '@/composables/useCharacterContext'
 
 const props = defineProps<{
   runs: DungeonRun[]
@@ -169,6 +174,9 @@ const props = defineProps<{
 
 const dialogRef = ref<HTMLDialogElement | null>(null)
 const selectedRun = ref<DungeonRun | null>(null)
+
+const { freshness } = useCharacterContext()
+const isSyncingSlice = computed(() => freshness.value.mythic_plus === 'never_synced')
 
 function openRun(run: DungeonRun): void {
   selectedRun.value = run

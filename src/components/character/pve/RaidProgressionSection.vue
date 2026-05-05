@@ -18,6 +18,10 @@
     <div v-else-if="isError" class="ma-card p-6 text-sm text-red-300">
       Couldn't load raid data. <button type="button" class="underline" @click="() => refetch()">Retry</button>
     </div>
+    <div v-else-if="isSyncingSlice && !latestExpansion" class="ma-card p-6 text-sm text-ma-muted/70 flex items-center gap-2">
+      <span class="loading loading-spinner loading-xs" />
+      Syncing raid data…
+    </div>
     <div v-else-if="!latestExpansion" class="ma-card p-6 text-sm text-ma-muted/70">
       No raid data available.
     </div>
@@ -52,6 +56,7 @@
 import { computed, ref } from 'vue'
 import RaidInstanceCard from './RaidInstanceCard.vue'
 import { useRaidInstances } from '@/composables/usePveGameData'
+import { useCharacterContext } from '@/composables/useCharacterContext'
 import type { RaidEncounterProgress } from '@/types/character'
 import type { RaidInstanceGameData } from '@/types/gameData'
 
@@ -61,6 +66,9 @@ defineProps<{
 
 const { data, isLoading, isError, refetch } = useRaidInstances()
 const showLegacy = ref(false)
+
+const { freshness } = useCharacterContext()
+const isSyncingSlice = computed(() => freshness.value.raids === 'never_synced')
 
 interface ExpansionGroup {
   expansion: RaidInstanceGameData['expansion']
