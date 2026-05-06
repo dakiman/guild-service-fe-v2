@@ -1,30 +1,26 @@
 <template>
   <div class="p-4 max-w-6xl mx-auto">
     <header class="mb-6">
-      <h1 class="text-3xl font-bold">WoW Service</h1>
-      <p class="text-base-content/70 mt-1">
+      <h1 class="text-3xl font-bold text-wsa-heading">WoW Service</h1>
+      <p class="text-wsa-muted mt-1">
         Browse World of Warcraft guilds and characters across regions and realms.
       </p>
     </header>
 
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <div class="card bg-base-200 shadow-sm">
-        <div class="card-body p-4">
-          <h2 class="card-title text-base">Find a character</h2>
-          <LookupForm kind="character" @submit="onCharacterSubmit" @pick="onCharacterSubmit" />
-        </div>
+      <div class="wsa-card">
+        <h2 class="stats-card-title mb-3">Find a character</h2>
+        <LookupForm kind="character" @submit="onCharacterSubmit" @pick="onCharacterSubmit" />
       </div>
-      <div class="card bg-base-200 shadow-sm">
-        <div class="card-body p-4">
-          <h2 class="card-title text-base">Find a guild</h2>
-          <LookupForm kind="guild" @submit="onGuildSubmit" @pick="onGuildSubmit" />
-        </div>
+      <div class="wsa-card">
+        <h2 class="stats-card-title mb-3">Find a guild</h2>
+        <LookupForm kind="guild" @submit="onGuildSubmit" @pick="onGuildSubmit" />
       </div>
     </section>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <section aria-labelledby="guilds-heading" class="space-y-4">
-        <h2 id="guilds-heading" class="text-xl font-semibold">Guilds</h2>
+        <h2 id="guilds-heading" class="text-xl font-semibold text-wsa-heading">Guilds</h2>
 
         <GuildSummaryCard
           title="Recently searched"
@@ -48,81 +44,77 @@
       </section>
 
       <section aria-labelledby="characters-heading" class="space-y-4">
-        <h2 id="characters-heading" class="text-xl font-semibold">Characters</h2>
+        <h2 id="characters-heading" class="text-xl font-semibold text-wsa-heading">Characters</h2>
 
-        <div class="card bg-base-200 shadow-sm">
-          <div class="card-body p-4">
-            <h3 class="card-title text-base">Recently searched</h3>
+        <div class="wsa-card">
+          <h3 class="stats-card-title mb-3">Recently searched</h3>
 
-            <div v-if="charactersQuery.isPending.value" class="space-y-2 mt-2">
-              <div v-for="i in 3" :key="i" class="skeleton h-6 w-full"></div>
-            </div>
-
-            <ErrorState
-              v-else-if="charactersQuery.isError.value"
-              :error="charactersQuery.error.value"
-              @retry="charactersQuery.refetch()"
-            />
-
-            <ul
-              v-else-if="charactersQuery.data.value?.recently_searched.length"
-              class="space-y-1 mt-2"
-            >
-              <li v-for="c in charactersQuery.data.value.recently_searched" :key="c.id">
-                <router-link
-                  :to="{
-                    name: 'character-detail',
-                    params: { region: c.region, realm: c.realm, name: c.name },
-                  }"
-                  class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
-                >
-                  <ClassIcon :class-id="c.class_id" />
-                  <span class="font-bold">{{ displayName(c.name, c.display_name) }}</span>
-                  <span class="text-base-content/70 text-sm">
-                    · {{ displayRealm(c.realm, c.display_realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
-                  </span>
-                </router-link>
-              </li>
-            </ul>
-
-            <p v-else class="text-base-content/60 text-sm mt-2">No recent character searches.</p>
+          <div v-if="charactersQuery.isPending.value" class="space-y-2">
+            <div v-for="i in 3" :key="i" class="h-6 w-full rounded bg-wsa-border/20 animate-pulse"></div>
           </div>
+
+          <ErrorState
+            v-else-if="charactersQuery.isError.value"
+            :error="charactersQuery.error.value"
+            @retry="charactersQuery.refetch()"
+          />
+
+          <ul
+            v-else-if="charactersQuery.data.value?.recently_searched.length"
+            class="space-y-1"
+          >
+            <li v-for="c in charactersQuery.data.value.recently_searched" :key="c.id">
+              <router-link
+                :to="{
+                  name: 'character-detail',
+                  params: { region: c.region, realm: c.realm, name: c.name },
+                }"
+                class="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-black/20 transition-colors"
+              >
+                <ClassIcon :class-id="c.class_id" />
+                <span class="font-bold text-wsa-text">{{ displayName(c.name, c.display_name) }}</span>
+                <span class="text-wsa-muted text-sm">
+                  · {{ displayRealm(c.realm, c.display_realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
+                </span>
+              </router-link>
+            </li>
+          </ul>
+
+          <p v-else class="text-wsa-disabled text-sm italic">No recent character searches.</p>
         </div>
 
-        <div class="card bg-base-200 shadow-sm">
-          <div class="card-body p-4">
-            <h3 class="card-title text-base">Most popular</h3>
+        <div class="wsa-card">
+          <h3 class="stats-card-title mb-3">Most popular</h3>
 
-            <div v-if="charactersQuery.isPending.value" class="space-y-2 mt-2">
-              <div v-for="i in 3" :key="i" class="skeleton h-6 w-full"></div>
-            </div>
-
-            <ErrorState
-              v-else-if="charactersQuery.isError.value"
-              :error="charactersQuery.error.value"
-              @retry="charactersQuery.refetch()"
-            />
-
-            <ul v-else-if="charactersQuery.data.value?.most_popular.length" class="space-y-1 mt-2">
-              <li v-for="c in charactersQuery.data.value.most_popular" :key="c.id">
-                <router-link
-                  :to="{
-                    name: 'character-detail',
-                    params: { region: c.region, realm: c.realm, name: c.name },
-                  }"
-                  class="flex items-center gap-2 py-1 px-2 rounded hover:bg-base-300 transition-colors"
-                >
-                  <ClassIcon :class-id="c.class_id" />
-                  <span class="font-bold">{{ displayName(c.name, c.display_name) }}</span>
-                  <span class="text-base-content/70 text-sm">
-                    · {{ displayRealm(c.realm, c.display_realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
-                  </span>
-                </router-link>
-              </li>
-            </ul>
-
-            <p v-else class="text-base-content/60 text-sm mt-2">No popular characters yet.</p>
+          <div v-if="charactersQuery.isPending.value" class="space-y-2">
+            <div v-for="i in 3" :key="i" class="h-6 w-full rounded bg-wsa-border/20 animate-pulse"></div>
           </div>
+
+          <ErrorState
+            v-else-if="charactersQuery.isError.value"
+            :error="charactersQuery.error.value"
+            @retry="charactersQuery.refetch()"
+          />
+
+          <ul v-else-if="charactersQuery.data.value?.most_popular.length" class="space-y-1">
+            <li v-for="c in charactersQuery.data.value.most_popular" :key="c.id">
+              <router-link
+                :to="{
+                  name: 'character-detail',
+                  params: { region: c.region, realm: c.realm, name: c.name },
+                }"
+                class="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-black/20 transition-colors"
+              >
+                <ClassIcon :class-id="c.class_id" />
+                <span class="font-bold text-wsa-text">{{ displayName(c.name, c.display_name) }}</span>
+                <span class="text-wsa-muted text-sm">
+                  · {{ displayRealm(c.realm, c.display_realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
+                </span>
+              </router-link>
+            </li>
+          </ul>
+
+          <p v-else class="text-wsa-disabled text-sm italic">No popular characters yet.</p>
         </div>
       </section>
     </div>

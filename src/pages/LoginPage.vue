@@ -1,52 +1,46 @@
 <template>
-  <div class="card max-w-md mx-auto bg-base-200">
-    <div class="card-body">
-      <h1 class="card-title">Sign in</h1>
-      <form class="flex flex-col gap-3" @submit.prevent="onSubmit">
-        <label class="form-control w-full">
-          <div class="label">
-            <span class="label-text">Email</span>
-          </div>
-          <input
-            v-model="email"
-            type="email"
-            autocomplete="email"
-            required
-            class="input input-bordered w-full"
-          />
-        </label>
+  <div class="wsa-card max-w-md mx-auto">
+    <h1 class="stats-card-title text-lg mb-4">Sign in</h1>
+    <form class="flex flex-col gap-3" @submit.prevent="onSubmit">
+      <label class="flex flex-col gap-1">
+        <span class="stats-label font-medium uppercase tracking-wide">Email</span>
+        <input
+          v-model="email"
+          type="email"
+          autocomplete="email"
+          required
+          class="wsa-input"
+        />
+      </label>
 
-        <label class="form-control w-full">
-          <div class="label">
-            <span class="label-text">Password</span>
-          </div>
-          <input
-            v-model="password"
-            type="password"
-            autocomplete="current-password"
-            required
-            class="input input-bordered w-full"
-          />
-        </label>
+      <label class="flex flex-col gap-1">
+        <span class="stats-label font-medium uppercase tracking-wide">Password</span>
+        <input
+          v-model="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          class="wsa-input"
+        />
+      </label>
 
-        <div v-if="errorMessage" class="alert alert-error">
-          <span>{{ errorMessage }}</span>
-        </div>
-
-        <button type="submit" class="btn btn-primary mt-2" :disabled="isSubmitting">
-          <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
-          <span>Sign in</span>
-        </button>
-      </form>
-
-      <div class="flex justify-between text-sm mt-4">
-        <router-link :to="{ name: 'register' }" class="link link-hover">
-          Don't have an account? Register
-        </router-link>
-        <router-link :to="{ name: 'forgot-password' }" class="link link-hover">
-          Forgot password?
-        </router-link>
+      <div v-if="errorMessage" class="wsa-card !border-red-800/50 !p-3 mt-1">
+        <p class="text-sm text-[#ff4444]">{{ errorMessage }}</p>
       </div>
+
+      <button type="submit" class="wsa-btn wsa-btn--primary mt-2 py-2 text-sm" :disabled="isSubmitting">
+        <span v-if="isSubmitting" class="wsa-spinner !w-4 !h-4 inline-block mr-2 align-middle"></span>
+        <span>Sign in</span>
+      </button>
+    </form>
+
+    <div class="flex justify-between text-sm mt-4">
+      <router-link :to="{ name: 'register' }" class="text-wsa-muted hover:text-wsa-heading transition-colors">
+        Don't have an account? Register
+      </router-link>
+      <router-link :to="{ name: 'forgot-password' }" class="text-wsa-muted hover:text-wsa-heading transition-colors">
+        Forgot password?
+      </router-link>
     </div>
   </div>
 </template>

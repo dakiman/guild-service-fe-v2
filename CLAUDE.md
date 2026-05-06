@@ -15,7 +15,7 @@ Env: copy `.env.example` → `.env`. `VITE_API_BASE_URL` defaults to `http://loc
 
 ## Architecture
 
-Vue 3 (`<script setup>` + TS) + Vite + Pinia + vue-router + TanStack Query + Tailwind/DaisyUI. Path alias `@` → `src`.
+Vue 3 (`<script setup>` + TS) + Vite + Pinia + vue-router + TanStack Query + Tailwind + DaisyUI (base tokens only). Path alias `@` → `src`.
 
 ### Backend contract (load-bearing)
 
@@ -40,7 +40,7 @@ Possibly-stale resources call `useStaleAutoRefresh` to trigger a refetch.
 
 ### Dungeons + Raids tabs
 
-- **Dungeons.** `pages/character/CharacterDungeonsTab.vue` (route `character-dungeons`, path `/dungeons`). Composes `DungeonsHeadline` (M+ score colored from `rating.color`, season name, three "Timed N+" KPI pills) on top of a local DaisyUI `ma-tab` view-switcher between `MythicPlusBestPerDungeon` and `MythicPlusAllRuns` (NOT routes). `MythicPlusAllRuns.vue` renders one card per run with click-to-expand header; expand container animated via `grid-template-rows: 0fr ↔ 1fr` (no `v-show`). Expanded state is component-local `Set<runId>` — not persisted across navigations. Each run header is a `<button>`, so decorative children (member pills, chevron, name) must be non-interactive `<span>`s — `<ul>`/`<li>`/`<h3>` are invalid phrasing-content inside buttons.
+- **Dungeons.** `pages/character/CharacterDungeonsTab.vue` (route `character-dungeons`, path `/dungeons`). Composes `DungeonsHeadline` (M+ score colored from `rating.color`, season name, three "Timed N+" KPI pills) on top of a `wsa-tab` view-switcher between `MythicPlusBestPerDungeon` and `MythicPlusAllRuns` (NOT routes). `MythicPlusAllRuns.vue` renders one card per run with click-to-expand header; expand container animated via `grid-template-rows: 0fr ↔ 1fr` (no `v-show`). Expanded state is component-local `Set<runId>` — not persisted across navigations. Each run header is a `<button>`, so decorative children (member pills, chevron, name) must be non-interactive `<span>`s — `<ul>`/`<li>`/`<h3>` are invalid phrasing-content inside buttons.
 - **Raids.** `pages/character/CharacterRaidsTab.vue` (route `character-raids`, path `/raids`). Composes `RaidsHeadline` (hero `{killed}/{total} {diff}` for highest-progress instance via `useBestRaidProgression`, plus an `N · H · M` chip row) on top of `RaidProgressionSection` (per-instance cards, difficulty tabs, `BossRow` portraits).
 
 ### PvE game-data endpoints
@@ -88,7 +88,7 @@ After tooltip-bearing content re-renders, call `useWowheadRefresh(deps)` from `s
 - `src/api/` — one file per BE resource; all use shared `api` client.
 - `src/types/` — TS types mirroring BE Resources; **keep in sync** with `../backend`.
 
-Tailwind + DaisyUI. Themes limited to `business` (default, `<html data-theme>`) + `dracula` in `tailwind.config.js`. Prefer DaisyUI semantic classes (`btn`, `card`, `badge`, `tabs`).
+Tailwind + DaisyUI (`dark-leather` theme, `<html data-theme="dark-leather">`). **Do NOT use DaisyUI component classes** (`btn`, `card`, `badge`, `alert`, `table`, `navbar`, `skeleton`, `loading`, `join`, `form-control`). Use the custom `wsa-*` component classes defined in `src/style.css` instead: `wsa-card`, `wsa-btn`, `wsa-input`, `wsa-badge`, `wsa-spinner`, `wsa-tab`, `wsa-hero-banner`, `wsa-stat-pill`. For text colors use Tailwind utilities: `text-wsa-text`, `text-wsa-muted`, `text-wsa-disabled`, `text-wsa-heading`/`text-wsa-gold`. DaisyUI base tokens (`bg-base-100`, `text-base-content`) are fine for page-level backgrounds. Full reference: `docs/design-guide.md`.
 
 ### Deployment
 

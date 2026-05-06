@@ -1,105 +1,96 @@
 <template>
   <div v-if="user" class="max-w-3xl mx-auto p-4 flex flex-col gap-6">
-    <section class="card bg-base-200 shadow-sm">
-      <div class="card-body gap-3">
-        <h2 class="card-title">Account</h2>
-        <div class="flex flex-col gap-1 text-sm">
-          <div>
-            <span class="text-base-content/60">Name:</span>
-            <span class="ml-2 font-medium">{{ user.name }}</span>
-          </div>
-          <div>
-            <span class="text-base-content/60">Email:</span>
-            <span class="ml-2 font-medium">{{ user.email }}</span>
-          </div>
-          <div class="mt-2">
-            <span class="text-base-content/60">Battle.net:</span>
-            <span v-if="user.bnet_id" class="ml-2 font-medium">
-              Connected as {{ user.bnet_tag }} ({{ (user.bnet_region ?? '').toUpperCase() }})
-            </span>
-            <span v-else class="ml-2 font-medium">Not connected to Battle.net</span>
-          </div>
-          <div v-if="user.bnet_id && user.bnet_synced_at" class="text-xs text-base-content/60">
-            Last synced {{ relativeTime(user.bnet_synced_at) }}
-          </div>
+    <section class="wsa-card">
+      <h2 class="stats-card-title text-lg mb-3">Account</h2>
+      <div class="flex flex-col gap-1 text-sm">
+        <div>
+          <span class="text-wsa-muted">Name:</span>
+          <span class="ml-2 font-medium text-wsa-text">{{ user.name }}</span>
+        </div>
+        <div>
+          <span class="text-wsa-muted">Email:</span>
+          <span class="ml-2 font-medium text-wsa-text">{{ user.email }}</span>
+        </div>
+        <div class="mt-2">
+          <span class="text-wsa-muted">Battle.net:</span>
+          <span v-if="user.bnet_id" class="ml-2 font-medium text-wsa-text">
+            Connected as {{ user.bnet_tag }} ({{ (user.bnet_region ?? '').toUpperCase() }})
+          </span>
+          <span v-else class="ml-2 font-medium text-wsa-text">Not connected to Battle.net</span>
+        </div>
+        <div v-if="user.bnet_id && user.bnet_synced_at" class="text-xs text-wsa-disabled">
+          Last synced {{ relativeTime(user.bnet_synced_at) }}
         </div>
       </div>
     </section>
 
-    <section class="card bg-base-200 shadow-sm">
-      <div class="card-body gap-3">
-        <h2 class="card-title">{{ user.bnet_id ? 'Re-sync Battle.net' : 'Connect Battle.net' }}</h2>
-        <p class="text-sm text-base-content/70">
-          Choose your region and authorize with Battle.net to import your characters.
-        </p>
-        <div class="flex flex-wrap items-end gap-3">
-          <label class="form-control">
-            <div class="label">
-              <span class="label-text">Region</span>
+    <section class="wsa-card">
+      <h2 class="stats-card-title text-lg mb-3">{{ user.bnet_id ? 'Re-sync Battle.net' : 'Connect Battle.net' }}</h2>
+      <p class="text-sm text-wsa-muted">
+        Choose your region and authorize with Battle.net to import your characters.
+      </p>
+      <div class="flex flex-wrap items-end gap-3 mt-3">
+        <label class="flex flex-col gap-1">
+          <span class="stats-label font-medium uppercase tracking-wide">Region</span>
+          <RegionSelect v-model="oauthRegion" />
+        </label>
+        <button
+          type="button"
+          class="wsa-btn wsa-btn--primary py-2 text-sm"
+          :disabled="oauthBusy"
+          @click="startOAuth"
+        >
+          <span v-if="oauthBusy" class="wsa-spinner !w-4 !h-4 inline-block mr-2 align-middle" />
+          Sync from Battle.net
+        </button>
+      </div>
+    </section>
+
+    <section class="wsa-card">
+      <h2 class="stats-card-title text-lg mb-3">My Characters</h2>
+      <p v-if="user.characters.length === 0" class="text-sm text-wsa-disabled">
+        No characters yet. Connect to Battle.net above to sync them.
+      </p>
+      <ul v-else class="flex flex-col divide-y divide-wsa-border/30">
+        <li
+          v-for="character in user.characters"
+          :key="character.id"
+          class="flex flex-wrap items-center gap-3 py-3"
+        >
+          <ClassIcon :class-id="character.class_id" />
+          <div class="flex-1 min-w-0">
+            <div class="text-sm text-wsa-text">
+              <span class="font-bold">{{ displayName(character.name, character.display_name) }}</span>
+              <span> on {{ displayRealm(character.realm, character.display_realm) }} ({{ character.region.toUpperCase() }}) — L{{ character.level }}</span>
             </div>
-            <RegionSelect v-model="oauthRegion" />
-          </label>
+          </div>
+          <router-link
+            :to="{
+              name: 'character-detail',
+              params: {
+                region: character.region,
+                realm: character.realm,
+                name: character.name,
+              },
+            }"
+            class="wsa-btn text-xs"
+          >
+            View
+          </router-link>
           <button
             type="button"
-            class="btn btn-primary"
-            :disabled="oauthBusy"
-            @click="startOAuth"
+            class="wsa-btn text-xs"
+            :disabled="recruitmentBusy[character.id]"
+            @click="onToggleRecruitment(character.id)"
           >
-            <span v-if="oauthBusy" class="loading loading-spinner loading-xs" />
-            Sync from Battle.net
+            <span
+              v-if="recruitmentBusy[character.id]"
+              class="wsa-spinner !w-3 !h-3 inline-block mr-1 align-middle"
+            />
+            <span>Looking for guild</span>
           </button>
-        </div>
-      </div>
-    </section>
-
-    <section class="card bg-base-200 shadow-sm">
-      <div class="card-body gap-3">
-        <h2 class="card-title">My Characters</h2>
-        <p v-if="user.characters.length === 0" class="text-sm text-base-content/60">
-          No characters yet. Connect to Battle.net above to sync them.
-        </p>
-        <ul v-else class="flex flex-col divide-y divide-base-300">
-          <li
-            v-for="character in user.characters"
-            :key="character.id"
-            class="flex flex-wrap items-center gap-3 py-3"
-          >
-            <ClassIcon :class-id="character.class_id" />
-            <div class="flex-1 min-w-0">
-              <div class="text-sm">
-                <span class="font-bold">{{ displayName(character.name, character.display_name) }}</span>
-                <span> on {{ displayRealm(character.realm, character.display_realm) }} ({{ character.region.toUpperCase() }}) — L{{ character.level }}</span>
-              </div>
-            </div>
-            <router-link
-              :to="{
-                name: 'character-detail',
-                params: {
-                  region: character.region,
-                  realm: character.realm,
-                  name: character.name,
-                },
-              }"
-              class="btn btn-xs btn-ghost"
-            >
-              View
-            </router-link>
-            <button
-              type="button"
-              class="btn btn-xs"
-              :class="recruitmentBusy[character.id] ? 'btn-disabled' : 'btn-outline'"
-              :disabled="recruitmentBusy[character.id]"
-              @click="onToggleRecruitment(character.id)"
-            >
-              <span
-                v-if="recruitmentBusy[character.id]"
-                class="loading loading-spinner loading-xs"
-              />
-              <span>Looking for guild</span>
-            </button>
-          </li>
-        </ul>
-      </div>
+        </li>
+      </ul>
     </section>
   </div>
 </template>

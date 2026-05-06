@@ -28,7 +28,7 @@
           <button
             v-if="character.talent_loadout_code"
             type="button"
-            class="btn btn-sm btn-ghost"
+            class="wsa-btn"
             @click="onCopyLoadout"
           >
             Copy loadout
@@ -36,12 +36,12 @@
           <button
             v-if="canToggleRecruitment"
             type="button"
-            class="btn btn-sm"
-            :class="character.recruitment ? 'btn-success' : 'btn-outline'"
+            class="wsa-btn"
+            :class="character.recruitment ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400' : ''"
             :disabled="isToggling"
             @click="onToggleRecruitment"
           >
-            <span v-if="isToggling" class="loading loading-spinner loading-xs" />
+            <span v-if="isToggling" class="wsa-spinner !w-3 !h-3 inline-block mr-1" />
             {{ character.recruitment ? 'Looking for guild' : 'Not looking for guild' }}
           </button>
         </div>

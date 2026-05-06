@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div v-if="isSyncingSlice && seasonRuns.length === 0" class="ma-card p-6 text-sm text-ma-muted/70 flex items-center gap-2">
-      <span class="loading loading-spinner loading-xs" />
+    <div v-if="isSyncingSlice && seasonRuns.length === 0" class="wsa-card p-6 text-sm text-wsa-muted/70 flex items-center gap-2">
+      <span class="wsa-spinner !w-3 !h-3 inline-block" />
       Syncing dungeon data…
     </div>
-    <div v-else-if="seasonRuns.length === 0" class="ma-card p-6 text-sm text-ma-muted/70">
+    <div v-else-if="seasonRuns.length === 0" class="wsa-card p-6 text-sm text-wsa-muted/70">
       No mythic+ runs recorded this season.
     </div>
     <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -12,7 +12,7 @@
         v-for="run in sortedRuns"
         :key="run.id"
         type="button"
-        class="ma-card p-3 text-left transition-colors hover:border-ma-border/60 hover:bg-ma-card/80 flex flex-col gap-2"
+        class="wsa-card p-3 text-left transition-colors hover:border-wsa-border/60 hover:bg-wsa-card/80 flex flex-col gap-2"
         @click="openRun(run)"
       >
         <div class="flex items-center gap-2 min-w-0">
@@ -23,10 +23,10 @@
             class="w-5 h-5 rounded shrink-0"
             loading="lazy"
           />
-          <span class="font-semibold text-sm text-ma-text truncate">{{ run.dungeon_name }}</span>
+          <span class="font-semibold text-sm text-wsa-text truncate">{{ run.dungeon_name }}</span>
         </div>
         <div class="flex items-center gap-2 text-xs">
-          <span class="font-bold" :class="run.is_completed_on_time ? 'text-ma-gold' : 'text-ma-muted/70'">
+          <span class="font-bold" :class="run.is_completed_on_time ? 'text-wsa-gold' : 'text-wsa-muted/70'">
             +{{ run.keystone_level }}
           </span>
           <span
@@ -37,13 +37,13 @@
           >
             {{ run.is_completed_on_time ? 'On time' : 'Over time' }}
           </span>
-          <span class="text-ma-muted/70 tabular-nums ml-auto">{{ formatDuration(run.duration) }}</span>
+          <span class="text-wsa-muted/70 tabular-nums ml-auto">{{ formatDuration(run.duration) }}</span>
         </div>
         <div class="flex items-center gap-0.5 overflow-hidden">
           <span
             v-for="(member, idx) in run.members"
             :key="`pill:${run.id}:${idx}`"
-            class="inline-flex items-center gap-px px-0.5 rounded-full border border-ma-border/30 bg-ma-card/40 text-[9px] leading-tight text-ma-muted/80"
+            class="inline-flex items-center gap-px px-0.5 rounded-full border border-wsa-border/30 bg-wsa-card/40 text-[9px] leading-tight text-wsa-muted/80"
             :title="`${displayName(member.character_name)} • ${formatRealm(member.character_realm, member.character_realm_display)}`"
           >
             <SpecIcon
@@ -62,7 +62,7 @@
       class="backdrop:bg-black/60 bg-transparent p-0 m-auto max-w-lg w-full"
       @click="onBackdropClick"
     >
-      <div v-if="selectedRun" class="ma-card p-5 flex flex-col gap-4">
+      <div v-if="selectedRun" class="wsa-card p-5 flex flex-col gap-4">
         <div class="flex items-center gap-3">
           <img
             v-if="dungeonIcons[selectedRun.dungeon_id]"
@@ -70,10 +70,10 @@
             :alt="selectedRun.dungeon_name"
             class="w-7 h-7 rounded shrink-0"
           />
-          <span class="font-semibold text-lg text-ma-text flex-1">{{ selectedRun.dungeon_name }}</span>
+          <span class="font-semibold text-lg text-wsa-text flex-1">{{ selectedRun.dungeon_name }}</span>
           <button
             type="button"
-            class="text-ma-muted/70 hover:text-ma-text transition-colors p-1"
+            class="text-wsa-muted/70 hover:text-wsa-text transition-colors p-1"
             aria-label="Close"
             @click="closeDialog"
           >
@@ -82,7 +82,7 @@
         </div>
 
         <div class="flex items-center gap-3 text-sm">
-          <span class="font-bold" :class="selectedRun.is_completed_on_time ? 'text-ma-gold' : 'text-ma-muted/70'">
+          <span class="font-bold" :class="selectedRun.is_completed_on_time ? 'text-wsa-gold' : 'text-wsa-muted/70'">
             +{{ selectedRun.keystone_level }}
           </span>
           <span
@@ -93,8 +93,8 @@
           >
             {{ selectedRun.is_completed_on_time ? 'On time' : 'Over time' }}
           </span>
-          <span class="text-ma-muted/70 tabular-nums">{{ formatDuration(selectedRun.duration) }}</span>
-          <span class="text-ma-muted/50 tabular-nums text-xs ml-auto">{{ formatTimestamp(selectedRun.completed_timestamp) }}</span>
+          <span class="text-wsa-muted/70 tabular-nums">{{ formatDuration(selectedRun.duration) }}</span>
+          <span class="text-wsa-muted/50 tabular-nums text-xs ml-auto">{{ formatTimestamp(selectedRun.completed_timestamp) }}</span>
         </div>
 
         <div v-if="selectedRun.affixes.length" class="flex flex-wrap gap-1">
@@ -108,7 +108,7 @@
         <div v-if="selectedRun.members.length" class="overflow-x-auto">
           <table class="w-full text-xs">
             <thead>
-              <tr class="text-[10px] uppercase tracking-wider text-ma-muted/70">
+              <tr class="text-[10px] uppercase tracking-wider text-wsa-muted/70">
                 <th class="text-left px-2 py-1 font-medium">Name</th>
                 <th class="text-left px-2 py-1 font-medium">Realm</th>
                 <th class="text-left px-2 py-1 font-medium">Spec</th>
@@ -119,7 +119,7 @@
               <tr
                 v-for="(member, idx) in selectedRun.members"
                 :key="`${member.character_region}:${member.character_realm}:${member.character_name}:${idx}`"
-                class="border-t border-ma-border/15"
+                class="border-t border-wsa-border/15"
               >
                 <td class="px-2 py-1">
                   <RouterLink
@@ -131,8 +131,8 @@
                     {{ displayName(member.character_name) }}
                   </RouterLink>
                 </td>
-                <td class="px-2 py-1 text-ma-muted/70">{{ formatRealm(member.character_realm, member.character_realm_display) }}</td>
-                <td class="px-2 py-1 text-ma-muted/70">
+                <td class="px-2 py-1 text-wsa-muted/70">{{ formatRealm(member.character_realm, member.character_realm_display) }}</td>
+                <td class="px-2 py-1 text-wsa-muted/70">
                   <span class="inline-flex items-center gap-1.5">
                     <SpecIcon
                       :spec-id="member.spec_id"
@@ -147,7 +147,7 @@
             </tbody>
           </table>
         </div>
-        <p v-else class="text-xs text-ma-muted/60 italic m-0">No member data recorded.</p>
+        <p v-else class="text-xs text-wsa-muted/60 italic m-0">No member data recorded.</p>
       </div>
     </dialog>
   </div>

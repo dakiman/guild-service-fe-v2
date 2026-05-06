@@ -6,10 +6,10 @@
       :current-season="currentSeason"
     />
 
-    <div v-if="isLoading" class="ma-card p-6 text-sm text-ma-muted/70">
+    <div v-if="isLoading" class="wsa-card p-6 text-sm text-wsa-muted/70">
       Loading dungeon data…
     </div>
-    <div v-else-if="isError" class="ma-card p-6 text-sm text-red-300">
+    <div v-else-if="isError" class="wsa-card p-6 text-sm text-red-300">
       Couldn't load dungeon data.
       <button type="button" class="underline" @click="() => refetch()">Retry</button>
     </div>
@@ -19,8 +19,8 @@
           v-for="view in VIEWS"
           :key="view.key"
           type="button"
-          class="ma-tab"
-          :class="{ 'ma-tab--active': activeView === view.key }"
+          class="wsa-tab"
+          :class="{ 'wsa-tab--active': activeView === view.key }"
           role="tab"
           :aria-selected="activeView === view.key"
           @click="activeView = view.key"

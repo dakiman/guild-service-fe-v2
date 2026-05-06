@@ -1,8 +1,8 @@
 <template>
-  <div class="ma-card overflow-hidden">
+  <div class="wsa-card overflow-hidden">
     <table class="w-full text-sm">
       <thead>
-        <tr class="border-b border-ma-border/30 text-[10px] uppercase tracking-wider text-ma-muted/70">
+        <tr class="border-b border-wsa-border/30 text-[10px] uppercase tracking-wider text-wsa-muted/70">
           <th class="text-left px-3 py-2 font-medium">Dungeon</th>
           <th class="text-right px-3 py-2 font-medium">Level</th>
           <th class="text-right px-3 py-2 font-medium hidden sm:table-cell">Time</th>
@@ -13,7 +13,7 @@
         <tr
           v-for="row in rows"
           :key="row.dungeon.id"
-          class="border-b border-ma-border/15 last:border-0"
+          class="border-b border-wsa-border/15 last:border-0"
         >
           <td class="px-3 py-2">
             <div class="flex items-center gap-2 min-w-0">
@@ -25,20 +25,20 @@
                 loading="lazy"
               />
               <div v-else class="w-7 h-7 rounded bg-base-300 shrink-0" />
-              <span class="truncate text-ma-text">{{ row.dungeon.name }}</span>
+              <span class="truncate text-wsa-text">{{ row.dungeon.name }}</span>
             </div>
           </td>
           <td class="px-3 py-2 text-right tabular-nums">
-            <span v-if="row.bestRun" class="font-bold" :class="row.bestRun.is_completed_on_time ? 'text-ma-gold' : 'text-ma-muted/70'">
+            <span v-if="row.bestRun" class="font-bold" :class="row.bestRun.is_completed_on_time ? 'text-wsa-gold' : 'text-wsa-muted/70'">
               +{{ row.bestRun.keystone_level }}
             </span>
-            <span v-else class="text-ma-muted/40">—</span>
+            <span v-else class="text-wsa-muted/40">—</span>
           </td>
           <td class="px-3 py-2 text-right tabular-nums hidden sm:table-cell">
-            <span v-if="row.bestRun" :class="row.bestRun.is_completed_on_time ? 'text-ma-text' : 'text-red-300/80'">
+            <span v-if="row.bestRun" :class="row.bestRun.is_completed_on_time ? 'text-wsa-text' : 'text-red-300/80'">
               {{ formatDuration(row.bestRun.duration) }}
             </span>
-            <span v-else class="text-ma-muted/40">—</span>
+            <span v-else class="text-wsa-muted/40">—</span>
           </td>
           <td class="px-3 py-2 hidden md:table-cell">
             <div v-if="row.bestRun" class="flex gap-1 flex-wrap">
@@ -48,7 +48,7 @@
                 :affix-id="affix.id"
               />
             </div>
-            <span v-else class="text-ma-muted/40">—</span>
+            <span v-else class="text-wsa-muted/40">—</span>
           </td>
         </tr>
       </tbody>

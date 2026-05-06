@@ -1,13 +1,13 @@
 <template>
-  <div class="ma-card p-6">
-    <h3 class="ma-text-heading mb-4 text-lg">Detailed stats</h3>
+  <div class="wsa-card p-6">
+    <h3 class="wsa-text-heading mb-4 text-lg">Detailed stats</h3>
 
-    <div v-if="isSyncingSlice" class="flex items-center gap-2 text-ma-muted/80 text-sm">
-      <span class="loading loading-spinner loading-xs" />
+    <div v-if="isSyncingSlice" class="flex items-center gap-2 text-wsa-muted/80 text-sm">
+      <span class="wsa-spinner !w-3 !h-3 inline-block" />
       Syncing stats…
     </div>
 
-    <div v-else-if="!stats" class="text-ma-muted/80 text-sm">
+    <div v-else-if="!stats" class="text-wsa-muted/80 text-sm">
       Stats not available yet — refresh shortly.
     </div>
 
@@ -67,8 +67,8 @@ const StatRow = defineComponent({
   setup(slotProps) {
     return () =>
       h('div', { class: 'flex items-center justify-between' }, [
-        h('span', { class: 'text-ma-muted/80' }, slotProps.label),
-        h('span', { class: 'ma-text-heading font-medium' }, slotProps.value),
+        h('span', { class: 'text-wsa-muted/80' }, slotProps.label),
+        h('span', { class: 'wsa-text-heading font-medium' }, slotProps.value),
       ])
   },
 })

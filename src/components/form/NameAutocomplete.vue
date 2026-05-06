@@ -78,7 +78,6 @@ function onFocus() {
 }
 
 function onBlur() {
-  // Defer so click-on-suggestion (mousedown → blur → click) registers.
   setTimeout(() => {
     open.value = false
   }, 120)
@@ -131,7 +130,7 @@ const showEmpty = computed(
     <input
       ref="inputEl"
       type="text"
-      class="input input-bordered input-sm w-full"
+      class="wsa-input !py-1.5 text-sm"
       :value="modelValue"
       :placeholder="placeholder"
       :aria-label="placeholder"
@@ -147,13 +146,14 @@ const showEmpty = computed(
 
     <div
       v-if="open"
-      class="absolute left-0 right-0 mt-1 z-20 rounded-md bg-base-100 border border-base-300 shadow-lg max-h-72 overflow-auto"
+      class="absolute left-0 right-0 mt-1 z-20 rounded-md border-2 border-wsa-border shadow-lg max-h-72 overflow-auto"
+      style="background: rgb(var(--wsa-bg))"
       role="listbox"
     >
       <div v-if="showLoading" class="p-3 space-y-2">
-        <div class="skeleton h-5 w-full"></div>
-        <div class="skeleton h-5 w-full"></div>
-        <div class="skeleton h-5 w-full"></div>
+        <div class="h-5 w-full rounded bg-wsa-border/20 animate-pulse"></div>
+        <div class="h-5 w-full rounded bg-wsa-border/20 animate-pulse"></div>
+        <div class="h-5 w-full rounded bg-wsa-border/20 animate-pulse"></div>
       </div>
 
       <ul v-else-if="suggestions.length" class="py-1">
@@ -163,7 +163,7 @@ const showEmpty = computed(
           role="option"
           :aria-selected="i === highlightIndex"
           class="flex items-center gap-2 px-3 py-1.5 cursor-pointer text-sm"
-          :class="i === highlightIndex ? 'bg-primary text-primary-content' : 'hover:bg-base-200'"
+          :class="i === highlightIndex ? 'bg-wsa-muted/15 text-wsa-heading' : 'text-wsa-text hover:bg-black/20'"
           @mousedown.prevent="pick(s)"
           @mouseenter="highlightIndex = i"
         >
@@ -175,7 +175,7 @@ const showEmpty = computed(
           />
           <ClassIcon v-if="s._kind === 'character'" :class-id="s.class_id" />
           <span class="font-bold truncate">{{ fmtName(s.name, s.display_name) }}</span>
-          <span class="opacity-70 truncate">
+          <span class="text-wsa-muted truncate">
             · {{ fmtRealm(s.realm, s.display_realm) }} ({{ s.region.toUpperCase() }})<template
               v-if="s._kind === 'character'"
             >
@@ -184,7 +184,7 @@ const showEmpty = computed(
         </li>
       </ul>
 
-      <div v-else-if="showEmpty" class="p-3 text-sm text-base-content/60">
+      <div v-else-if="showEmpty" class="p-3 text-sm text-wsa-disabled">
         No matches — pick a realm and submit to search Blizzard.
       </div>
     </div>

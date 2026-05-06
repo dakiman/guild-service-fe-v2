@@ -1,5 +1,5 @@
 <template>
-  <div class="ma-card p-6">
+  <div class="wsa-card p-6">
     <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)_minmax(0,1fr)] gap-6 items-start">
       <div class="flex flex-col gap-2">
         <EquipmentSlot
@@ -13,7 +13,7 @@
       </div>
 
       <div class="flex flex-col items-center gap-4">
-        <div class="ma-card-inner overflow-hidden rounded-ma-row w-full max-w-[360px] aspect-[3/4]">
+        <div class="wsa-card-inner overflow-hidden rounded-wsa-row w-full max-w-[360px] aspect-[3/4]">
           <img
             v-if="renderUrl"
             :src="renderUrl"
@@ -21,7 +21,7 @@
             class="w-full h-full object-cover"
             loading="lazy"
           />
-          <div v-else class="w-full h-full grid place-items-center text-ma-muted/50 text-sm">
+          <div v-else class="w-full h-full grid place-items-center text-wsa-muted/50 text-sm">
             No render available
           </div>
         </div>

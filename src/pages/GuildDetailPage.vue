@@ -61,12 +61,12 @@ const showError = computed(
 
       <GuildStatsSection :region="region" :realm="realm" :name="name" />
 
-      <div class="form-control max-w-sm">
-        <label class="label"><span class="label-text">Filter members</span></label>
+      <div class="max-w-sm">
+        <label class="block text-xs text-wsa-muted mb-1">Filter members</label>
         <input
           v-model="filterText"
           type="text"
-          class="input input-bordered input-sm"
+          class="wsa-input"
           placeholder="Filter by name…"
         />
       </div>

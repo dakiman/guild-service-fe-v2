@@ -11,37 +11,37 @@
 
     <div
       v-else
-      class="ma-card p-6 flex flex-col gap-6"
+      class="wsa-card p-6 flex flex-col gap-6"
       @click="clearPreview"
     >
       <div class="flex items-start justify-between gap-4">
-        <span class="text-xs uppercase tracking-widest text-ma-muted/80">
+        <span class="text-xs uppercase tracking-widest text-wsa-muted/80">
           {{ heroLabel }}
         </span>
-        <span class="text-xs text-ma-muted/70">
+        <span class="text-xs text-wsa-muted/70">
           {{ character.titles.length }} {{ character.titles.length === 1 ? 'title' : 'titles' }} earned
         </span>
       </div>
 
       <div v-if="heroName" class="flex flex-col items-center gap-3">
         <div class="w-full flex items-center gap-3">
-          <div class="flex-1 border-t border-ma-gold/30" />
-          <Crown class="w-4 h-4 text-ma-gold/60" />
-          <div class="flex-1 border-t border-ma-gold/30" />
+          <div class="flex-1 border-t border-wsa-gold/30" />
+          <Crown class="w-4 h-4 text-wsa-gold/60" />
+          <div class="flex-1 border-t border-wsa-gold/30" />
         </div>
 
         <Transition name="hero-fade" mode="out-in">
           <p
             :key="heroName"
-            class="ma-text-heading text-ma-gold text-2xl sm:text-3xl font-semibold text-center px-2"
+            class="wsa-text-heading text-wsa-gold text-2xl sm:text-3xl font-semibold text-center px-2"
           >
             {{ heroName }}
           </p>
         </Transition>
 
         <div class="w-full flex items-center gap-3">
-          <div class="flex-1 border-t border-ma-gold/30" />
-          <div class="flex-1 border-t border-ma-gold/30" />
+          <div class="flex-1 border-t border-wsa-gold/30" />
+          <div class="flex-1 border-t border-wsa-gold/30" />
         </div>
       </div>
 
@@ -55,8 +55,8 @@
           class="group relative overflow-hidden rounded-md border px-3 py-2 pl-4 text-sm cursor-pointer transition-colors"
           :class="
             previewedTitleId === title.id
-              ? 'border-ma-gold/70 bg-base-200/40 ma-text-heading'
-              : 'border-base-300/60 hover:border-ma-gold/60 text-ma-muted hover:ma-text-heading'
+              ? 'border-wsa-gold/70 bg-base-200/40 wsa-text-heading'
+              : 'border-base-300/60 hover:border-wsa-gold/60 text-wsa-muted hover:wsa-text-heading'
           "
           @click.stop="onChipClick(title.id)"
         >
@@ -64,8 +64,8 @@
             class="absolute left-0 top-0 bottom-0 w-[2px] transition-colors"
             :class="
               previewedTitleId === title.id
-                ? 'bg-ma-gold'
-                : 'bg-ma-gold/40 group-hover:bg-ma-gold'
+                ? 'bg-wsa-gold'
+                : 'bg-wsa-gold/40 group-hover:bg-wsa-gold'
             "
           />
           {{ title.bare }}

@@ -2,42 +2,42 @@
   <div class="flex flex-wrap gap-2">
     <RouterLink
       :to="summaryRoute"
-      class="ma-stat-pill ma-stat-pill-link"
+      class="wsa-stat-pill wsa-stat-pill-link"
       title="Equipment & gear"
     >
-      <Shield class="w-4 h-4 text-ma-gold" />
-      <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">iLvl</span>
-      <span class="font-bold text-ma-gold tabular-nums">{{ character.equipped_item_level }}</span>
+      <Shield class="w-4 h-4 text-wsa-gold" />
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">iLvl</span>
+      <span class="font-bold text-wsa-gold tabular-nums">{{ character.equipped_item_level }}</span>
     </RouterLink>
     <RouterLink
       :to="mythicPlusRoute"
-      class="ma-stat-pill ma-stat-pill-link"
+      class="wsa-stat-pill wsa-stat-pill-link"
       title="Mythic+ progression"
     >
-      <Swords class="w-4 h-4 text-ma-gold" />
-      <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">M+</span>
-      <span class="font-bold text-ma-gold tabular-nums">{{ mythicRating }}</span>
+      <Swords class="w-4 h-4 text-wsa-gold" />
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">M+</span>
+      <span class="font-bold text-wsa-gold tabular-nums">{{ mythicRating }}</span>
     </RouterLink>
     <RouterLink
       v-if="raidProgressionLabel"
       :to="raidRoute"
-      class="ma-stat-pill ma-stat-pill-link"
+      class="wsa-stat-pill wsa-stat-pill-link"
       :title="bestRaidProgression?.instanceName ?? undefined"
     >
-      <Skull class="w-4 h-4 text-ma-gold" />
-      <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">Raid</span>
-      <span class="font-bold text-ma-gold tabular-nums">{{ raidProgressionLabel }}</span>
+      <Skull class="w-4 h-4 text-wsa-gold" />
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Raid</span>
+      <span class="font-bold text-wsa-gold tabular-nums">{{ raidProgressionLabel }}</span>
     </RouterLink>
     <component
       :is="achievementsEnabled ? RouterLink : 'div'"
       :to="achievementsEnabled ? achievementsRoute : undefined"
-      class="ma-stat-pill"
-      :class="achievementsEnabled ? 'ma-stat-pill-link' : ''"
+      class="wsa-stat-pill"
+      :class="achievementsEnabled ? 'wsa-stat-pill-link' : ''"
       title="Achievements"
     >
-      <Trophy class="w-4 h-4 text-ma-gold" />
-      <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">Achievements</span>
-      <span class="font-bold text-ma-gold tabular-nums">{{ formatNumber(character.achievement_points) }}</span>
+      <Trophy class="w-4 h-4 text-wsa-gold" />
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Achievements</span>
+      <span class="font-bold text-wsa-gold tabular-nums">{{ formatNumber(character.achievement_points) }}</span>
     </component>
   </div>
 </template>
@@ -84,13 +84,13 @@ function formatNumber(n: number): string {
 </script>
 
 <style scoped>
-.ma-stat-pill-link {
+.wsa-stat-pill-link {
   text-decoration: none;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
-.ma-stat-pill-link:hover {
-  background-color: rgba(var(--ma-card) / 0.85);
-  border-color: rgba(var(--ma-gold) / 0.5);
+.wsa-stat-pill-link:hover {
+  background-color: rgba(var(--wsa-card) / 0.85);
+  border-color: rgba(var(--wsa-gold) / 0.5);
 }
 </style>

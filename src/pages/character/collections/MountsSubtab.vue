@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!hasMounts" class="card bg-base-200 p-8 text-center text-base-content/60">
+  <div v-if="!hasMounts" class="wsa-card p-4 text-center text-wsa-disabled">
     <Mountain class="mx-auto mb-2 h-10 w-10 opacity-60" />
     <p>No mounts collected yet.</p>
   </div>
@@ -11,7 +11,7 @@
       <li
         v-for="m in mounts"
         :key="m.mount_id"
-        class="card card-compact flex flex-row items-center gap-3 bg-base-200 px-3 py-2"
+        class="wsa-card-inner px-3 py-2 flex flex-row items-center gap-3"
         :class="{ 'opacity-50': !m.is_useable }"
       >
         <Mountain class="h-5 w-5 shrink-0 opacity-70" />
@@ -30,7 +30,7 @@
             {{ m.game_data.source_text }}
           </span>
         </div>
-        <span v-if="!m.is_useable" class="badge badge-ghost badge-sm">unusable</span>
+        <span v-if="!m.is_useable" class="wsa-badge">unusable</span>
       </li>
     </ul>
   </div>

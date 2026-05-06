@@ -1,15 +1,15 @@
 <template>
-  <div class="ma-card p-5 flex flex-col gap-3">
+  <div class="wsa-card p-5 flex flex-col gap-3">
     <div class="flex flex-col">
-      <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">Raid Progression</span>
-      <span class="text-4xl font-bold tabular-nums text-ma-gold">{{ heroLabel }}</span>
-      <span v-if="instanceName" class="text-xs text-ma-muted/60 mt-1">{{ instanceName }}</span>
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Raid Progression</span>
+      <span class="text-4xl font-bold tabular-nums text-wsa-gold">{{ heroLabel }}</span>
+      <span v-if="instanceName" class="text-xs text-wsa-muted/60 mt-1">{{ instanceName }}</span>
     </div>
     <div v-if="secondaryRow" class="flex flex-wrap gap-2">
       <span
         v-for="chip in secondaryRow"
         :key="chip.label"
-        class="ma-stat-pill text-xs text-ma-muted/80"
+        class="wsa-stat-pill text-xs text-wsa-muted/80"
       >
         <span class="font-semibold">{{ chip.label }}</span>
         <span class="tabular-nums">{{ chip.killed }}/{{ chip.total }}</span>

@@ -40,7 +40,7 @@ function onPick(payload: { region: Region; realm: string; name: string }) {
       />
       <RealmCombobox v-model="selectedRealm" class="flex-1 min-w-0" />
     </div>
-    <button type="submit" class="btn btn-primary btn-sm" :disabled="!canSubmit">
+    <button type="submit" class="wsa-btn wsa-btn--primary py-1.5 text-sm" :disabled="!canSubmit">
       {{ kind === 'guild' ? 'Find guild' : 'Find character' }}
     </button>
   </form>

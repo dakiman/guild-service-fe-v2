@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex justify-between items-center">
-      <p class="text-sm text-ma-muted/70">
+      <p class="text-sm text-wsa-muted/70">
         <template v-if="totalLabel">{{ totalLabel }}</template>
         <template v-else>Loading achievements…</template>
       </p>
-      <label class="flex items-center gap-2 text-xs text-ma-muted/70">
+      <label class="flex items-center gap-2 text-xs text-wsa-muted/70">
         <input
           v-model="includeFeats"
           type="checkbox"
@@ -15,15 +15,15 @@
       </label>
     </div>
 
-    <div v-if="isError" class="ma-card p-4 text-sm text-red-300">
+    <div v-if="isError" class="wsa-card p-4 text-sm text-red-300">
       Couldn't load achievements. <button class="link" @click="() => refetch()">Retry</button>
     </div>
 
-    <div v-else-if="!isLoading && rows.length === 0" class="text-ma-muted/70 text-sm">
+    <div v-else-if="!isLoading && rows.length === 0" class="text-wsa-muted/70 text-sm">
       No achievements recorded.
     </div>
 
-    <div v-else ref="parentRef" class="ma-card overflow-y-auto" style="height: 600px">
+    <div v-else ref="parentRef" class="wsa-card overflow-y-auto" style="height: 600px">
       <div
         :style="{
           height: `${virtualizer.getTotalSize()}px`,
@@ -42,7 +42,7 @@
             height: `${virtualRow.size}px`,
             transform: `translateY(${virtualRow.start}px)`,
           }"
-          class="px-4 py-3 border-b border-ma-border/30 flex items-center justify-between"
+          class="px-4 py-3 border-b border-wsa-border/30 flex items-center justify-between"
         >
           <div class="flex flex-col gap-0.5 min-w-0">
             <a
@@ -56,12 +56,12 @@
             </a>
             <span
               v-if="rows[virtualRow.index].category_name"
-              class="text-[10px] text-ma-muted/50 truncate"
+              class="text-[10px] text-wsa-muted/50 truncate"
             >
               {{ rows[virtualRow.index].category_name }}
             </span>
           </div>
-          <span class="text-xs text-ma-muted/60 tabular-nums shrink-0 ml-4">
+          <span class="text-xs text-wsa-muted/60 tabular-nums shrink-0 ml-4">
             {{ formatTimestamp(rows[virtualRow.index].completed_timestamp) }}
           </span>
         </div>

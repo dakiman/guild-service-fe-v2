@@ -1,10 +1,10 @@
 <template>
   <span class="inline-flex items-center gap-2">
-    <span class="badge badge-warning gap-2">
-      <span class="loading loading-spinner loading-xs" />
+    <span class="wsa-badge !border-amber-500/30 !text-amber-400 gap-1.5">
+      <span class="wsa-spinner !w-3 !h-3" />
       Refreshing…
     </span>
-    <span v-if="lastSyncedAt" class="text-xs text-base-content/60">
+    <span v-if="lastSyncedAt" class="text-xs text-wsa-disabled">
       Last synced {{ relativeTime }} ago
     </span>
   </span>

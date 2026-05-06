@@ -1,14 +1,14 @@
 <template>
-  <div class="ma-card p-5 flex flex-col gap-4">
+  <div class="wsa-card p-5 flex flex-col gap-4">
     <div class="flex flex-col">
-      <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">
         {{ expansionName }} · Reputations
       </span>
       <div class="flex items-baseline gap-2">
-        <span class="text-4xl font-bold tabular-nums text-ma-gold">
+        <span class="text-4xl font-bold tabular-nums text-wsa-gold">
           {{ heroValue }}
         </span>
-        <span class="text-sm text-ma-muted/60">{{ heroLabel }}</span>
+        <span class="text-sm text-wsa-muted/60">{{ heroLabel }}</span>
       </div>
     </div>
     <div v-if="standingBars.length" class="flex flex-col gap-1.5">
@@ -17,15 +17,15 @@
         :key="bar.standing"
         class="flex items-center gap-2"
       >
-        <span class="text-[10px] w-16 text-right text-ma-muted/70">{{ bar.label }}</span>
-        <div class="flex-1 h-2 rounded-full overflow-hidden" style="background: rgba(var(--ma-border), 0.15)">
+        <span class="text-[10px] w-16 text-right text-wsa-muted/70">{{ bar.label }}</span>
+        <div class="flex-1 h-2 rounded-full overflow-hidden" style="background: rgba(var(--wsa-border), 0.15)">
           <div
             class="h-full rounded-full transition-all"
             :class="`bg-${bar.color}`"
             :style="{ width: bar.width }"
           />
         </div>
-        <span class="text-[10px] tabular-nums text-ma-muted/60 w-4 text-right">{{ bar.count }}</span>
+        <span class="text-[10px] tabular-nums text-wsa-muted/60 w-4 text-right">{{ bar.count }}</span>
       </div>
     </div>
   </div>

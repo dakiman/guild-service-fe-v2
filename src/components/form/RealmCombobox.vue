@@ -26,16 +26,10 @@ const open = ref(false)
 const highlightIndex = ref(0)
 const inputEl = ref<HTMLInputElement | null>(null)
 
-// When the parent supplies an initial pick, hydrate the input text once the
-// realm list arrives so we can resolve the slug to a display name.
 watch(
   [() => props.modelValue, () => realmsQuery.data.value],
   ([pick, data]) => {
-    if (!pick) {
-      // Parent cleared selection — reset only if the input is currently
-      // showing the previously-picked realm (don't stomp user typing).
-      return
-    }
+    if (!pick) return
     const match = data?.realms.find(
       (r) => r.slug === pick.slug && r.region === pick.region,
     )
@@ -53,7 +47,6 @@ function formatLabel(realm: RealmGameData): string {
 const MAX_RESULTS = 8
 
 function scoreMatch(realm: RealmGameData, q: string): number {
-  // Lower = better. -1 means no match.
   const name = realm.name.toLowerCase()
   const slug = realm.slug.toLowerCase()
   if (name === q || slug === q) return 0
@@ -89,7 +82,6 @@ watch(suggestions, () => {
 function onInput(e: Event) {
   query.value = (e.target as HTMLInputElement).value
   open.value = true
-  // Editing after a pick clears the model — caller must re-pick.
   if (props.modelValue) {
     emit('update:modelValue', null)
   }
@@ -100,7 +92,6 @@ function onFocus() {
 }
 
 function onBlur() {
-  // Defer so a click on a suggestion (mousedown → blur → click) still registers.
   setTimeout(() => {
     open.value = false
   }, 120)
@@ -145,7 +136,7 @@ function pick(realm: RealmGameData) {
     <input
       ref="inputEl"
       type="text"
-      class="input input-bordered input-sm w-full"
+      class="wsa-input !py-1.5 text-sm"
       :value="query"
       :placeholder="placeholder ?? 'Realm'"
       :aria-label="ariaLabel ?? 'Realm'"
@@ -161,14 +152,15 @@ function pick(realm: RealmGameData) {
 
     <div
       v-if="open"
-      class="absolute left-0 right-0 mt-1 z-20 rounded-md bg-base-100 border border-base-300 shadow-lg max-h-72 overflow-auto"
+      class="absolute left-0 right-0 mt-1 z-20 rounded-md border-2 border-wsa-border shadow-lg max-h-72 overflow-auto"
+      style="background: rgb(var(--wsa-bg))"
       role="listbox"
     >
-      <div v-if="realmsQuery.isPending.value" class="p-3 text-sm text-base-content/60">
+      <div v-if="realmsQuery.isPending.value" class="p-3 text-sm text-wsa-disabled">
         Loading realms…
       </div>
 
-      <div v-else-if="realmsQuery.isError.value" class="p-3 text-sm text-error">
+      <div v-else-if="realmsQuery.isError.value" class="p-3 text-sm text-[#ff4444]">
         Couldn't load realms.
       </div>
 
@@ -179,21 +171,21 @@ function pick(realm: RealmGameData) {
           role="option"
           :aria-selected="i === highlightIndex"
           class="flex items-center justify-between px-3 py-1.5 cursor-pointer text-sm"
-          :class="i === highlightIndex ? 'bg-primary text-primary-content' : 'hover:bg-base-200'"
+          :class="i === highlightIndex ? 'bg-wsa-muted/15 text-wsa-heading' : 'text-wsa-text hover:bg-black/20'"
           @mousedown.prevent="pick(r)"
           @mouseenter="highlightIndex = i"
         >
           <span>{{ r.name }}</span>
           <span
-            class="badge badge-sm ml-2 shrink-0"
-            :class="i === highlightIndex ? 'badge-ghost' : 'badge-outline'"
+            class="wsa-badge ml-2 shrink-0 !text-[10px]"
+            :class="i === highlightIndex ? '!text-wsa-heading' : ''"
           >
             {{ r.region.toUpperCase() }}
           </span>
         </li>
       </ul>
 
-      <div v-else-if="query.trim()" class="p-3 text-sm text-base-content/60">
+      <div v-else-if="query.trim()" class="p-3 text-sm text-wsa-disabled">
         No matching realm.
       </div>
     </div>

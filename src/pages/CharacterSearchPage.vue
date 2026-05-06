@@ -77,12 +77,12 @@ const mostPopularSpec = computed(() => stats.value?.most_popular_spec)
 
     <!-- Loading state -->
     <div v-if="isLoading" class="flex justify-center py-12">
-      <span class="loading loading-spinner loading-lg" />
+      <div class="wsa-spinner"></div>
     </div>
 
     <!-- Error state -->
-    <div v-else-if="isError" class="alert alert-error">
-      Failed to load character stats.
+    <div v-else-if="isError" class="wsa-card !border-red-800/50 !p-4">
+      <p class="text-sm text-[#ff4444]">Failed to load character stats.</p>
     </div>
 
     <!-- Dashboard content -->

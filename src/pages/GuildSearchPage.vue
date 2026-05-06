@@ -55,17 +55,15 @@ function formatCreatedAgo(item: GuildSummaryWithMetric): string {
 <template>
   <div class="p-4 max-w-6xl mx-auto">
     <header class="mb-6">
-      <h1 class="text-3xl font-bold">Guilds</h1>
-      <p class="text-base-content/70 mt-1">
+      <h1 class="text-3xl font-bold text-wsa-heading">Guilds</h1>
+      <p class="text-wsa-muted mt-1">
         Find a guild, or browse what's active across regions.
       </p>
     </header>
 
-    <section class="card bg-base-200 shadow-sm mb-6">
-      <div class="card-body p-4">
-        <h2 class="card-title text-base">Find a guild</h2>
-        <LookupForm kind="guild" @submit="onSubmit" />
-      </div>
+    <section class="wsa-card mb-6">
+      <h2 class="stats-card-title text-base">Find a guild</h2>
+      <LookupForm kind="guild" @submit="onSubmit" />
     </section>
 
     <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -122,32 +120,30 @@ function formatCreatedAgo(item: GuildSummaryWithMetric): string {
         empty-message="No newly-created guilds yet."
       />
 
-      <div class="card bg-base-200 shadow-sm md:col-span-2 xl:col-span-2">
-        <div class="card-body p-4">
-          <h3 class="card-title text-base">Faction & region</h3>
+      <div class="wsa-card md:col-span-2 xl:col-span-2">
+        <h3 class="stats-card-title text-base">Faction & region</h3>
 
-          <div v-if="discoverQuery.isPending.value" class="space-y-2 mt-2">
-            <div class="skeleton h-3 w-full"></div>
-            <div class="skeleton h-4 w-2/3"></div>
-            <div class="skeleton h-24 w-full"></div>
-          </div>
-
-          <ErrorState
-            v-else-if="discoverQuery.isError.value"
-            :error="discoverQuery.error.value"
-            @retry="refetch()"
-          />
-
-          <template v-else-if="discoverQuery.data.value">
-            <FactionSplitBar
-              :alliance="discoverQuery.data.value.faction_split.Alliance"
-              :horde="discoverQuery.data.value.faction_split.Horde"
-            />
-            <div class="mt-4">
-              <RegionBreakdownTable :rows="discoverQuery.data.value.region_breakdown" />
-            </div>
-          </template>
+        <div v-if="discoverQuery.isPending.value" class="space-y-2 mt-2">
+          <div class="h-3 w-full rounded bg-wsa-border/20 animate-pulse"></div>
+          <div class="h-4 w-2/3 rounded bg-wsa-border/20 animate-pulse"></div>
+          <div class="h-24 w-full rounded bg-wsa-border/20 animate-pulse"></div>
         </div>
+
+        <ErrorState
+          v-else-if="discoverQuery.isError.value"
+          :error="discoverQuery.error.value"
+          @retry="refetch()"
+        />
+
+        <template v-else-if="discoverQuery.data.value">
+          <FactionSplitBar
+            :alliance="discoverQuery.data.value.faction_split.Alliance"
+            :horde="discoverQuery.data.value.faction_split.Horde"
+          />
+          <div class="mt-4">
+            <RegionBreakdownTable :rows="discoverQuery.data.value.region_breakdown" />
+          </div>
+        </template>
       </div>
     </section>
   </div>
