@@ -1,18 +1,25 @@
 <template>
-  <div class="relative shrink-0" :style="{ width: `${size}px`, height: `${size}px` }">
+  <div
+    class="relative shrink-0 rounded overflow-hidden"
+    :class="item ? 'border-2' : 'border border-dashed border-wsa-disabled/15'"
+    :style="{
+      width: `${size}px`,
+      height: `${size}px`,
+      borderColor: item ? (qualityColor ?? 'rgb(var(--wsa-border) / 0.3)') : undefined,
+    }"
+  >
     <a
       v-if="item"
       :href="`https://www.wowhead.com/${href}`"
       :data-wowhead="href"
-      class="block w-full h-full rounded border-2"
-      :style="{ borderColor: qualityColor ?? 'rgb(var(--wsa-border) / 0.3)' }"
+      class="block w-full h-full"
       target="_blank"
       rel="noopener"
       tabindex="-1"
     />
     <div
       v-else
-      class="w-full h-full rounded border border-dashed border-wsa-disabled/15"
+      class="w-full h-full border-none"
     />
     <span
       v-if="item"

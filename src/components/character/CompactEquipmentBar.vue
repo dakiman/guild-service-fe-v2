@@ -104,7 +104,9 @@ const props = defineProps<{
 
 const expanded = ref(false)
 
+const SKIP_SLOTS: Set<Slot> = new Set(['shirt', 'tabard'])
 const ALL_SLOTS: Slot[] = [...LEFT_COLUMN_SLOTS, ...WEAPON_SLOTS, ...RIGHT_COLUMN_SLOTS]
+  .filter((s) => !SKIP_SLOTS.has(s))
 
 const bySlot = computed(() => {
   const map = new Map<Slot, EquipmentItem>()
