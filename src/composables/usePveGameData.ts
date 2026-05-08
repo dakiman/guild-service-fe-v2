@@ -17,6 +17,15 @@ export function useRaidInstances() {
   })
 }
 
+export function useAllRaidInstances() {
+  return useQuery<RaidInstancesResponse>({
+    queryKey: ['game-data', 'raid-instances', 'all'],
+    queryFn: () => getRaidInstances({ expansion: 'all' }),
+    staleTime: Infinity,
+    gcTime: ONE_DAY_MS,
+  })
+}
+
 export function useMythicDungeons() {
   return useQuery<MythicKeystoneDungeonsResponse>({
     queryKey: ['game-data', 'mythic-keystone-dungeons', 'current'],

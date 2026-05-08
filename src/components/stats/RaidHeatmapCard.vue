@@ -1,23 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useRaidKillStats } from '@/composables/useCharacterStats'
-import { CLASS_COLORS } from '@/utils/wowConstants'
+import { useAllRaidInstances } from '@/composables/usePveGameData'
+import { CLASS_COLORS, CLASSES } from '@/utils/wowConstants'
+import ClassIcon from '@/components/wow/ClassIcon.vue'
 
-const CLASS_ABBREV: Record<number, string> = {
-  1: 'WR',
-  2: 'PA',
-  3: 'HU',
-  4: 'RO',
-  5: 'PR',
-  6: 'DK',
-  7: 'SH',
-  8: 'MA',
-  9: 'WL',
-  10: 'MO',
-  11: 'DR',
-  12: 'DH',
-  13: 'EV',
-}
 const CLASS_IDS = [6, 12, 11, 13, 3, 8, 10, 2, 5, 4, 7, 9, 1]
 
 function dotSize(kills: number, maxInRow: number): number {
@@ -44,6 +31,15 @@ function dotStyle(classId: number, kills: number, maxInRow: number) {
 const difficulty = ref('heroic')
 const expansion = ref('current')
 const { data, isLoading, isFetching } = useRaidKillStats(difficulty, expansion)
+const { data: raidGameData } = useAllRaidInstances()
+
+const raidMediaMap = computed(() => {
+  const map = new Map<number, string>()
+  for (const inst of raidGameData.value?.instances ?? []) {
+    if (inst.media_url) map.set(inst.id, inst.media_url)
+  }
+  return map
+})
 
 watch(data, (val) => {
   if (val?.current_expansion && expansion.value === 'current') {
@@ -102,17 +98,22 @@ watch(data, (val) => {
         <div
           v-for="classId in CLASS_IDS"
           :key="classId"
-          class="text-center text-[10px] font-semibold"
-          :style="{ color: CLASS_COLORS[classId] }"
+          class="flex items-center justify-center"
         >
-          {{ CLASS_ABBREV[classId] }}
+          <ClassIcon :class-id="classId" :size="18" />
         </div>
       </div>
 
       <!-- Raid sections -->
       <div v-for="raid in data.raids" :key="raid.instance_id" class="mb-3">
-        <div class="text-xs font-semibold text-[#aa8855] mb-1.5 pl-2 border-l-3 border-[#5c4a32]">
-          {{ raid.name }}
+        <div class="flex items-center gap-1.5 mb-1.5 pl-2 border-l-3 border-[#5c4a32]">
+          <img
+            v-if="raidMediaMap.get(raid.instance_id)"
+            :src="raidMediaMap.get(raid.instance_id)"
+            :alt="raid.name"
+            class="w-5 h-5 rounded object-cover"
+          />
+          <span class="text-xs font-semibold text-[#aa8855]">{{ raid.name }}</span>
         </div>
 
         <!-- Boss rows -->
@@ -130,7 +131,7 @@ watch(data, (val) => {
             <div
               v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
               class="heatmap-dot rounded-full"
-              :title="`${CLASS_ABBREV[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
+              :title="`${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
               :style="
                 dotStyle(
                   classId,
