@@ -54,6 +54,8 @@ export interface RaidKillsData {
 
 export interface RaidKillStatsResponse {
   raids: RaidKillsData[]
+  expansions: string[]
+  current_expansion: string | null
 }
 
 export interface TopKeyDungeon {
