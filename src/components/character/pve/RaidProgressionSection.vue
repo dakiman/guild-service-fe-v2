@@ -1,28 +1,28 @@
 <template>
   <section class="flex flex-col gap-4">
     <header class="flex items-center justify-between">
-      <h2 class="ma-text-heading text-xl">Raid Progression</h2>
+      <h2 class="wsa-text-heading text-xl">Raid Progression</h2>
       <button
         v-if="legacyExpansions.length > 0"
         type="button"
-        class="text-sm text-ma-violet-soft hover:text-ma-gold transition-colors"
+        class="text-sm text-wsa-violet-soft hover:text-wsa-gold transition-colors"
         @click="showLegacy = !showLegacy"
       >
         {{ showLegacy ? 'Hide legacy raids' : 'Show legacy raids' }}
       </button>
     </header>
 
-    <div v-if="isLoading" class="ma-card p-6 text-sm text-ma-muted/70">
+    <div v-if="isLoading" class="wsa-card p-6 text-sm text-wsa-muted/70">
       Loading raid data…
     </div>
-    <div v-else-if="isError" class="ma-card p-6 text-sm text-red-300">
+    <div v-else-if="isError" class="wsa-card p-6 text-sm text-red-300">
       Couldn't load raid data. <button type="button" class="underline" @click="() => refetch()">Retry</button>
     </div>
-    <div v-else-if="isSyncingSlice && !latestExpansion" class="ma-card p-6 text-sm text-ma-muted/70 flex items-center gap-2">
-      <span class="loading loading-spinner loading-xs" />
+    <div v-else-if="isSyncingSlice && !latestExpansion" class="wsa-card p-6 text-sm text-wsa-muted/70 flex items-center gap-2">
+      <span class="wsa-spinner !w-3 !h-3 inline-block" />
       Syncing raid data…
     </div>
-    <div v-else-if="!latestExpansion" class="ma-card p-6 text-sm text-ma-muted/70">
+    <div v-else-if="!latestExpansion" class="wsa-card p-6 text-sm text-wsa-muted/70">
       No raid data available.
     </div>
     <template v-else>
@@ -39,7 +39,7 @@
           :key="exp.expansion.id"
           class="flex flex-col gap-3"
         >
-          <h3 class="ma-text-heading text-base text-ma-muted/80 mt-2">{{ exp.expansion.name }}</h3>
+          <h3 class="wsa-text-heading text-base text-wsa-muted/80 mt-2">{{ exp.expansion.name }}</h3>
           <RaidInstanceCard
             v-for="instance in exp.instances"
             :key="instance.id"

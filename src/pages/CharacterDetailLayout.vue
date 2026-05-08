@@ -28,7 +28,7 @@
           <button
             v-if="character.talent_loadout_code"
             type="button"
-            class="btn btn-sm btn-ghost"
+            class="wsa-btn"
             @click="onCopyLoadout"
           >
             Copy loadout
@@ -36,12 +36,12 @@
           <button
             v-if="canToggleRecruitment"
             type="button"
-            class="btn btn-sm"
-            :class="character.recruitment ? 'btn-success' : 'btn-outline'"
+            class="wsa-btn"
+            :class="character.recruitment ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400' : ''"
             :disabled="isToggling"
             @click="onToggleRecruitment"
           >
-            <span v-if="isToggling" class="loading loading-spinner loading-xs" />
+            <span v-if="isToggling" class="wsa-spinner !w-3 !h-3 inline-block mr-1" />
             {{ character.recruitment ? 'Looking for guild' : 'Not looking for guild' }}
           </button>
         </div>
@@ -126,11 +126,17 @@ provideCharacterContext({
 const tabs = computed<TabDescriptor[]>(() => {
   const params = { region: region.value, realm: realm.value, name: name.value }
   const achievementsEnabled = meta.value?.feature_flags?.achievements !== false
+  const collectionsEnabled =
+    meta.value?.feature_flags?.mounts !== false ||
+    meta.value?.feature_flags?.pets !== false ||
+    meta.value?.feature_flags?.toys !== false
   const result: TabDescriptor[] = [
     { label: 'Summary',      to: { name: 'character-summary', params },      icon: Sparkles },
     { label: 'Talents',      to: { name: 'character-talents', params },      icon: BookOpen },
     { label: 'Titles',       to: { name: 'character-titles', params },       icon: Crown },
-    {
+  ]
+  if (collectionsEnabled) {
+    result.push({
       label: 'Collections',
       to: { name: 'character-collections', params },
       icon: Gem,
@@ -139,7 +145,9 @@ const tabs = computed<TabDescriptor[]>(() => {
         'character-collections-pets',
         'character-collections-toys',
       ],
-    },
+    })
+  }
+  result.push(
     {
       label: 'Dungeons',
       to: { name: 'character-dungeons', params },
@@ -151,7 +159,7 @@ const tabs = computed<TabDescriptor[]>(() => {
       icon: Swords,
     },
     { label: 'Reputations',  to: { name: 'character-reputations', params },  icon: Star },
-  ]
+  )
   if (achievementsEnabled) {
     result.push({ label: 'Achievements', to: { name: 'character-achievements', params }, icon: Trophy })
   }

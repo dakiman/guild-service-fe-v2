@@ -1,24 +1,24 @@
 <template>
-  <div class="ma-card p-5 flex flex-wrap items-center justify-between gap-6">
+  <div class="wsa-card p-5 flex flex-wrap items-center justify-between gap-6">
     <div class="flex flex-col">
-      <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">M+ Score</span>
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">M+ Score</span>
       <span class="text-4xl font-bold tabular-nums" :style="scoreStyle">
         {{ scoreLabel }}
       </span>
-      <span v-if="seasonLabel" class="text-xs text-ma-muted/60 mt-1">{{ seasonLabel }}</span>
+      <span v-if="seasonLabel" class="text-xs text-wsa-muted/60 mt-1">{{ seasonLabel }}</span>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-      <div class="ma-stat-pill">
-        <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">Timed 2+</span>
-        <span class="font-bold text-ma-gold tabular-nums">{{ timed2 }}</span>
+      <div class="wsa-stat-pill">
+        <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Timed 2+</span>
+        <span class="font-bold text-wsa-gold tabular-nums">{{ timed2 }}</span>
       </div>
-      <div class="ma-stat-pill">
-        <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">Timed 5+</span>
-        <span class="font-bold text-ma-gold tabular-nums">{{ timed5 }}</span>
+      <div class="wsa-stat-pill">
+        <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Timed 5+</span>
+        <span class="font-bold text-wsa-gold tabular-nums">{{ timed5 }}</span>
       </div>
-      <div class="ma-stat-pill">
-        <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">Timed 10+</span>
-        <span class="font-bold text-ma-gold tabular-nums">{{ timed10 }}</span>
+      <div class="wsa-stat-pill">
+        <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Timed 10+</span>
+        <span class="font-bold text-wsa-gold tabular-nums">{{ timed10 }}</span>
       </div>
     </div>
   </div>
@@ -44,7 +44,7 @@ const scoreLabel = computed(() => {
 
 const scoreStyle = computed(() => {
   const color = props.rating?.color
-  return { color: color ?? 'rgb(var(--ma-gold))' }
+  return { color: color ?? 'rgb(var(--wsa-gold))' }
 })
 
 const seasonLabel = computed<string | null>(() => dungeonData.value?.season?.name ?? null)

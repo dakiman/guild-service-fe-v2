@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { CLASSES, CLASS_COLORS } from '@/utils/wowConstants'
+import { computed, ref } from 'vue'
+import { CLASSES, CLASS_COLORS, SPEC_ROLES, SPEC_TO_CLASS } from '@/utils/wowConstants'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import type { ClassDistribution } from '@/types/stats'
 
@@ -8,64 +8,129 @@ const props = defineProps<{
   classes: ClassDistribution[]
 }>()
 
-const sorted = computed(() =>
-  [...props.classes].sort((a, b) => b.avg_mythic_plus_rating - a.avg_mythic_plus_rating),
+const activeRole = ref<'all' | 'tank' | 'healer' | 'dps'>('all')
+
+const classesWithRole = computed(() => {
+  if (activeRole.value === 'all') return Object.keys(CLASSES).map(Number)
+  const specIds = Object.entries(SPEC_ROLES)
+    .filter(([, role]) => role === activeRole.value)
+    .map(([id]) => Number(id))
+  return [...new Set(specIds.map((id) => SPEC_TO_CLASS[id]).filter(Boolean))]
+})
+
+const filteredClasses = computed(() =>
+  props.classes
+    .filter((c) => classesWithRole.value.includes(c.class_id))
+    .sort((a, b) => b.avg_mythic_plus_rating - a.avg_mythic_plus_rating),
 )
 
 const maxRating = computed(() =>
-  sorted.value.length > 0 ? sorted.value[0].avg_mythic_plus_rating : 1,
+  filteredClasses.value.length > 0 ? filteredClasses.value[0].avg_mythic_plus_rating : 1,
 )
 
-function formatRating(rating: number): string {
-  return rating.toFixed(0)
+function innerGlowStyle(classId: number, widthPct: number) {
+  const color = CLASS_COLORS[classId] ?? '#666'
+  return {
+    width: `${widthPct}%`,
+    background: `linear-gradient(180deg, ${color}dd, ${color}, ${color}dd)`,
+    boxShadow: `0 0 8px ${color}4d`,
+    borderRadius: '3px',
+    height: '8px',
+  }
 }
 
-function formatIlvl(ilvl: number): string {
-  return ilvl.toFixed(1)
+const roles = ['all', 'tank', 'healer', 'dps'] as const
+
+function roleLabel(role: string): string {
+  return role === 'all' ? 'Overall' : role.charAt(0).toUpperCase() + role.slice(1)
 }
 </script>
 
 <template>
-  <div class="card border border-base-content/5 bg-base-200 shadow-md">
-    <div class="card-body">
-      <h2 class="card-title text-lg">Performance by Class</h2>
-      <div class="flex flex-col gap-2">
-        <div
-          v-for="entry in sorted"
-          :key="entry.class_id"
-          class="flex items-center gap-3 rounded-md bg-base-100 p-3"
+  <div class="stats-card">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="stats-card-title">Performance by Class</h2>
+      <div class="flex gap-1">
+        <button
+          v-for="role in roles"
+          :key="role"
+          class="text-[10px] px-2 py-0.5 rounded border"
+          :class="
+            activeRole === role
+              ? 'border-[#aa8855] text-[#ffcc88] bg-[rgba(170,136,85,0.15)]'
+              : 'border-[#5c4a32] text-[#665533]'
+          "
+          @click="activeRole = role"
         >
-          <ClassIcon :class-id="entry.class_id" :size="24" />
-          <span
-            class="w-28 text-sm font-medium truncate"
-            :style="{ color: CLASS_COLORS[entry.class_id] }"
-          >
-            {{ CLASSES[entry.class_id] }}
-          </span>
+          {{ roleLabel(role) }}
+        </button>
+      </div>
+    </div>
 
-          <!-- M+ Rating bar -->
-          <div class="flex flex-1 items-center gap-2">
-            <div class="h-2 flex-1 rounded-full bg-base-300 overflow-hidden">
-              <div
-                class="h-full rounded-full transition-all duration-500"
-                :style="{
-                  width: `${(entry.avg_mythic_plus_rating / maxRating) * 100}%`,
-                  backgroundColor: CLASS_COLORS[entry.class_id],
-                  opacity: 0.8,
-                }"
-              />
-            </div>
-            <span class="w-12 text-right text-xs font-semibold tabular-nums">
-              {{ formatRating(entry.avg_mythic_plus_rating) }}
-            </span>
-          </div>
+    <div class="flex flex-col gap-0.5">
+      <div
+        v-for="(entry, index) in filteredClasses"
+        :key="entry.class_id"
+        class="flex items-center gap-2.5 py-1.5"
+      >
+        <!-- Rank -->
+        <span
+          class="w-6 text-right text-xs font-bold tabular-nums"
+          :class="index < 3 ? 'text-[#aa8855]' : 'text-[#665533]'"
+        >
+          {{ index < 3 ? '#' : '' }}{{ index + 1 }}
+        </span>
 
-          <!-- iLvl -->
-          <span class="w-14 text-right text-xs text-base-content/60 tabular-nums">
-            {{ formatIlvl(entry.avg_ilvl) }} ilvl
-          </span>
+        <!-- Class Icon -->
+        <ClassIcon :class-id="entry.class_id" :size="28" />
+
+        <!-- Class Name -->
+        <span
+          class="w-24 text-xs font-medium truncate"
+          :style="{ color: CLASS_COLORS[entry.class_id] }"
+        >
+          {{ CLASSES[entry.class_id] }}
+        </span>
+
+        <!-- Bar -->
+        <div
+          class="flex-1 h-[10px] rounded bg-[rgba(0,0,0,0.3)] border border-[rgba(92,74,50,0.3)] overflow-hidden flex items-center"
+        >
+          <div
+            class="perf-bar"
+            :style="innerGlowStyle(entry.class_id, (entry.avg_mythic_plus_rating / maxRating) * 100)"
+          />
         </div>
+
+        <!-- M+ Rating -->
+        <span class="w-10 text-right text-xs font-semibold tabular-nums text-[#ff8844]">
+          {{ entry.avg_mythic_plus_rating.toFixed(0) }}
+        </span>
+
+        <!-- iLvl -->
+        <span class="w-10 text-right text-xs tabular-nums text-[#88ccff]">
+          {{ entry.avg_ilvl.toFixed(1) }}
+        </span>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.perf-bar {
+  position: relative;
+  overflow: hidden;
+}
+.perf-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transform: translateX(-100%);
+  animation: bar-shimmer 1.2s ease-out 0.3s forwards;
+}
+@keyframes bar-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+</style>

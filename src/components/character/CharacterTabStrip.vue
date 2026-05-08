@@ -11,8 +11,8 @@
         :href="href"
         role="tab"
         :aria-selected="isTabActive(tab, isActive)"
-        class="ma-tab"
-        :class="{ 'ma-tab--active': isTabActive(tab, isActive) }"
+        class="wsa-tab"
+        :class="{ 'wsa-tab--active': isTabActive(tab, isActive) }"
         @click="navigate"
       >
         <component :is="tab.icon" class="w-4 h-4" />

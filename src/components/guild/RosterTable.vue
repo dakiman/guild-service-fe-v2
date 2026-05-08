@@ -78,115 +78,115 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
 
 <template>
   <div class="flex flex-col gap-3">
-    <div class="overflow-x-auto rounded-md border border-base-300">
-      <table class="table table-zebra table-xs roster-table">
+    <div class="overflow-x-auto rounded-md border border-wsa-border/40">
+      <table class="w-full text-xs roster-table">
         <thead>
-          <tr class="text-xs uppercase tracking-wide text-base-content/70">
+          <tr class="text-xs uppercase tracking-wide text-wsa-muted">
             <th
               role="columnheader"
               :aria-sort="ariaSort('name')"
               tabindex="0"
-              class="cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
+              class="text-left cursor-pointer select-none py-2 px-2 focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('name')"
               @keydown.enter.prevent="toggle('name')"
               @keydown.space.prevent="toggle('name')"
             >
-              Name<span class="text-base-content/50">{{ sortGlyph('name') }}</span>
+              Name<span class="text-wsa-disabled">{{ sortGlyph('name') }}</span>
             </th>
-            <th class="w-8 text-center">Class</th>
-            <th class="w-8 text-center hidden sm:table-cell">Spec</th>
-            <th class="w-8 text-center">Race</th>
-            <th class="w-8 text-center hidden sm:table-cell">Side</th>
+            <th class="w-8 text-center py-2 px-2">Class</th>
+            <th class="w-8 text-center py-2 px-2 hidden sm:table-cell">Spec</th>
+            <th class="w-8 text-center py-2 px-2">Race</th>
+            <th class="w-8 text-center py-2 px-2 hidden sm:table-cell">Side</th>
             <th
               role="columnheader"
               :aria-sort="ariaSort('level')"
               tabindex="0"
-              class="text-right cursor-pointer select-none w-12 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
+              class="text-right cursor-pointer select-none w-12 py-2 px-2 focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('level')"
               @keydown.enter.prevent="toggle('level')"
               @keydown.space.prevent="toggle('level')"
             >
-              Lvl<span class="text-base-content/50">{{ sortGlyph('level') }}</span>
+              Lvl<span class="text-wsa-disabled">{{ sortGlyph('level') }}</span>
             </th>
             <th
               role="columnheader"
               :aria-sort="ariaSort('equipped_item_level')"
               tabindex="0"
-              class="text-right cursor-pointer select-none w-14 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
+              class="text-right cursor-pointer select-none w-14 py-2 px-2 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('equipped_item_level')"
               @keydown.enter.prevent="toggle('equipped_item_level')"
               @keydown.space.prevent="toggle('equipped_item_level')"
             >
-              iLvl<span class="text-base-content/50">{{ sortGlyph('equipped_item_level') }}</span>
+              iLvl<span class="text-wsa-disabled">{{ sortGlyph('equipped_item_level') }}</span>
             </th>
             <th
               role="columnheader"
               :aria-sort="ariaSort('mythic_plus_score')"
               tabindex="0"
-              class="text-right cursor-pointer select-none w-16 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
+              class="text-right cursor-pointer select-none w-16 py-2 px-2 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('mythic_plus_score')"
               @keydown.enter.prevent="toggle('mythic_plus_score')"
               @keydown.space.prevent="toggle('mythic_plus_score')"
             >
-              M+<span class="text-base-content/50">{{ sortGlyph('mythic_plus_score') }}</span>
+              M+<span class="text-wsa-disabled">{{ sortGlyph('mythic_plus_score') }}</span>
             </th>
             <th
               role="columnheader"
               :aria-sort="ariaSort('rank')"
               tabindex="0"
-              class="text-right cursor-pointer select-none w-12 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
+              class="text-right cursor-pointer select-none w-12 py-2 px-2 focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('rank')"
               @keydown.enter.prevent="toggle('rank')"
               @keydown.space.prevent="toggle('rank')"
             >
-              Rank<span class="text-base-content/50">{{ sortGlyph('rank') }}</span>
+              Rank<span class="text-wsa-disabled">{{ sortGlyph('rank') }}</span>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="sortedRows.length === 0">
-            <td colspan="9" class="text-center text-base-content/60">No members match your filter.</td>
+            <td colspan="9" class="text-center text-wsa-disabled py-4">No members match your filter.</td>
           </tr>
-          <tr v-for="m in sortedRows" :key="m.id">
-            <td class="font-medium">
+          <tr v-for="m in sortedRows" :key="m.id" class="border-b border-wsa-border/20 hover:bg-black/20 transition-colors">
+            <td class="font-medium py-1.5 px-2">
               <router-link
                 :to="{
                   name: 'character-summary',
                   params: { region, realm: m.realm, name: m.name },
                 }"
                 :style="{ color: classColor(m.class_id) }"
-                class="hover:underline focus-visible:underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary rounded-sm"
+                class="hover:underline focus-visible:underline focus-visible:outline-2 focus-visible:outline-offset-1 rounded-sm"
               >
                 {{ displayName(m.name, m.display_name) }}
               </router-link>
             </td>
-            <td class="text-center">
+            <td class="text-center py-1.5 px-2">
               <ClassIcon :class-id="m.class_id" :size="18" />
             </td>
-            <td class="text-center hidden sm:table-cell">
+            <td class="text-center py-1.5 px-2 hidden sm:table-cell">
               <SpecIcon
                 v-if="m.active_specialization_id"
                 :spec-id="m.active_specialization_id"
                 :size="18"
               />
-              <span v-else class="text-base-content/40">—</span>
+              <span v-else class="text-wsa-disabled">—</span>
             </td>
-            <td class="text-center">
+            <td class="text-center py-1.5 px-2">
               <RaceIcon :race-id="m.race_id" :size="18" />
             </td>
-            <td class="text-center hidden sm:table-cell">
+            <td class="text-center py-1.5 px-2 hidden sm:table-cell">
               <FactionBadge v-if="m.faction" :faction="m.faction" :size="14" />
             </td>
-            <td class="text-right tabular-nums">{{ m.level }}</td>
+            <td class="text-right tabular-nums text-wsa-text py-1.5 px-2">{{ m.level }}</td>
             <td
-              class="text-right tabular-nums hidden sm:table-cell"
+              class="text-right tabular-nums text-wsa-text py-1.5 px-2 hidden sm:table-cell"
               :class="{ 'italic opacity-70': isStaleSync(m.synced_at) }"
             >
               <template v-if="m.equipped_item_level != null">{{ m.equipped_item_level }}</template>
-              <span v-else class="text-base-content/40">—</span>
+              <span v-else class="text-wsa-disabled">—</span>
             </td>
             <td
-              class="text-right tabular-nums hidden sm:table-cell"
+              class="text-right tabular-nums py-1.5 px-2 hidden sm:table-cell"
               :class="{ 'italic opacity-70': isStaleSync(m.synced_at) }"
             >
               <span
@@ -195,42 +195,33 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
               >
                 {{ m.mythic_plus_rating.rating }}
               </span>
-              <span v-else class="text-base-content/40">—</span>
+              <span v-else class="text-wsa-disabled">—</span>
             </td>
-            <td class="text-right tabular-nums">{{ m.rank }}</td>
+            <td class="text-right tabular-nums text-wsa-text py-1.5 px-2">{{ m.rank }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <nav v-if="lastPage > 1" class="flex items-center justify-between gap-2">
-      <p class="text-xs text-base-content/60">
+      <p class="text-xs text-wsa-disabled">
         Page {{ currentPage }} of {{ lastPage }} · {{ members.total }} members
       </p>
-      <div class="join">
-        <button type="button" class="btn btn-sm join-item" :disabled="!hasPrev" @click="goPrev">Previous</button>
+      <div class="flex justify-center gap-2">
+        <button type="button" class="wsa-btn" :disabled="!hasPrev" @click="goPrev">Prev</button>
         <button
           v-for="p in pageWindow"
           :key="p"
           type="button"
-          class="btn btn-sm join-item"
-          :class="{ 'btn-active': p === currentPage }"
+          class="wsa-btn"
+          :class="{ 'wsa-btn--primary': p === currentPage }"
           @click="goTo(p)"
         >
           {{ p }}
         </button>
-        <button type="button" class="btn btn-sm join-item" :disabled="!hasNext" @click="goNext">Next</button>
+        <button type="button" class="wsa-btn" :disabled="!hasNext" @click="goNext">Next</button>
       </div>
     </nav>
   </div>
 </template>
 
-<style scoped>
-.roster-table :deep(td),
-.roster-table :deep(th) {
-  padding-top: 0.375rem;
-  padding-bottom: 0.375rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-</style>

@@ -1,41 +1,37 @@
 <template>
-  <div class="card max-w-md mx-auto bg-base-200">
-    <div class="card-body">
-      <h1 class="card-title">Forgot password</h1>
+  <div class="wsa-card max-w-md mx-auto">
+    <h1 class="stats-card-title text-lg mb-4">Forgot password</h1>
 
-      <div v-if="submitted" class="alert alert-success">
-        <span>If that email exists, a reset link has been sent.</span>
-      </div>
+    <div v-if="submitted" class="wsa-card !border-emerald-800/50 !p-3">
+      <p class="text-sm text-emerald-400">If that email exists, a reset link has been sent.</p>
+    </div>
 
-      <form v-else class="flex flex-col gap-3" @submit.prevent="onSubmit">
-        <p class="text-sm text-base-content/70">
-          Enter your email and we'll send you a link to reset your password.
-        </p>
+    <form v-else class="flex flex-col gap-3" @submit.prevent="onSubmit">
+      <p class="text-sm text-wsa-muted">
+        Enter your email and we'll send you a link to reset your password.
+      </p>
 
-        <label class="form-control w-full">
-          <div class="label">
-            <span class="label-text">Email</span>
-          </div>
-          <input
-            v-model="email"
-            type="email"
-            autocomplete="email"
-            required
-            class="input input-bordered w-full"
-          />
-        </label>
+      <label class="flex flex-col gap-1">
+        <span class="stats-label font-medium uppercase tracking-wide">Email</span>
+        <input
+          v-model="email"
+          type="email"
+          autocomplete="email"
+          required
+          class="wsa-input"
+        />
+      </label>
 
-        <button type="submit" class="btn btn-primary mt-2" :disabled="isSubmitting">
-          <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
-          <span>Send reset link</span>
-        </button>
-      </form>
+      <button type="submit" class="wsa-btn wsa-btn--primary mt-2 py-2 text-sm" :disabled="isSubmitting">
+        <span v-if="isSubmitting" class="wsa-spinner !w-4 !h-4 inline-block mr-2 align-middle"></span>
+        <span>Send reset link</span>
+      </button>
+    </form>
 
-      <div class="text-sm mt-4">
-        <router-link :to="{ name: 'login' }" class="link link-hover">
-          Back to sign in
-        </router-link>
-      </div>
+    <div class="text-sm mt-4">
+      <router-link :to="{ name: 'login' }" class="text-wsa-muted hover:text-wsa-heading transition-colors">
+        Back to sign in
+      </router-link>
     </div>
   </div>
 </template>

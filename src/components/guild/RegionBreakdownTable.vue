@@ -8,32 +8,32 @@ defineProps<{
 </script>
 
 <template>
-  <p v-if="rows.length === 0" class="text-base-content/60 text-sm">No regional data.</p>
-  <table v-else class="table table-sm">
+  <p v-if="rows.length === 0" class="text-wsa-disabled text-sm">No regional data.</p>
+  <table v-else class="w-full text-xs">
     <thead>
-      <tr>
-        <th>Region</th>
-        <th class="text-right">
+      <tr class="text-wsa-muted text-left">
+        <th class="py-1.5 px-2">Region</th>
+        <th class="py-1.5 px-2 text-right">
           <span class="inline-flex items-center gap-1 justify-end">
             <FactionBadge faction="Alliance" />
             Alliance
           </span>
         </th>
-        <th class="text-right">
+        <th class="py-1.5 px-2 text-right">
           <span class="inline-flex items-center gap-1 justify-end">
             <FactionBadge faction="Horde" />
             Horde
           </span>
         </th>
-        <th class="text-right">Total</th>
+        <th class="py-1.5 px-2 text-right">Total</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="row in rows" :key="row.region">
-        <td>{{ row.region.toUpperCase() }}</td>
-        <td class="text-right">{{ row.alliance.toLocaleString() }}</td>
-        <td class="text-right">{{ row.horde.toLocaleString() }}</td>
-        <td class="text-right">{{ (row.alliance + row.horde).toLocaleString() }}</td>
+      <tr v-for="row in rows" :key="row.region" class="border-b border-wsa-border/20">
+        <td class="py-1.5 px-2 text-wsa-text">{{ row.region.toUpperCase() }}</td>
+        <td class="py-1.5 px-2 text-right text-wsa-text">{{ row.alliance.toLocaleString() }}</td>
+        <td class="py-1.5 px-2 text-right text-wsa-text">{{ row.horde.toLocaleString() }}</td>
+        <td class="py-1.5 px-2 text-right text-wsa-text">{{ (row.alliance + row.horde).toLocaleString() }}</td>
       </tr>
     </tbody>
   </table>

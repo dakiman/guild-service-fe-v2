@@ -2,6 +2,7 @@
 import { computed, ref, toRef, watch } from 'vue'
 import { refDebounced } from '@vueuse/core'
 import GuildHeader from '@/components/guild/GuildHeader.vue'
+import GuildStatsSection from '@/components/guild/GuildStatsSection.vue'
 import RosterTable from '@/components/guild/RosterTable.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import PollingState from '@/components/feedback/PollingState.vue'
@@ -58,12 +59,14 @@ const showError = computed(
         <StaleBadge :last-synced-at="guild.roster_synced_at ?? undefined" />
       </div>
 
-      <div class="form-control max-w-sm">
-        <label class="label"><span class="label-text">Filter members</span></label>
+      <GuildStatsSection :region="region" :realm="realm" :name="name" />
+
+      <div class="max-w-sm">
+        <label class="block text-xs text-wsa-muted mb-1">Filter members</label>
         <input
           v-model="filterText"
           type="text"
-          class="input input-bordered input-sm"
+          class="wsa-input"
           placeholder="Filter by name…"
         />
       </div>

@@ -1,14 +1,14 @@
 <template>
   <div class="flex flex-col gap-4">
     <details v-if="currentGroup" class="group" open>
-      <summary class="flex items-center justify-between cursor-pointer select-none rounded-lg px-4 py-3 ma-card-inner hover:brightness-110 transition">
+      <summary class="flex items-center justify-between cursor-pointer select-none rounded-lg px-4 py-3 wsa-card-inner hover:brightness-110 transition">
         <span class="text-sm font-medium">{{ currentGroup.label }}</span>
         <div class="flex items-center gap-3">
-          <span class="text-[11px] text-ma-muted/60 tabular-nums">
+          <span class="text-[11px] text-wsa-muted/60 tabular-nums">
             {{ currentGroup.entries.length }} factions
           </span>
           <svg
-            class="size-4 text-ma-muted/50 transition-transform group-open:rotate-90"
+            class="size-4 text-wsa-muted/50 transition-transform group-open:rotate-90"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

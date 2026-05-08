@@ -1,6 +1,6 @@
 <template>
   <select
-    class="select select-bordered"
+    class="wsa-input !py-1.5 text-sm"
     :value="modelValue"
     @change="(e) => emit('update:modelValue', (e.target as HTMLSelectElement).value as Region)"
   >

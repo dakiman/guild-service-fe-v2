@@ -12,7 +12,7 @@
   />
   <span
     v-else
-    class="inline-flex items-center justify-center rounded text-white font-bold align-middle bg-neutral"
+    class="inline-flex items-center justify-center rounded font-bold align-middle bg-wsa-card text-wsa-heading"
     :style="{
       width: `${size}px`,
       height: `${size}px`,

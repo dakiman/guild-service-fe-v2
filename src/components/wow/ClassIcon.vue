@@ -13,12 +13,13 @@
   />
   <span
     v-else
-    class="inline-flex items-center justify-center rounded text-white font-bold align-middle"
+    class="inline-flex items-center justify-center rounded font-bold align-middle"
     :style="{
       width: `${size}px`,
       height: `${size}px`,
       fontSize: `${Math.max(10, Math.floor(size * 0.55))}px`,
-      backgroundColor: '#888',
+      backgroundColor: 'rgb(var(--wsa-card))',
+      color: 'rgb(var(--wsa-heading))',
     }"
     :title="name"
   >

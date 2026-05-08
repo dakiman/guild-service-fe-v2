@@ -6,20 +6,18 @@
       subtext="Hang tight — we're starting your character sync."
     />
 
-    <div v-else-if="status === 'error'" role="alert" class="alert alert-error flex-col items-start">
+    <div v-else-if="status === 'error'" role="alert" class="wsa-card !border-red-800/50">
       <div>
-        <h3 class="font-semibold">Battle.net sync failed</h3>
-        <p class="text-sm opacity-90">{{ message }}</p>
+        <h3 class="font-semibold text-[#ff4444]">Battle.net sync failed</h3>
+        <p class="text-sm text-wsa-muted mt-1">{{ message }}</p>
       </div>
-      <router-link :to="{ name: 'profile' }" class="btn btn-sm mt-2">
+      <router-link :to="{ name: 'profile' }" class="wsa-btn text-sm mt-3 inline-block">
         Back to profile
       </router-link>
     </div>
 
-    <div v-else class="card bg-base-200 shadow-sm">
-      <div class="card-body items-center text-center">
-        <p class="font-medium">Sync started — redirecting…</p>
-      </div>
+    <div v-else class="wsa-card text-center">
+      <p class="font-medium text-wsa-text">Sync started — redirecting…</p>
     </div>
   </div>
 </template>

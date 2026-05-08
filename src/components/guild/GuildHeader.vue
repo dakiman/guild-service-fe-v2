@@ -28,28 +28,28 @@ const realmDisplay = computed(() =>
 </script>
 
 <template>
-  <header class="card bg-base-200 shadow-sm">
-    <div class="card-body gap-4">
+  <header class="wsa-card">
+    <div class="flex flex-col gap-4">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div class="flex flex-col gap-1">
-          <h1 class="text-3xl font-bold leading-tight">{{ guildDisplay }}</h1>
-          <p class="text-base-content/70">{{ realmDisplay }}</p>
+          <h1 class="text-3xl font-bold leading-tight text-wsa-heading">{{ guildDisplay }}</h1>
+          <p class="text-wsa-muted">{{ realmDisplay }}</p>
         </div>
         <FactionBadge :faction="guild.faction" />
       </div>
 
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div class="rounded-md bg-base-100 p-3">
-          <p class="text-xs uppercase tracking-wide text-base-content/60">Members</p>
-          <p class="text-xl font-semibold">{{ memberCount }}</p>
+        <div class="rounded-md bg-black/25 border border-wsa-border/20 p-3">
+          <p class="text-xs uppercase tracking-wide text-wsa-muted">Members</p>
+          <p class="text-xl font-semibold text-wsa-text">{{ memberCount }}</p>
         </div>
-        <div class="rounded-md bg-base-100 p-3">
-          <p class="text-xs uppercase tracking-wide text-base-content/60">Achievement points</p>
-          <p class="text-xl font-semibold">{{ achievementPoints }}</p>
+        <div class="rounded-md bg-black/25 border border-wsa-border/20 p-3">
+          <p class="text-xs uppercase tracking-wide text-wsa-muted">Achievement points</p>
+          <p class="text-xl font-semibold text-wsa-text">{{ achievementPoints }}</p>
         </div>
-        <div class="rounded-md bg-base-100 p-3">
-          <p class="text-xs uppercase tracking-wide text-base-content/60">Created</p>
-          <p class="text-xl font-semibold">{{ createdDate ?? 'Unknown' }}</p>
+        <div class="rounded-md bg-black/25 border border-wsa-border/20 p-3">
+          <p class="text-xs uppercase tracking-wide text-wsa-muted">Created</p>
+          <p class="text-xl font-semibold text-wsa-text">{{ createdDate ?? 'Unknown' }}</p>
         </div>
       </div>
     </div>

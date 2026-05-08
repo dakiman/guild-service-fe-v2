@@ -5,6 +5,7 @@ import type {
   GuildLookupResult,
   GuildMember,
   GuildResource,
+  GuildStatsResponse,
   GuildSummary,
 } from '@/types/guild'
 import type { GuildSuggestion, Paginated, Region } from '@/types/api'
@@ -63,4 +64,9 @@ export async function suggestGuilds(q: string): Promise<GuildSuggestion[]> {
     params: { q },
   })
   return res.data.suggestions
+}
+
+export async function fetchGuildStats(region: string, realm: string, name: string): Promise<GuildStatsResponse> {
+  const { data } = await api.get(`/guilds/${region}/${realm}/${name}/stats`)
+  return data
 }

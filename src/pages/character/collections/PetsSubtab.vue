@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!hasPets" class="card bg-base-200 p-8 text-center text-base-content/60">
+  <div v-if="!hasPets" class="wsa-card p-4 text-center text-wsa-disabled">
     <Cat class="mx-auto mb-2 h-10 w-10 opacity-60" />
     <p>No pets collected yet.</p>
   </div>
@@ -11,7 +11,7 @@
       <li
         v-for="p in pets"
         :key="p.pet_id"
-        class="card card-compact flex flex-row items-center gap-3 bg-base-200 px-3 py-2"
+        class="wsa-card-inner px-3 py-2 flex flex-row items-center gap-3"
       >
         <Cat class="h-5 w-5 shrink-0 opacity-70" />
         <a
@@ -24,8 +24,8 @@
           {{ p.name }}
         </a>
         <span v-else class="truncate">{{ p.name }}</span>
-        <span class="badge badge-ghost badge-sm ml-auto">L{{ p.level }}</span>
-        <span v-if="p.is_favorite" class="badge badge-warning badge-sm">★</span>
+        <span class="wsa-badge ml-auto">L{{ p.level }}</span>
+        <span v-if="p.is_favorite" class="wsa-badge !border-amber-500/30 !text-amber-400">★</span>
       </li>
     </ul>
   </div>

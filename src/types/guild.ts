@@ -57,3 +57,19 @@ export interface GuildLookupResult {
   members: import('./api').Paginated<GuildMember>
   isStale: boolean
 }
+
+export interface GuildStatsResponse {
+  member_count: number
+  avg_item_level: number
+  avg_mythic_plus_rating: number
+  top_mythic_plus: {
+    rating: number
+    character: { name: string; realm: string; region: string; class_id: number }
+  } | null
+  role_coverage: { tank: number; healer: number; dps: number }
+  best_keys: {
+    dungeon_id: number
+    dungeon_name: string
+    key_level: number
+  }[]
+}

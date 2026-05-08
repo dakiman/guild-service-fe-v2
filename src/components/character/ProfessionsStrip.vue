@@ -7,40 +7,40 @@
     >
       <button
         type="button"
-        class="ma-stat-pill w-full sm:w-auto py-2"
+        class="wsa-stat-pill w-full sm:w-auto py-2"
         :class="{ 'cursor-pointer hover:bg-base-200/60': group.tiers.length > 1, 'cursor-default': group.tiers.length <= 1 }"
         :aria-expanded="group.tiers.length > 1 ? isExpanded(group.professionId) : undefined"
         :aria-disabled="group.tiers.length <= 1 ? true : undefined"
         @click="toggle(group.professionId, group.tiers.length)"
       >
-        <Hammer v-if="group.isPrimary" class="w-3.5 h-3.5 text-ma-gold" />
-        <Wrench v-else class="w-3.5 h-3.5 text-ma-muted/70" />
-        <span class="text-[10px] uppercase tracking-wider text-ma-muted/70">
+        <Hammer v-if="group.isPrimary" class="w-3.5 h-3.5 text-wsa-gold" />
+        <Wrench v-else class="w-3.5 h-3.5 text-wsa-muted/70" />
+        <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">
           {{ group.professionName }}
         </span>
-        <span class="font-bold text-ma-gold tabular-nums">
+        <span class="font-bold text-wsa-gold tabular-nums">
           {{ group.latest.skill_points }}/{{ group.latest.max_skill_points }}
         </span>
         <ChevronRight
           v-if="group.tiers.length > 1"
-          class="w-3.5 h-3.5 text-ma-muted/70 transition-transform duration-200"
+          class="w-3.5 h-3.5 text-wsa-muted/70 transition-transform duration-200"
           :class="{ 'rotate-90': isExpanded(group.professionId) }"
         />
       </button>
 
       <div
         v-if="group.tiers.length > 1 && isExpanded(group.professionId)"
-        class="mt-1 ml-4 flex flex-col gap-1 pl-3 border-l border-ma-border/30"
+        class="mt-1 ml-4 flex flex-col gap-1 pl-3 border-l border-wsa-border/30"
       >
         <div
           v-for="tier in group.older"
           :key="`${group.professionId}-${tier.tier_name}`"
           class="flex items-center justify-between gap-3 text-xs"
         >
-          <span class="text-ma-muted/70 truncate">
+          <span class="text-wsa-muted/70 truncate">
             {{ tier.tier_name || tier.bucketLabel }}
           </span>
-          <span class="font-semibold text-ma-muted tabular-nums">
+          <span class="font-semibold text-wsa-muted tabular-nums">
             {{ tier.skill_points }}/{{ tier.max_skill_points }}
           </span>
         </div>

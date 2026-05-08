@@ -1,56 +1,50 @@
 <template>
-  <div class="card max-w-md mx-auto bg-base-200">
-    <div class="card-body">
-      <h1 class="card-title">Reset password</h1>
+  <div class="wsa-card max-w-md mx-auto">
+    <h1 class="stats-card-title text-lg mb-4">Reset password</h1>
 
-      <div v-if="!hasValidLink" class="flex flex-col gap-3">
-        <div class="alert alert-error">
-          <span>Invalid or expired reset link</span>
-        </div>
-        <router-link :to="{ name: 'forgot-password' }" class="link link-hover text-sm">
-          Request a new reset link
-        </router-link>
+    <div v-if="!hasValidLink" class="flex flex-col gap-3">
+      <div class="wsa-card !border-red-800/50 !p-3">
+        <p class="text-sm text-[#ff4444]">Invalid or expired reset link</p>
+      </div>
+      <router-link :to="{ name: 'forgot-password' }" class="text-wsa-muted hover:text-wsa-heading transition-colors text-sm">
+        Request a new reset link
+      </router-link>
+    </div>
+
+    <form v-else class="flex flex-col gap-3" @submit.prevent="onSubmit">
+      <label class="flex flex-col gap-1">
+        <span class="stats-label font-medium uppercase tracking-wide">New password</span>
+        <input
+          v-model="password"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          required
+          class="wsa-input"
+        />
+      </label>
+
+      <label class="flex flex-col gap-1">
+        <span class="stats-label font-medium uppercase tracking-wide">Confirm new password</span>
+        <input
+          v-model="passwordConfirmation"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          required
+          class="wsa-input"
+        />
+      </label>
+
+      <div v-if="errorMessage" class="wsa-card !border-red-800/50 !p-3 mt-1">
+        <p class="text-sm text-[#ff4444]">{{ errorMessage }}</p>
       </div>
 
-      <form v-else class="flex flex-col gap-3" @submit.prevent="onSubmit">
-        <label class="form-control w-full">
-          <div class="label">
-            <span class="label-text">New password</span>
-          </div>
-          <input
-            v-model="password"
-            type="password"
-            autocomplete="new-password"
-            minlength="8"
-            required
-            class="input input-bordered w-full"
-          />
-        </label>
-
-        <label class="form-control w-full">
-          <div class="label">
-            <span class="label-text">Confirm new password</span>
-          </div>
-          <input
-            v-model="passwordConfirmation"
-            type="password"
-            autocomplete="new-password"
-            minlength="8"
-            required
-            class="input input-bordered w-full"
-          />
-        </label>
-
-        <div v-if="errorMessage" class="alert alert-error">
-          <span>{{ errorMessage }}</span>
-        </div>
-
-        <button type="submit" class="btn btn-primary mt-2" :disabled="isSubmitting">
-          <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
-          <span>Reset password</span>
-        </button>
-      </form>
-    </div>
+      <button type="submit" class="wsa-btn wsa-btn--primary mt-2 py-2 text-sm" :disabled="isSubmitting">
+        <span v-if="isSubmitting" class="wsa-spinner !w-4 !h-4 inline-block mr-2 align-middle"></span>
+        <span>Reset password</span>
+      </button>
+    </form>
   </div>
 </template>
 

@@ -1,30 +1,30 @@
 <template>
-  <div class="ma-card overflow-hidden">
+  <div class="wsa-card overflow-hidden">
     <!-- Header strip: raid background tinted dark, instance name overlaid. -->
     <div
-      class="relative px-4 py-5 border-b border-ma-border/30"
+      class="relative px-4 py-5 border-b border-wsa-border/30"
       :style="headerStyle"
     >
       <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
       <div class="relative flex items-center justify-between">
-        <h3 class="ma-text-heading text-lg">{{ instance.name }}</h3>
-        <span class="text-xs text-ma-muted/70 uppercase tracking-wider">
+        <h3 class="wsa-text-heading text-lg">{{ instance.name }}</h3>
+        <span class="text-xs text-wsa-muted/70 uppercase tracking-wider">
           {{ instance.expansion.name }}
         </span>
       </div>
     </div>
 
     <!-- Difficulty tabs: per-difficulty X/Y counts -->
-    <div class="flex flex-wrap gap-1.5 px-3 py-2 border-b border-ma-border/20">
+    <div class="flex flex-wrap gap-1.5 px-3 py-2 border-b border-wsa-border/20">
       <button
         v-for="diff in DIFFICULTIES"
         :key="diff.key"
         type="button"
-        class="ma-tab text-xs border-l-4 pl-3 transition-all"
+        class="wsa-tab text-xs border-l-4 pl-3 transition-all"
         :class="[
           difficultyBorderClass(diff.key),
           activeDifficulty === diff.key
-            ? `ma-tab--active font-semibold ring-2 ring-inset shadow-md ${difficultyActiveClass(diff.key)}`
+            ? `wsa-tab--active font-semibold ring-2 ring-inset shadow-md ${difficultyActiveClass(diff.key)}`
             : 'opacity-60 hover:opacity-100',
         ]"
         @click="activeDifficulty = diff.key"
@@ -32,7 +32,7 @@
         <span>{{ diff.label }}</span>
         <span
           class="tabular-nums"
-          :class="activeDifficulty === diff.key ? 'text-ma-text' : 'text-ma-muted/80'"
+          :class="activeDifficulty === diff.key ? 'text-wsa-text' : 'text-wsa-muted/80'"
         >
           {{ killedCountFor(diff.key) }}/{{ instance.encounters.length }}
         </span>
@@ -92,7 +92,7 @@ const sortedEncounters = computed(() =>
 
 const headerStyle = computed(() => {
   if (!props.instance.media_url) {
-    return { backgroundColor: 'rgb(var(--ma-card-inner) / 0.5)' }
+    return { backgroundColor: 'rgb(var(--wsa-card-inner) / 0.5)' }
   }
   return {
     backgroundImage: `url(${props.instance.media_url})`,

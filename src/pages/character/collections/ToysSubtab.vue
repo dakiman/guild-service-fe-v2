@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!hasToys" class="card bg-base-200 p-8 text-center text-base-content/60">
+  <div v-if="!hasToys" class="wsa-card p-4 text-center text-wsa-disabled">
     <Sparkles class="mx-auto mb-2 h-10 w-10 opacity-60" />
     <p>No toys collected yet.</p>
   </div>
@@ -11,7 +11,7 @@
       <li
         v-for="t in toys"
         :key="t.toy_id"
-        class="card card-compact flex flex-row items-center gap-3 bg-base-200 px-3 py-2"
+        class="wsa-card-inner px-3 py-2 flex flex-row items-center gap-3"
       >
         <Sparkles class="h-5 w-5 shrink-0 opacity-70" />
         <a

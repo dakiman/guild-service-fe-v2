@@ -1,9 +1,9 @@
 <template>
   <div
-    class="ma-card-inner flex items-center gap-3 p-3 min-h-[3rem]"
+    class="wsa-card-inner flex items-center gap-3 p-3 min-h-[3rem]"
     :class="orientationClass"
   >
-    <span class="text-[10px] uppercase tracking-wider text-ma-muted/60 shrink-0 w-20">
+    <span class="text-[10px] uppercase tracking-wider text-wsa-muted/60 shrink-0 w-20">
       {{ formatSlotLabel(slot) }}
     </span>
 
@@ -19,7 +19,7 @@
     />
     <div
       v-else
-      class="shrink-0 w-11 h-11 rounded border border-dashed border-ma-disabled/15"
+      class="shrink-0 w-11 h-11 rounded border border-dashed border-wsa-disabled/15"
       aria-hidden="true"
     />
 
@@ -34,12 +34,12 @@
       >
         {{ item.name || formatQuality(item.quality) }}
       </a>
-      <span class="text-xs font-mono text-ma-gold shrink-0">
+      <span class="text-xs font-mono text-wsa-gold shrink-0">
         {{ item.item_level }}
       </span>
     </template>
 
-    <span v-else class="flex-1 text-xs italic text-ma-disabled/50">Empty</span>
+    <span v-else class="flex-1 text-xs italic text-wsa-disabled/50">Empty</span>
   </div>
 </template>
 

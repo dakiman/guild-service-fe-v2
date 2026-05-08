@@ -1,15 +1,15 @@
 <template>
-  <div class="card bg-base-200 shadow-sm">
-    <div class="card-body">
-      <h2 class="card-title">Equipment</h2>
-      <p v-if="!equipment.length" class="text-base-content/60">No equipment recorded.</p>
+  <div class="wsa-card">
+    <div>
+      <h2 class="stats-card-title mb-3">Equipment</h2>
+      <p v-if="!equipment.length" class="text-wsa-disabled text-sm">No equipment recorded.</p>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div
           v-for="item in sortedEquipment"
           :key="`${item.slot}-${item.id}`"
-          class="flex items-center justify-between gap-2 px-3 py-2 rounded bg-base-100"
+          class="flex items-center justify-between gap-2 px-3 py-2 rounded bg-black/25"
         >
-          <span class="text-xs uppercase text-base-content/60 w-24">
+          <span class="text-xs uppercase text-wsa-muted w-24">
             {{ formatSlot(item.slot) }}
           </span>
           <WowheadLink

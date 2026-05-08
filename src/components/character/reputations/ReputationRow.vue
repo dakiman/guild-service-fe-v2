@@ -7,7 +7,7 @@
     </span>
   </div>
 
-  <div v-else class="ma-card-inner flex flex-col items-center gap-2 p-3 text-center min-w-0">
+  <div v-else class="wsa-card-inner flex flex-col items-center gap-2 p-3 text-center min-w-0">
     <div class="relative">
       <img
         v-if="iconSrc"
@@ -33,14 +33,14 @@
       {{ metricLabel }}
     </span>
     <div class="w-full">
-      <div class="w-full rounded-full overflow-hidden h-1 ring-1 ring-ma-border/20" style="background: rgba(var(--ma-border), 0.15)">
+      <div class="w-full rounded-full overflow-hidden h-1 ring-1 ring-wsa-border/20" style="background: rgba(var(--wsa-border), 0.15)">
         <div
           class="h-full rounded-full transition-all"
           :class="`bg-${color}`"
           :style="{ width: barWidth }"
         />
       </div>
-      <span v-if="currentProgress.cap > 0" class="text-[9px] tabular-nums text-ma-muted/50 mt-0.5 block">
+      <span v-if="currentProgress.cap > 0" class="text-[9px] tabular-nums text-wsa-muted/50 mt-0.5 block">
         {{ currentProgress.current.toLocaleString() }} / {{ currentProgress.cap.toLocaleString() }}
       </span>
     </div>
