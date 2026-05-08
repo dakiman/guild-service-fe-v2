@@ -1,11 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRaidKillStats } from '@/composables/useCharacterStats'
 import { CLASS_COLORS } from '@/utils/wowConstants'
 
 const CLASS_ABBREV: Record<number, string> = {
-  1: 'WR', 2: 'PA', 3: 'HU', 4: 'RO', 5: 'PR', 6: 'DK',
-  7: 'SH', 8: 'MA', 9: 'WL', 10: 'MO', 11: 'DR', 12: 'DH', 13: 'EV',
+  1: 'WR',
+  2: 'PA',
+  3: 'HU',
+  4: 'RO',
+  5: 'PR',
+  6: 'DK',
+  7: 'SH',
+  8: 'MA',
+  9: 'WL',
+  10: 'MO',
+  11: 'DR',
+  12: 'DH',
+  13: 'EV',
 }
 const CLASS_IDS = [6, 12, 11, 13, 3, 8, 10, 2, 5, 4, 7, 9, 1]
 
@@ -31,33 +42,68 @@ function dotStyle(classId: number, kills: number, maxInRow: number) {
 }
 
 const difficulty = ref('heroic')
-const { data, isLoading } = useRaidKillStats(difficulty)
+const expansion = ref('current')
+const { data, isLoading, isFetching } = useRaidKillStats(difficulty, expansion)
+
+watch(data, (val) => {
+  if (val?.current_expansion && expansion.value === 'current') {
+    expansion.value = val.current_expansion
+  }
+})
 </script>
 
 <template>
   <div class="stats-card">
     <div class="flex items-center justify-between mb-4">
       <h3 class="stats-card-title">Raid Boss Kills by Class</h3>
-      <div class="flex gap-1">
-        <button v-for="diff in ['normal', 'heroic', 'mythic']" :key="diff"
-          @click="difficulty = diff"
-          class="text-[10px] px-2 py-0.5 rounded border capitalize"
-          :class="difficulty === diff
-            ? 'border-[#aa8855] text-[#ffcc88] bg-[rgba(170,136,85,0.15)]'
-            : 'border-[#5c4a32] text-[#665533]'">
-          {{ diff }}
-        </button>
+      <div class="flex items-center gap-2">
+        <select
+          v-if="data?.expansions?.length"
+          v-model="expansion"
+          class="text-[10px] px-2 py-0.5 rounded border border-[#5c4a32] bg-transparent text-[#e0d0b0] outline-none cursor-pointer"
+        >
+          <option
+            v-for="exp in data.expansions"
+            :key="exp"
+            :value="exp"
+            class="bg-[#1a1410] text-[#e0d0b0]"
+          >
+            {{ exp }}
+          </option>
+        </select>
+        <div class="flex gap-1">
+          <button
+            v-for="diff in ['normal', 'heroic', 'mythic']"
+            :key="diff"
+            class="text-[10px] px-2 py-0.5 rounded border capitalize"
+            :class="
+              difficulty === diff
+                ? 'border-[#aa8855] text-[#ffcc88] bg-[rgba(170,136,85,0.15)]'
+                : 'border-[#5c4a32] text-[#665533]'
+            "
+            @click="difficulty = diff"
+          >
+            {{ diff }}
+          </button>
+        </div>
       </div>
     </div>
 
     <div v-if="isLoading" class="text-xs text-[#665533] py-4 text-center">Loading...</div>
 
-    <div v-else-if="data?.raids.length">
+    <div
+      v-else-if="data?.raids.length"
+      class="transition-opacity duration-200"
+      :class="{ 'opacity-50 pointer-events-none': isFetching }"
+    >
       <!-- Class header row -->
-      <div class="flex items-center mb-2" style="padding-left: 110px;">
-        <div v-for="classId in CLASS_IDS" :key="classId"
+      <div class="flex items-center mb-2" style="padding-left: 110px">
+        <div
+          v-for="classId in CLASS_IDS"
+          :key="classId"
           class="w-[28px] text-center text-[10px] font-semibold"
-          :style="{ color: CLASS_COLORS[classId] }">
+          :style="{ color: CLASS_COLORS[classId] }"
+        >
           {{ CLASS_ABBREV[classId] }}
         </div>
       </div>
@@ -71,12 +117,23 @@ const { data, isLoading } = useRaidKillStats(difficulty)
         <!-- Boss rows -->
         <div v-for="boss in raid.bosses" :key="boss.encounter_id" class="flex items-center py-0.5">
           <span class="w-[110px] text-xs text-[#e0d0b0] truncate pr-2">{{ boss.name }}</span>
-          <div v-for="classId in CLASS_IDS" :key="classId"
-            class="w-[28px] flex items-center justify-center">
-            <div v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
+          <div
+            v-for="classId in CLASS_IDS"
+            :key="classId"
+            class="w-[28px] flex items-center justify-center"
+          >
+            <div
+              v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
               class="heatmap-dot rounded-full"
               :title="`${CLASS_ABBREV[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
-              :style="dotStyle(classId, boss.kills_by_class[String(classId)] ?? 0, getMaxInRow(boss.kills_by_class))" />
+              :style="
+                dotStyle(
+                  classId,
+                  boss.kills_by_class[String(classId)] ?? 0,
+                  getMaxInRow(boss.kills_by_class),
+                )
+              "
+            />
           </div>
         </div>
       </div>
@@ -88,7 +145,9 @@ const { data, isLoading } = useRaidKillStats(difficulty)
 
 <style scoped>
 .heatmap-dot {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .heatmap-dot:hover {
   transform: scale(1.4);

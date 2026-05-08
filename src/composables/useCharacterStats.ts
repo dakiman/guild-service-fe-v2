@@ -1,6 +1,11 @@
 import { useQuery } from '@tanstack/vue-query'
 import { fetchCharacterStats, fetchRaidKillStats, fetchTopKeys, fetchTopRuns } from '@/api/stats'
-import type { CharacterStatsResponse, RaidKillStatsResponse, TopKeysResponse, TopRun } from '@/types/stats'
+import type {
+  CharacterStatsResponse,
+  RaidKillStatsResponse,
+  TopKeysResponse,
+  TopRun,
+} from '@/types/stats'
 import type { Paginated } from '@/types/api'
 import type { Ref } from 'vue'
 
@@ -14,10 +19,10 @@ export function useCharacterStats() {
   })
 }
 
-export function useRaidKillStats(difficulty: Ref<string>) {
+export function useRaidKillStats(difficulty: Ref<string>, expansion: Ref<string>) {
   return useQuery<RaidKillStatsResponse>({
-    queryKey: ['stats', 'raid-kills', difficulty],
-    queryFn: () => fetchRaidKillStats(difficulty.value),
+    queryKey: ['stats', 'raid-kills', difficulty, expansion],
+    queryFn: () => fetchRaidKillStats(difficulty.value, expansion.value),
     staleTime: FIVE_MINUTES_MS,
   })
 }
