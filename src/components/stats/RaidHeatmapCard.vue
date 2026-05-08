@@ -97,11 +97,12 @@ watch(data, (val) => {
       :class="{ 'opacity-50 pointer-events-none': isFetching }"
     >
       <!-- Class header row -->
-      <div class="flex items-center mb-2" style="padding-left: 110px">
+      <div class="heatmap-grid mb-2">
+        <div></div>
         <div
           v-for="classId in CLASS_IDS"
           :key="classId"
-          class="w-[28px] text-center text-[10px] font-semibold"
+          class="text-center text-[10px] font-semibold"
           :style="{ color: CLASS_COLORS[classId] }"
         >
           {{ CLASS_ABBREV[classId] }}
@@ -115,12 +116,16 @@ watch(data, (val) => {
         </div>
 
         <!-- Boss rows -->
-        <div v-for="boss in raid.bosses" :key="boss.encounter_id" class="flex items-center py-0.5">
-          <span class="w-[110px] text-xs text-[#e0d0b0] truncate pr-2">{{ boss.name }}</span>
+        <div
+          v-for="boss in raid.bosses"
+          :key="boss.encounter_id"
+          class="heatmap-grid items-center py-0.5"
+        >
+          <span class="text-xs text-[#e0d0b0] truncate pr-2">{{ boss.name }}</span>
           <div
             v-for="classId in CLASS_IDS"
             :key="classId"
-            class="w-[28px] flex items-center justify-center"
+            class="flex items-center justify-center"
           >
             <div
               v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
@@ -144,6 +149,10 @@ watch(data, (val) => {
 </template>
 
 <style scoped>
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) repeat(13, minmax(28px, 1fr));
+}
 .heatmap-dot {
   transition:
     transform 0.2s ease,
