@@ -1,5 +1,5 @@
 <template>
-  <div class="wsa-card p-6">
+  <div :class="bare ? '' : 'wsa-card p-6'">
     <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)_minmax(0,1fr)] gap-6 items-start">
       <div class="flex flex-col gap-2">
         <EquipmentSlot
@@ -67,6 +67,7 @@ const props = defineProps<{
   equipment: EquipmentItem[]
   renderUrl?: string | null
   characterName: string
+  bare?: boolean
 }>()
 
 const bySlot = computed(() => {
