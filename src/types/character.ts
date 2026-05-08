@@ -299,6 +299,8 @@ export interface MetaBlock {
   feature_flags: {
     achievements: boolean
     pets: boolean
+    mounts: boolean
+    toys: boolean
   }
 }
 
