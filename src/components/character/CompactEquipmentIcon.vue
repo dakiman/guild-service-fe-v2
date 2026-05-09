@@ -19,7 +19,7 @@
     />
     <span
       v-if="item"
-      class="absolute -bottom-1 -right-1 z-10 text-[9px] font-mono leading-none
+      class="absolute -bottom-1 -right-1 z-10 text-[11px] font-mono leading-none
              bg-black/80 text-wsa-gold px-0.5 rounded-sm tabular-nums"
     >
       {{ item.item_level }}
