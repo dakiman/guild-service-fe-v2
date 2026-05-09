@@ -681,28 +681,7 @@ border-wsa-border
 
 Alpha modifiers work: `text-wsa-muted/70`, `border-wsa-border/20`, `bg-wsa-card/50`.
 
-### 10.3 Component Classes
-
-| Class | Purpose |
-|-------|---------|
-| `.wsa-card` | Primary card container (gradient + border + inset shadow) |
-| `.wsa-card-inner` | Inner row card (subtle bg + thin border) |
-| `.wsa-hero-banner` | Character hero banner with blurred backdrop |
-| `.wsa-stat-pill` | Compact stat badge (rounded-full, border, subtle bg) |
-| `.wsa-tab` / `.wsa-tab--active` | Tab strip buttons |
-| `.wsa-text-heading` | Gold heading with Cinzel font + text-shadow |
-| `.wsa-btn` / `.wsa-btn--primary` | Themed buttons |
-| `.wsa-input` | Themed form input |
-| `.wsa-spinner` | CSS-only loading spinner |
-| `.wsa-badge` | Inline pill/badge |
-| `.wsa-wordmark` | Gold gradient text effect |
-| `.stats-card` | Alias for wsa-card (legacy stats components) |
-| `.stats-card-title` | Gold title (15px, 600 weight, text-shadow) |
-| `.stats-label` | Muted label (11px) |
-| `.stats-value` | Primary value (bold) |
-| `.stats-muted` | Disabled/empty text |
-
-### 10.4 DaisyUI Theme Tokens (still valid)
+### 10.3 DaisyUI Theme Tokens (still valid)
 
 The DaisyUI `dark-leather` theme is configured with matching colors. These semantic tokens are acceptable for page-level usage:
 
