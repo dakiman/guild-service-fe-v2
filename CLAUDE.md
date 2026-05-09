@@ -9,7 +9,7 @@ Frontend guidance. Cross-repo context (current expansion, not-in-prod, test char
 - `npm run preview` — serve built `dist/`.
 - `npx eslint .` / `npx prettier --write .` — no npm scripts wired.
 - `npx cypress open|run` — E2E specs in `cypress/e2e/*.cy.ts`; dev server must be running.
-- No `test` script wired despite `vitest` being installed.
+- `npm test` — runs `vitest run` (single pass).
 
 Env: copy `.env.example` → `.env`. `VITE_API_BASE_URL` defaults to `http://localhost:8091/api/v1`. `VITE_BLIZZARD_CLIENT_ID` + `VITE_BLIZZARD_REDIRECT_URI` required for OAuth.
 

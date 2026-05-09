@@ -8,7 +8,7 @@
 
 **Tech Stack:** Vue 3 `<script setup>` + TypeScript + Vite + Pinia + TanStack Vue Query + Tailwind + DaisyUI + `vue-sonner` toasts. Unit tests: Vitest + @vue/test-utils (both already in `devDependencies`; test script wiring is added in Task 0). E2E: Cypress (untouched here).
 
-**Source spec:** `summary_for_fe.md` in this repo (top-level). Backend sources: `../guild-service-be-v2/docs/superpowers/specs/2026-04-22-v1-feature-parity-and-enrichment-design.md` and `../guild-service-be-v2/docs/superpowers/plans/2026-04-22-plan-1-schema-and-equipment-enrichment.md`.
+**Source spec:** `summary_for_fe.md` (removed — was a historical hand-off doc). Backend sources: `../guild-service-be-v2/docs/superpowers/specs/2026-04-22-v1-feature-parity-and-enrichment-design.md` and `../guild-service-be-v2/docs/superpowers/plans/2026-04-22-plan-1-schema-and-equipment-enrichment.md`.
 
 ---
 
@@ -786,7 +786,7 @@ export function getPcsFor(
 }
 ```
 
-Design note: we keep the item's own id in the returned list because Wowhead's `&pcs=` parameter computes set-bonus text from the piece count and shown items — passing the full list lets Wowhead render "N/M bonuses active" correctly. Matches the pattern shown in `summary_for_fe.md:238-242`.
+Design note: we keep the item's own id in the returned list because Wowhead's `&pcs=` parameter computes set-bonus text from the piece count and shown items — passing the full list lets Wowhead render "N/M bonuses active" correctly. Matches the Wowhead `&pcs=` pattern from the original hand-off spec (removed `summary_for_fe.md:238-242`).
 
 - [ ] **Step 4: Run the tests to see them pass**
 
@@ -1329,7 +1329,7 @@ git commit -m "chore: drop vitest smoke test — real suites cover runner"
 
 ## Appendix — What this plan does *not* do (Plan 2/3 territory)
 
-These are explicitly out of scope, per `summary_for_fe.md:469-481`:
+These are explicitly out of scope (per the original hand-off spec, removed `summary_for_fe.md`):
 
 - Mythic+ rating rendering (`mythic_plus_rating` is typed nullable; arrives in Plan 2).
 - PvP bracket stats panel (`pvp_brackets` typed nullable; Plan 2).
