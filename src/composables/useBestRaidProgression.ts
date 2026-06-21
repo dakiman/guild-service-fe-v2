@@ -38,18 +38,17 @@ export function useBestRaidProgression(
     const progress = toValue(raidProgress) ?? []
     if (instances.length === 0) return null
 
-    const latestExpansionId = instances.reduce<number | null>(
-      (acc, instance) =>
-        acc == null ||
-        instance.expansion.display_order >
-          (instances.find((i) => i.expansion.id === acc)?.expansion.display_order ?? -Infinity)
-          ? instance.expansion.id
-          : acc,
+    // Backend convention: smallest display_order = newest expansion. (P1.8)
+    const newest = instances.reduce<RaidInstanceGameData | null>(
+      (best, instance) =>
+        best === null || instance.expansion.display_order < best.expansion.display_order
+          ? instance
+          : best,
       null,
     )
-    if (latestExpansionId == null) return null
+    if (newest === null) return null
 
-    const latestInstances = instances.filter((i) => i.expansion.id === latestExpansionId)
+    const latestInstances = instances.filter((i) => i.expansion.id === newest.expansion.id)
 
     for (const diff of DIFFICULTY_PRIORITY) {
       let best: { instance: RaidInstanceGameData; killed: number } | null = null

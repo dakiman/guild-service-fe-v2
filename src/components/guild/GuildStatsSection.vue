@@ -8,11 +8,18 @@ const props = defineProps<{
   name: string
 }>()
 
-const { data, isLoading } = useGuildStats(props.region, props.realm, props.name)
+// Pass getters so route-param changes flow into the query (P1.7).
+const { data, isLoading, isError } = useGuildStats(
+  () => props.region,
+  () => props.realm,
+  () => props.name,
+)
 </script>
 
 <template>
   <div v-if="isLoading" class="text-xs text-[#665533] py-2">Loading stats...</div>
+
+  <div v-else-if="isError" class="text-xs text-[#ff6b6b] py-2">Couldn't load guild stats.</div>
 
   <template v-else-if="data">
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/vue-query'
+import { keepPreviousData, useQuery } from '@tanstack/vue-query'
 import type { Ref } from 'vue'
 import type { Region } from '@/types/api'
 import { SyncPendingError } from '@/types/api'
@@ -54,6 +54,9 @@ export function useGuildLookup(
     },
     retryDelay: (_count, error) =>
       error instanceof SyncPendingError ? error.retryAfter : DEFAULT_RETRY_DELAY,
+    // Keep the current page mounted while the next page/filter loads instead of
+    // flashing the loading state and unmounting the filter input mid-typing. (P2.5)
+    placeholderData: keepPreviousData,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   })

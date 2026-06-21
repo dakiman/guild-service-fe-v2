@@ -71,7 +71,7 @@ const mostPopularSpec = computed(() => stats.value?.most_popular_spec)
         <component :is="searchOpen ? ChevronUp : ChevronDown" class="h-4 w-4 text-[#665533]" />
       </button>
       <div v-show="searchOpen" class="mt-3">
-        <LookupForm kind="character" @submit="onSubmit" />
+        <LookupForm kind="character" @submit="onSubmit" @pick="onSubmit" />
       </div>
     </div>
 

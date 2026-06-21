@@ -180,7 +180,10 @@ async function onToggleRecruitment() {
     const updated = await toggleRecruitment(character.value.id)
     queryClient.setQueryData<CharacterLookupResult>(
       ['character', region.value, realm.value, name.value],
-      (old) => (old ? { ...old, data: updated } : old),
+      // Merge only the changed field — the PATCH response is a relation-less
+      // CharacterResource, so replacing the whole `data` would wipe
+      // raid_progress / reputations / mounts / guild / etc. from the cache.
+      (old) => (old ? { ...old, data: { ...old.data, recruitment: updated.recruitment } } : old),
     )
     toast.success(
       updated.recruitment

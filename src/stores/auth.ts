@@ -34,8 +34,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
     try {
       user.value = await AuthApi.fetchMe()
-    } catch {
-      clearSession()
+    } catch (err) {
+      // Only a 401 means the token is actually invalid. A transient 5xx/network
+      // error at boot must not delete the stored token and log the user out. (P1.6)
+      if ((err as { response?: { status?: number } } | null)?.response?.status === 401) {
+        clearSession()
+      }
     } finally {
       _resolveReady()
     }

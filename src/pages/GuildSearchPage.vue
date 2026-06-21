@@ -63,7 +63,7 @@ function formatCreatedAgo(item: GuildSummaryWithMetric): string {
 
     <section class="wsa-card mb-6">
       <h2 class="stats-card-title text-base">Find a guild</h2>
-      <LookupForm kind="guild" @submit="onSubmit" />
+      <LookupForm kind="guild" @submit="onSubmit" @pick="onSubmit" />
     </section>
 
     <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

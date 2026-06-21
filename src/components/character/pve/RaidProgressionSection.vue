@@ -93,9 +93,10 @@ const groupedByExpansion = computed<ExpansionGroup[]>(() => {
   for (const group of map.values()) {
     group.instances.sort((a, b) => a.display_order - b.display_order)
   }
-  // Sort expansions by display_order DESC (latest first).
+  // Backend convention: smallest display_order = newest. Sort ASC so the
+  // latest expansion is first (and becomes latestExpansion). (P1.8)
   return Array.from(map.values()).sort(
-    (a, b) => b.expansion.display_order - a.expansion.display_order,
+    (a, b) => a.expansion.display_order - b.expansion.display_order,
   )
 })
 
