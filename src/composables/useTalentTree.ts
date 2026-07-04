@@ -21,7 +21,7 @@ export function useTalentTree(
 
   return useQuery<TalentTreeResponse>({
     queryKey: ['talent-tree', treeId, specId],
-    queryFn: () => getTalentTree(toValue(treeId)!, toValue(specId)!),
+    queryFn: ({ signal }) => getTalentTree(toValue(treeId)!, toValue(specId)!, { signal }),
     enabled,
     staleTime: Infinity,
     gcTime: ONE_DAY_MS,

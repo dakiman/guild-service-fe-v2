@@ -91,12 +91,18 @@ const parentRef = ref<HTMLElement | null>(null)
 
 const query = useInfiniteQuery<AchievementsPage>({
   queryKey: computed(() => ['character-achievements', props.region, props.realm, props.name, includeFeats.value]),
-  queryFn: ({ pageParam }) =>
-    fetchCharacterAchievements(props.region, props.realm, props.name, {
-      cursor: (pageParam as string | null) ?? null,
-      perPage: PER_PAGE,
-      includeFeats: includeFeats.value,
-    }),
+  queryFn: ({ pageParam, signal }) =>
+    fetchCharacterAchievements(
+      props.region,
+      props.realm,
+      props.name,
+      {
+        cursor: (pageParam as string | null) ?? null,
+        perPage: PER_PAGE,
+        includeFeats: includeFeats.value,
+      },
+      { signal },
+    ),
   initialPageParam: null,
   getNextPageParam: (last) => last.meta.next_cursor,
   staleTime: 60_000,

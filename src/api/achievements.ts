@@ -22,6 +22,7 @@ export async function fetchCharacterAchievements(
   realm: string,
   name: string,
   params: { cursor?: string | null; perPage?: number; includeFeats?: boolean },
+  opts?: { signal?: AbortSignal },
 ): Promise<AchievementsPage> {
   const res = await api.get<AchievementsPage>(`/characters/${region}/${realm}/${name}/achievements`, {
     params: {
@@ -29,6 +30,7 @@ export async function fetchCharacterAchievements(
       per_page: params.perPage,
       include_feats: params.includeFeats ? 1 : 0,
     },
+    signal: opts?.signal,
   })
   return res.data
 }

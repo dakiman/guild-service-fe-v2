@@ -30,6 +30,9 @@ configureClient({
   },
 })
 
-auth.fetchMe().finally(() => {
-  app.mount('#app')
-})
+// Don't block first paint on the auth round-trip. The router guard awaits
+// `auth.ready` (resolved in fetchMe's finally, or immediately when there's no
+// token), so navigation still waits for resolved auth — only the initial paint
+// is unblocked. A brief logged-out flash before resolve is accepted. (F1)
+void auth.fetchMe()
+app.mount('#app')

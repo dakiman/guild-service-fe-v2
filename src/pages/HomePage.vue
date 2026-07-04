@@ -151,14 +151,14 @@ function onGuildSubmit(payload: { region: Region; realm: string; name: string })
 
 const guildsQuery = useQuery({
   queryKey: ['popular', 'guilds'] as const,
-  queryFn: fetchPopularGuilds,
+  queryFn: ({ signal }) => fetchPopularGuilds({ signal }),
   staleTime: 60_000,
   refetchOnWindowFocus: false,
 })
 
 const charactersQuery = useQuery({
   queryKey: ['popular', 'characters'] as const,
-  queryFn: fetchPopularCharacters,
+  queryFn: ({ signal }) => fetchPopularCharacters({ signal }),
   staleTime: 60_000,
   refetchOnWindowFocus: false,
 })

@@ -12,9 +12,11 @@ export async function fetchCharacter(
   region: Region,
   realm: string,
   name: string,
+  opts?: { signal?: AbortSignal },
 ): Promise<CharacterLookupResult> {
   const res = await api.get<CharacterResponse>(`/characters/${region}/${realm}/${name}`, {
     validateStatus: (s) => s === 200 || s === 202 || s === 404 || s === 429,
+    signal: opts?.signal,
   })
 
   if (res.status === 202) {
@@ -46,20 +48,24 @@ export async function fetchCharacter(
   }
 }
 
-export async function fetchPopularCharacters(): Promise<{
+export async function fetchPopularCharacters(opts?: { signal?: AbortSignal }): Promise<{
   recently_searched: CharacterSummary[]
   most_popular: CharacterSummary[]
 }> {
   const res = await api.get<{
     recently_searched: CharacterSummary[]
     most_popular: CharacterSummary[]
-  }>('/characters/popular')
+  }>('/characters/popular', { signal: opts?.signal })
   return res.data
 }
 
-export async function suggestCharacters(q: string): Promise<CharacterSuggestion[]> {
+export async function suggestCharacters(
+  q: string,
+  opts?: { signal?: AbortSignal },
+): Promise<CharacterSuggestion[]> {
   const res = await api.get<{ suggestions: CharacterSuggestion[] }>('/characters/suggest', {
     params: { q },
+    signal: opts?.signal,
   })
   return res.data.suggestions
 }

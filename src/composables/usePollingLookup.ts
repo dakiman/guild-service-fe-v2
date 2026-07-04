@@ -15,7 +15,7 @@ export function useCharacterLookup(
 ) {
   return useQuery({
     queryKey: ['character', region, realm, name] as const,
-    queryFn: () => fetchCharacter(region.value, realm.value, name.value),
+    queryFn: ({ signal }) => fetchCharacter(region.value, realm.value, name.value, { signal }),
     enabled: () => !!region.value && !!realm.value && !!name.value,
     retry: (failureCount, error) => {
       if (error instanceof SyncPendingError) return failureCount < MAX_POLLING_ATTEMPTS
@@ -45,8 +45,10 @@ export function useGuildLookup(
 ) {
   return useQuery({
     queryKey: ['guild', region, realm, name, page, perPage, filter ?? ''] as const,
-    queryFn: () =>
-      fetchGuild(region.value, realm.value, name.value, perPage, page.value, filter?.value ?? ''),
+    queryFn: ({ signal }) =>
+      fetchGuild(region.value, realm.value, name.value, perPage, page.value, filter?.value ?? '', {
+        signal,
+      }),
     enabled: () => !!region.value && !!realm.value && !!name.value,
     retry: (failureCount, error) => {
       if (error instanceof SyncPendingError) return failureCount < MAX_POLLING_ATTEMPTS

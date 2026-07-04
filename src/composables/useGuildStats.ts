@@ -19,7 +19,7 @@ export function useGuildStats(
 
   return useQuery<GuildStatsResponse>({
     queryKey: ['guild', 'stats', regionRef, realmRef, nameRef],
-    queryFn: () => fetchGuildStats(regionRef.value, realmRef.value, nameRef.value),
+    queryFn: ({ signal }) => fetchGuildStats(regionRef.value, realmRef.value, nameRef.value, { signal }),
     staleTime: FIVE_MINUTES_MS,
   })
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRaidKillStats } from '@/composables/useCharacterStats'
 import { useAllRaidInstances } from '@/composables/usePveGameData'
 import { CLASS_COLORS, CLASSES } from '@/utils/wowConstants'
@@ -29,9 +29,23 @@ function dotStyle(classId: number, kills: number, maxInRow: number) {
 }
 
 const difficulty = ref('heroic')
+// The query ref stays 'current' so the fetch key never changes when the BE
+// resolves the concrete current-expansion name — avoids a duplicate cache
+// entry (and a second fetch) for identical data. (F2)
 const expansion = ref('current')
 const { data, isLoading, isFetching } = useRaidKillStats(difficulty, expansion)
 const { data: raidGameData } = useAllRaidInstances()
+
+const resolvedCurrent = computed(() => data.value?.current_expansion ?? null)
+
+// The dropdown shows the concrete current-expansion name while the query key
+// stays 'current'; re-picking the resolved current maps back to 'current'.
+const expansionModel = computed({
+  get: () => (expansion.value === 'current' ? (resolvedCurrent.value ?? 'current') : expansion.value),
+  set: (v) => {
+    expansion.value = v === resolvedCurrent.value ? 'current' : v
+  },
+})
 
 const raidMediaMap = computed(() => {
   const map = new Map<number, string>()
@@ -39,12 +53,6 @@ const raidMediaMap = computed(() => {
     if (inst.media_url) map.set(inst.id, inst.media_url)
   }
   return map
-})
-
-watch(data, (val) => {
-  if (val?.current_expansion && expansion.value === 'current') {
-    expansion.value = val.current_expansion
-  }
 })
 </script>
 
@@ -55,7 +63,7 @@ watch(data, (val) => {
       <div class="flex items-center gap-2">
         <select
           v-if="data?.expansions?.length"
-          v-model="expansion"
+          v-model="expansionModel"
           class="text-[10px] px-2 py-0.5 rounded border border-[#5c4a32] bg-transparent text-[#e0d0b0] outline-none cursor-pointer"
         >
           <option

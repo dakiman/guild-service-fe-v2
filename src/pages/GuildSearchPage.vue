@@ -21,7 +21,7 @@ function onSubmit(payload: { region: Region; realm: string; name: string }) {
 
 const discoverQuery = useQuery({
   queryKey: ['discover', 'guilds'] as const,
-  queryFn: fetchDiscoverGuilds,
+  queryFn: ({ signal }) => fetchDiscoverGuilds({ signal }),
   staleTime: 60_000,
   refetchOnWindowFocus: false,
 })

@@ -17,6 +17,7 @@ export async function fetchGuild(
   perPage = 50,
   page = 1,
   filter = '',
+  opts?: { signal?: AbortSignal },
 ): Promise<GuildLookupResult> {
   const res = await api.get<{ guild: GuildResource; members: Paginated<GuildMember> }>(
     `/guilds/${region}/${realm}/${name}`,
@@ -25,6 +26,7 @@ export async function fetchGuild(
         ? { per_page: perPage, page, filter }
         : { per_page: perPage, page },
       validateStatus: (s) => s === 200 || s === 202 || s === 404,
+      signal: opts?.signal,
     },
   )
 
@@ -43,30 +45,41 @@ export async function fetchGuild(
   }
 }
 
-export async function fetchPopularGuilds(): Promise<{
+export async function fetchPopularGuilds(opts?: { signal?: AbortSignal }): Promise<{
   recently_searched: GuildSummary[]
   most_popular: GuildSummary[]
 }> {
   const res = await api.get<{
     recently_searched: GuildSummary[]
     most_popular: GuildSummary[]
-  }>('/guilds/popular')
+  }>('/guilds/popular', { signal: opts?.signal })
   return res.data
 }
 
-export async function fetchDiscoverGuilds(): Promise<GuildDiscoverData> {
-  const res = await api.get<GuildDiscoverData>('/guilds/discover')
+export async function fetchDiscoverGuilds(opts?: { signal?: AbortSignal }): Promise<GuildDiscoverData> {
+  const res = await api.get<GuildDiscoverData>('/guilds/discover', { signal: opts?.signal })
   return res.data
 }
 
-export async function suggestGuilds(q: string): Promise<GuildSuggestion[]> {
+export async function suggestGuilds(
+  q: string,
+  opts?: { signal?: AbortSignal },
+): Promise<GuildSuggestion[]> {
   const res = await api.get<{ suggestions: GuildSuggestion[] }>('/guilds/suggest', {
     params: { q },
+    signal: opts?.signal,
   })
   return res.data.suggestions
 }
 
-export async function fetchGuildStats(region: string, realm: string, name: string): Promise<GuildStatsResponse> {
-  const { data } = await api.get(`/guilds/${region}/${realm}/${name}/stats`)
+export async function fetchGuildStats(
+  region: string,
+  realm: string,
+  name: string,
+  opts?: { signal?: AbortSignal },
+): Promise<GuildStatsResponse> {
+  const { data } = await api.get(`/guilds/${region}/${realm}/${name}/stats`, {
+    signal: opts?.signal,
+  })
   return data
 }

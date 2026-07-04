@@ -35,11 +35,13 @@ describe('useGuildStats reactivity (P1.7)', () => {
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     mount(Comp, { global: { plugins: [[VueQueryPlugin, { queryClient }]] } })
 
+    const withSignal = expect.objectContaining({ signal: expect.any(AbortSignal) })
+
     await flushPromises()
-    expect(fetchGuildStats).toHaveBeenLastCalledWith('eu', 'the-maelstrom', 'echo')
+    expect(fetchGuildStats).toHaveBeenLastCalledWith('eu', 'the-maelstrom', 'echo', withSignal)
 
     name.value = 'method'
     await flushPromises()
-    expect(fetchGuildStats).toHaveBeenLastCalledWith('eu', 'the-maelstrom', 'method')
+    expect(fetchGuildStats).toHaveBeenLastCalledWith('eu', 'the-maelstrom', 'method', withSignal)
   })
 })

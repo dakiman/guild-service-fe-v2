@@ -18,18 +18,21 @@ const REVALIDATE_HEADERS = { 'Cache-Control': 'no-cache' }
 
 export async function getRaidInstances(
   params: { expansion?: RaidInstanceScope } = {},
+  opts?: { signal?: AbortSignal },
 ): Promise<RaidInstancesResponse> {
   const res = await api.get<RaidInstancesResponse>('/game-data/raid-instances', {
     params: {
       expansion: params.expansion ?? 'current',
     },
     headers: REVALIDATE_HEADERS,
+    signal: opts?.signal,
   })
   return res.data
 }
 
 export async function getMythicKeystoneDungeons(
   params: { season?: MythicSeasonScope } = {},
+  opts?: { signal?: AbortSignal },
 ): Promise<MythicKeystoneDungeonsResponse> {
   const res = await api.get<MythicKeystoneDungeonsResponse>(
     '/game-data/mythic-keystone-dungeons',
@@ -38,12 +41,15 @@ export async function getMythicKeystoneDungeons(
         season: params.season ?? 'current',
       },
       headers: REVALIDATE_HEADERS,
+      signal: opts?.signal,
     },
   )
   return res.data
 }
 
-export async function getRealms(): Promise<RealmsResponse> {
-  const res = await api.get<RealmsResponse>('/game-data/realms')
+export async function getRealms(opts?: { signal?: AbortSignal }): Promise<RealmsResponse> {
+  const res = await api.get<RealmsResponse>('/game-data/realms', {
+    signal: opts?.signal,
+  })
   return res.data
 }

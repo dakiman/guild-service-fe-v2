@@ -43,13 +43,13 @@ const enabled = computed(() => debounced.value.length >= 2)
 
 const query = useQuery({
   queryKey: computed(() => ['suggest', props.kind, debounced.value] as const),
-  queryFn: async (): Promise<Suggestion[]> => {
+  queryFn: async ({ signal }): Promise<Suggestion[]> => {
     const q = debounced.value
     if (props.kind === 'character') {
-      const rows = await suggestCharacters(q)
+      const rows = await suggestCharacters(q, { signal })
       return rows.map((r) => ({ ...r, _kind: 'character' as const }))
     }
-    const rows = await suggestGuilds(q)
+    const rows = await suggestGuilds(q, { signal })
     return rows.map((r) => ({ ...r, _kind: 'guild' as const }))
   },
   enabled,
