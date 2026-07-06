@@ -24,7 +24,7 @@ BE uses async sync-on-read. `src/api/characters.ts` and `src/api/guilds.ts` acce
 - **202** — sync in progress, empty body, `Retry-After` seconds. API layer throws `SyncPendingError(retryAfter)`.
 - **404** — throws `NotFoundError`.
 
-`src/composables/usePollingLookup.ts` wires this into Vue Query: `retry` returns true only for `SyncPendingError` up to `MAX_POLLING_ATTEMPTS` (12, ~60s); `retryDelay` reads `error.retryAfter`. **New 202-capable endpoints must use `validateStatus: (s) => s === 200 || s === 202 || s === 404` + throw typed errors** so the composable keeps working.
+`src/composables/usePollingLookup.ts` wires this into Vue Query with a time budget (`src/composables/pollingSchedule.ts`): poll at the server's `Retry-After` for 3 min, then once per minute until 15 min, then surface a real error. `SyncPendingError` carries `retryAfter` (ms) + `queueDepth` (from the 202 body's `queue_depth`); both lookups expose `syncPendingSince` (drives `PollingState`'s message tiers) and `restartPolling()` (resets the budget — bind it to ErrorState's retry, NOT plain `refetch()`). **New 202-capable endpoints must use `validateStatus: (s) => s === 200 || s === 202 || s === 404` + throw typed errors** so the composable keeps working.
 
 Paginated responses (`Paginated<T>` in `src/types/api.ts`) match Laravel's `LengthAwarePaginator::toArray()` directly — BE does **not** wrap in `ResourceCollection`, so there's **no outer `data` envelope**; `data` is the items array, pagination fields are siblings.
 
