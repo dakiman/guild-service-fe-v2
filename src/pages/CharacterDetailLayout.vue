@@ -3,7 +3,7 @@
     <ErrorState
       v-if="lookup.error.value && !lookup.isFetching.value"
       :error="lookup.error.value"
-      @retry="lookup.refetch()"
+      @retry="lookup.restartPolling()"
     />
 
     <template v-else-if="character">
@@ -53,9 +53,9 @@
 
     <PollingState
       v-else
-      :attempt="lookup.failureCount.value"
-      :max-attempts="12"
+      :pending-since="lookup.syncPendingSince.value"
       :queue-depth="pollingQueueDepth"
+      @check-now="lookup.refetch()"
     />
   </div>
 </template>

@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { NotFoundError, ThrottledError } from '@/types/api'
+import { NotFoundError, SyncPendingError, ThrottledError } from '@/types/api'
 
 const props = defineProps<{
   title?: string
@@ -41,6 +41,7 @@ const emit = defineEmits<{ retry: [] }>()
 
 const isNotFound = computed(() => props.error instanceof NotFoundError)
 const isThrottled = computed(() => props.error instanceof ThrottledError)
+const isSyncPending = computed(() => props.error instanceof SyncPendingError)
 
 const remainingSeconds = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
@@ -75,6 +76,7 @@ const resolvedTitle = computed(() => {
   if (props.title) return props.title
   if (isNotFound.value) return 'Not found'
   if (isThrottled.value) return 'Too many requests'
+  if (isSyncPending.value) return 'Still syncing'
   return 'Something went wrong'
 })
 
@@ -85,6 +87,9 @@ const resolvedMessage = computed(() => {
     return remainingSeconds.value > 0
       ? `This endpoint is rate-limited. Try again in ${remainingSeconds.value}s.`
       : 'This endpoint is rate-limited. You can try again now.'
+  }
+  if (isSyncPending.value) {
+    return 'This is taking much longer than it should — the sync is still queued on our side. Try again, or come back in a few minutes.'
   }
   return undefined
 })

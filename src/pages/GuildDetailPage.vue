@@ -10,6 +10,7 @@ import StaleBadge from '@/components/feedback/StaleBadge.vue'
 import { useGuildLookup } from '@/composables/usePollingLookup'
 import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
 import type { Region } from '@/types/api'
+import { SyncPendingError } from '@/types/api'
 
 const props = defineProps<{ region: Region; realm: string; name: string }>()
 
@@ -41,6 +42,11 @@ useStaleAutoRefresh(isStale, () => [
 const showError = computed(
   () => !!lookup.error.value && !lookup.isFetching.value,
 )
+
+const guildQueueDepth = computed(() => {
+  const err = lookup.error.value
+  return err instanceof SyncPendingError ? err.queueDepth : undefined
+})
 </script>
 
 <template>
@@ -48,7 +54,7 @@ const showError = computed(
     <ErrorState
       v-if="showError"
       :error="lookup.error.value"
-      @retry="lookup.refetch()"
+      @retry="lookup.restartPolling()"
     />
 
     <template v-else-if="guild && members">
@@ -79,6 +85,11 @@ const showError = computed(
       />
     </template>
 
-    <PollingState v-else :attempt="lookup.failureCount.value" />
+    <PollingState
+      v-else
+      :pending-since="lookup.syncPendingSince.value"
+      :queue-depth="guildQueueDepth"
+      @check-now="lookup.refetch()"
+    />
   </div>
 </template>
