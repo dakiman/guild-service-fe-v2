@@ -2,6 +2,7 @@
   <a
     :href="fullHref"
     :data-wowhead="dataWowhead"
+    data-wh-icon-size="large"
     target="_blank"
     rel="noopener"
     class="talent-node"

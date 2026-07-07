@@ -73,7 +73,7 @@ Affixes ride along on the dungeons response keyed by id (`Record<number, Keyston
 
 After tooltip-bearing content re-renders, call `useWowheadRefresh(deps)` from `src/composables/useWowhead.ts` — waits for `window.$WowheadPower` then invokes `refreshLinks()` on dep changes.
 
-power.js injects a **fixed-size** `.iconmedium` (36px `span` > `ins` icon + `del` frame overlay) into empty anchors — in anchors sized differently (e.g. talent nodes at `cellSize - 8`), constrain **all three** elements to 100% + `background-size: cover` via `:deep()` or the icon overflows its container (see `TalentNode.vue`).
+power.js injects a **fixed-size** icon (`span` > `ins` icon + `del` frame overlay; 36px medium by default) into empty anchors — in anchors sized differently (e.g. talent nodes at `cellSize - 8`), constrain **all three** elements to 100% + `background-size: cover` via `:deep()` or the icon overflows its container, AND set `data-wh-icon-size="large"` on the anchor so the 56px source downscales crisply instead of the 36px medium blurring when stretched (see `TalentNode.vue`).
 
 ### Icon sources
 
