@@ -9,7 +9,7 @@
       :icon="Star"
     />
 
-    <ReputationsList v-else :entries="character.reputations" />
+    <ReputationsList v-else :entries="character.reputations ?? null" />
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4">
     <EmptyTab
-      v-if="character.titles.length === 0"
+      v-if="titles.length === 0"
       slice="titles"
       :freshness="freshness.titles"
       title="No titles yet"
@@ -19,7 +19,7 @@
           {{ heroLabel }}
         </span>
         <span class="text-xs text-wsa-muted/70">
-          {{ character.titles.length }} {{ character.titles.length === 1 ? 'title' : 'titles' }} earned
+          {{ titles.length }} {{ titles.length === 1 ? 'title' : 'titles' }} earned
         </span>
       </div>
 
@@ -84,6 +84,9 @@ import type { CharacterTitle } from '@/types/character'
 
 const { character, freshness } = useCharacterContext()
 
+// Omitted (not just empty) for basic-tier characters.
+const titles = computed(() => character.value.titles ?? [])
+
 const previewedTitleId = ref<number | null>(null)
 
 const displayName = computed(() => {
@@ -117,17 +120,17 @@ function renderWithName(raw: string, name: string): string {
 const equippedTitle = computed(() => {
   const activeId = character.value.active_title_id
   if (activeId == null) return null
-  return character.value.titles.find((t) => t.id === activeId) ?? null
+  return titles.value.find((t) => t.id === activeId) ?? null
 })
 
 const previewedTitle = computed(() => {
   const id = previewedTitleId.value
   if (id == null) return null
-  return character.value.titles.find((t) => t.id === id) ?? null
+  return titles.value.find((t) => t.id === id) ?? null
 })
 
 const otherTitles = computed(() =>
-  [...character.value.titles]
+  [...titles.value]
     .filter((t) => t.id !== character.value.active_title_id)
     .map((t) => ({ ...t, bare: stripName(rawFor(t)) }))
     .sort((a, b) => a.bare.localeCompare(b.bare)),

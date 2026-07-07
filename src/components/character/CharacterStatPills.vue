@@ -56,7 +56,7 @@ const mythicRating = computed(() => {
   return typeof rating === 'number' ? Math.round(rating).toLocaleString() : 'N/A'
 })
 
-const bestRaidProgression = useBestRaidProgression(() => props.character.raid_progress)
+const bestRaidProgression = useBestRaidProgression(() => props.character.raid_progress ?? null)
 
 const raidProgressionLabel = computed<string | null>(() => {
   const c = bestRaidProgression.value

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-6">
-    <RaidsHeadline :raid-progress="character.raid_progress" />
-    <RaidProgressionSection :raid-progress="character.raid_progress" />
+    <RaidsHeadline :raid-progress="character.raid_progress ?? null" />
+    <RaidProgressionSection :raid-progress="character.raid_progress ?? null" />
   </div>
 </template>
 

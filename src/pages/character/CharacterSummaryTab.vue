@@ -10,10 +10,10 @@
       :talents="character.talents"
       :classic="isClassic"
     />
-    <ProfessionsStrip :entries="character.professions" />
+    <ProfessionsStrip :entries="character.professions ?? null" />
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <CharacterStatsCard :stats="character.stats" />
-      <PvpRatingsCard :brackets="character.pvp_brackets" />
+      <PvpRatingsCard :brackets="character.pvp_brackets ?? null" />
     </div>
   </div>
 </template>

@@ -22,9 +22,11 @@
       </template>
 
       <template v-else>
+        <BasicProfileNotice v-if="isBasicProfile" :level="character.level" />
+
         <div class="flex flex-wrap items-center gap-3">
           <StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
-          <FreshnessChips v-if="meta" :freshness="meta.freshness" />
+          <FreshnessChips v-if="meta && !isBasicProfile" :freshness="meta.freshness" />
           <button
             v-if="character.talent_loadout_code"
             type="button"
@@ -79,6 +81,7 @@ import CharacterTabStrip, {
 } from '@/components/character/CharacterTabStrip.vue'
 import PollingState from '@/components/feedback/PollingState.vue'
 import StaleBadge from '@/components/feedback/StaleBadge.vue'
+import BasicProfileNotice from '@/components/feedback/BasicProfileNotice.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import FreshnessChips from '@/components/feedback/FreshnessChips.vue'
 import type { Region } from '@/types/api'
@@ -99,6 +102,7 @@ const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
 const isSyncing = computed(() => lookup.data.value?.isSyncing ?? false)
 const isClassic = computed(() => character.value?.game_version === 'classic')
+const isBasicProfile = computed(() => meta.value?.profile_tier === 'basic')
 const pollingQueueDepth = computed(() => {
   const err = lookup.error.value
   return err instanceof SyncPendingError ? err.queueDepth : undefined
@@ -125,6 +129,16 @@ provideCharacterContext({
 
 const tabs = computed<TabDescriptor[]>(() => {
   const params = { region: region.value, realm: realm.value, name: name.value }
+
+  // Basic-tier (sub-max-level) characters carry no slice data — only the
+  // profile-backed tabs are shown; BasicProfileNotice explains why.
+  if (isBasicProfile.value) {
+    return [
+      { label: 'Summary', to: { name: 'character-summary', params }, icon: Sparkles },
+      { label: 'Talents', to: { name: 'character-talents', params }, icon: BookOpen },
+    ]
+  }
+
   const achievementsEnabled = meta.value?.feature_flags?.achievements !== false
   const collectionsEnabled =
     meta.value?.feature_flags?.mounts !== false ||

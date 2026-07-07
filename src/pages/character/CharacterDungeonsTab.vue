@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-6">
     <DungeonsHeadline
-      :runs="character.dungeon_runs"
+      :runs="character.dungeon_runs ?? []"
       :rating="character.mythic_plus_rating"
       :current-season="currentSeason"
     />
@@ -32,13 +32,13 @@
 
       <MythicPlusBestPerDungeon
         v-if="activeView === 'best'"
-        :runs="character.dungeon_runs"
+        :runs="character.dungeon_runs ?? []"
         :dungeons="dungeons"
         :current-season="currentSeason"
       />
       <MythicPlusAllRuns
         v-else
-        :runs="character.dungeon_runs"
+        :runs="character.dungeon_runs ?? []"
         :dungeons="dungeons"
         :current-season="currentSeason"
       />

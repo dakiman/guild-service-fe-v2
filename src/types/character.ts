@@ -254,18 +254,20 @@ export interface CharacterResource {
   talents: CharacterTalents
   equipment: EquipmentItem[]
   stats: CharacterStats | null
-  pvp_brackets: PvpBracketStats[] | null
-  professions: Profession[] | null
-  raid_progress: RaidEncounterProgress[] | null
+  // Slice relations are omitted entirely (not null) for basic-tier
+  // (sub-max-level) characters — the BE skips their eager-loads.
+  pvp_brackets?: PvpBracketStats[] | null
+  professions?: Profession[] | null
+  raid_progress?: RaidEncounterProgress[] | null
   active_title_id: number | null
-  titles: CharacterTitle[]
-  reputations: Reputation[] | null
+  titles?: CharacterTitle[]
+  reputations?: Reputation[] | null
   recruitment: boolean
   guild: GuildSummary | null
-  dungeon_runs: DungeonRun[]
-  mounts: Mount[] | null
+  dungeon_runs?: DungeonRun[]
+  mounts?: Mount[] | null
   pets?: Pet[] | null
-  toys: Toy[] | null
+  toys?: Toy[] | null
   last_searched_at: string | null
   mythics_synced_at: string | null
   stats_synced_at: string | null
@@ -276,18 +278,22 @@ export interface MetaBlock {
   game_version: GameVersion
   forced_refresh: boolean
   sync_status: 'syncing' | 'complete'
+  // 'full' = endgame, slices tracked; 'basic' = sub-max, profile-only.
+  profile_tier: 'full' | 'basic'
   poll_after?: number
   queue_depth?: number
+  // Only `profile` is guaranteed — slice keys are omitted for basic-tier
+  // characters (and `achievements` also when the feature flag is off).
   freshness: {
     profile: FreshnessState
-    mythic_plus: FreshnessState
-    pvp: FreshnessState
-    professions: FreshnessState
-    raids: FreshnessState
-    stats: FreshnessState
-    titles: FreshnessState
-    reputations: FreshnessState
-    collections: FreshnessState
+    mythic_plus?: FreshnessState
+    pvp?: FreshnessState
+    professions?: FreshnessState
+    raids?: FreshnessState
+    stats?: FreshnessState
+    titles?: FreshnessState
+    reputations?: FreshnessState
+    collections?: FreshnessState
     achievements?: FreshnessState
   }
   feature_flags: {
