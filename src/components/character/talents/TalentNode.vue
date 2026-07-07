@@ -83,6 +83,25 @@ const nodeStyle = computed(() => {
   width: 100%;
   height: 100%;
 }
+/* Wowhead's power.js swaps in a fixed-size .iconmedium (36px). Nodes are
+   sized by cellSize, so force the injected markup to fill the node instead
+   of overflowing the highlight ring. background-size is needed because the
+   icon jpg otherwise renders at its natural 36px inside the shrunk box. */
+.talent-node :deep(span[class*='icon']),
+.talent-node :deep(span[class*='icon'] ins),
+.talent-node :deep(span[class*='icon'] del) {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  background-size: cover !important;
+}
+/* Round the icon itself on circular nodes (choice nodes already clip via
+   the anchor's octagon clip-path, which applies to descendants). */
+.talent-node--regular :deep(span[class*='icon']),
+.talent-node--regular :deep(span[class*='icon'] ins),
+.talent-node--regular :deep(span[class*='icon'] del) {
+  border-radius: 9999px;
+}
 .talent-node__rank {
   position: absolute;
   right: -2px;

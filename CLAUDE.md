@@ -73,6 +73,8 @@ Affixes ride along on the dungeons response keyed by id (`Record<number, Keyston
 
 After tooltip-bearing content re-renders, call `useWowheadRefresh(deps)` from `src/composables/useWowhead.ts` — waits for `window.$WowheadPower` then invokes `refreshLinks()` on dep changes.
 
+power.js injects a **fixed-size** `.iconmedium` (36px `span` > `ins` icon + `del` frame overlay) into empty anchors — in anchors sized differently (e.g. talent nodes at `cellSize - 8`), constrain **all three** elements to 100% + `background-size: cover` via `:deep()` or the icon overflows its container (see `TalentNode.vue`).
+
 ### Icon sources
 
 - **Race icons (CDN).** `https://wow.zamimg.com/images/wow/icons/{size}/race_{slug}_{gender}.jpg` — `{size}` ∈ `large`(56) / `medium`(36) / `small`(18); `{slug}` lowercase no-separators (`bloodelf`, `nightelf`, `kultiran`, `lightforgeddraenei`, `magharorc`, `darkirondwarf`, `earthendwarf`, ...); `{gender}` ∈ `male`/`female`. Maps in `src/utils/wowConstants.ts` (`RACE_WOWHEAD_SLUGS`, `RACE_DEFAULT_GENDERS`). `RaceIcon.vue` falls back to a styled initial-badge on unknown slug or load error. Slug quirks: Forsaken/Undead (5) → `scourge`; Earthen (84/85) → `earthendwarf`.
