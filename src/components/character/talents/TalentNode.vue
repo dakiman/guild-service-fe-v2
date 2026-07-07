@@ -65,16 +65,13 @@ const nodeStyle = computed(() => {
   transition: opacity 0.15s ease;
 }
 .talent-node--regular {
-  border-radius: 9999px;
+  border-radius: 4px;
 }
 .talent-node--choice {
   clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
 }
 .talent-node--picked {
   opacity: 1;
-  box-shadow:
-    inset 0 0 0 2px var(--talent-glow),
-    0 0 4px var(--talent-glow);
 }
 .talent-node--unpicked {
   opacity: 0.4;
@@ -96,12 +93,10 @@ const nodeStyle = computed(() => {
   height: 100% !important;
   background-size: cover !important;
 }
-/* Round the icon itself on circular nodes (choice nodes already clip via
-   the anchor's octagon clip-path, which applies to descendants). */
 .talent-node--regular :deep(span[class*='icon']),
 .talent-node--regular :deep(span[class*='icon'] ins),
 .talent-node--regular :deep(span[class*='icon'] del) {
-  border-radius: 9999px;
+  border-radius: 4px;
 }
 .talent-node__rank {
   position: absolute;
