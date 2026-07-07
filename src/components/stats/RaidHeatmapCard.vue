@@ -62,12 +62,12 @@ const raidMediaMap = computed(() => {
       <h3 class="stats-card-title">Raid Boss Kills by Class</h3>
       <div class="flex items-center gap-2">
         <select
-          v-if="data?.expansions?.length"
+          v-if="(data?.expansions?.length ?? 0) > 1"
           v-model="expansionModel"
           class="text-[10px] px-2 py-0.5 rounded border border-[#5c4a32] bg-transparent text-[#e0d0b0] outline-none cursor-pointer"
         >
           <option
-            v-for="exp in data.expansions"
+            v-for="exp in data?.expansions ?? []"
             :key="exp"
             :value="exp"
             class="bg-[#1a1410] text-[#e0d0b0]"
