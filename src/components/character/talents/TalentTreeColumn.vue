@@ -55,6 +55,7 @@ import TalentEdges from './TalentEdges.vue'
 import TalentNode from './TalentNode.vue'
 import type { TalentEdge, TalentNode as TalentNodeT } from '@/types/talents'
 import type { TalentEntry } from '@/types/character'
+import { resolveNodeSpellId } from '@/utils/talentTopology'
 
 const props = defineProps<{
   title: string
@@ -145,12 +146,7 @@ const pickedById = computed(() => {
 const pickedIds = computed(() => new Set(pickedById.value.keys()))
 
 function spellIdFor(node: TalentNodeT): number {
-  const p = pickedById.value.get(node.id)
-  if (p) return p.spell_id
-  if (node.type === 'choice' && node.choice_options && node.choice_options[0]) {
-    return node.choice_options[0].spell_id
-  }
-  return node.ranks[0]?.spell_id ?? 0
+  return resolveNodeSpellId(node, pickedById.value.get(node.id))
 }
 
 function rankLabelFor(node: TalentNodeT): string | null {

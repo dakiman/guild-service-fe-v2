@@ -5,6 +5,7 @@ import type {
   TalentNodeRef,
   TalentTreeTopology,
 } from '@/types/talents'
+import { resolveNodeSpellId } from '@/utils/talentTopology'
 
 const CLASS_QUOTA = 2
 const SPEC_QUOTA = 2
@@ -67,7 +68,7 @@ function rankLabel(p: TalentEntry): string | null {
 function toRef(p: PickedWithNode, section: 'class' | 'hero' | 'spec'): TalentNodeRef {
   return {
     node_id: p.node.id,
-    spell_id: p.picked.spell_id,
+    spell_id: resolveNodeSpellId(p.node, p.picked),
     rank_label: rankLabel(p.picked),
     section,
   }

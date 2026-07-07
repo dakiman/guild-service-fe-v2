@@ -141,6 +141,7 @@ import { useTalentTree } from '@/composables/useTalentTree'
 import { computeTalentSummary } from '@/composables/useTalentSummary'
 import { useWowheadRefresh } from '@/composables/useWowhead'
 import { CLASS_COLORS } from '@/utils/wowConstants'
+import { sanitizeTopology } from '@/utils/talentTopology'
 import type { CharacterTalents } from '@/types/character'
 import type { TalentNode as TalentNodeT } from '@/types/talents'
 
@@ -166,7 +167,10 @@ const treeQuery = useTalentTree(
   () => (props.classic ? null : props.specId),
 )
 
-const topology = computed(() => treeQuery.data.value?.tree ?? null)
+const topology = computed(() => {
+  const raw = treeQuery.data.value?.tree
+  return raw ? sanitizeTopology(raw) : null
+})
 
 const treeUnavailable = computed(() => {
   if (props.classic) return false
