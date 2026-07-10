@@ -1,39 +1,48 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import RaceIcon from '@/components/wow/RaceIcon.vue'
+import { RACES } from '@/utils/wowConstants'
+import type { RaceDistribution } from '@/types/stats'
 
 const props = defineProps<{
   horde: number
   alliance: number
+  races: RaceDistribution[]
 }>()
 
 const total = computed(() => props.horde + props.alliance)
 const hordePercent = computed(() => (total.value > 0 ? (props.horde / total.value) * 100 : 50))
 const alliancePercent = computed(() => (total.value > 0 ? (props.alliance / total.value) * 100 : 50))
+
+const topRaces = computed(() =>
+  [...props.races].sort((a, b) => b.count - a.count).slice(0, 6),
+)
+const maxRaceCount = computed(() => topRaces.value[0]?.count ?? 1)
 </script>
 
 <template>
   <div class="stats-card">
     <h3 class="stats-card-title mb-4">Faction Balance</h3>
 
-    <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center justify-between gap-4 mb-3">
       <!-- Horde emblem + count -->
-      <div class="flex items-center gap-3">
-        <div class="faction-emblem faction-emblem--horde">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="faction-emblem faction-emblem--horde shrink-0">
           <img src="/factions/horde.png" alt="Horde" class="w-8 h-8 object-contain" />
         </div>
-        <div>
-          <div class="text-xl font-bold text-[#ff4444]">{{ horde.toLocaleString() }}</div>
+        <div class="min-w-0">
+          <div class="text-lg font-bold tabular-nums text-[#ff4444]">{{ horde.toLocaleString() }}</div>
           <div class="text-xs text-[#aa6666]">Horde</div>
         </div>
       </div>
 
       <!-- Alliance emblem + count -->
-      <div class="flex items-center gap-3">
-        <div>
-          <div class="text-xl font-bold text-[#3399ff] text-right">{{ alliance.toLocaleString() }}</div>
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="min-w-0">
+          <div class="text-lg font-bold tabular-nums text-[#3399ff] text-right">{{ alliance.toLocaleString() }}</div>
           <div class="text-xs text-[#6688aa] text-right">Alliance</div>
         </div>
-        <div class="faction-emblem faction-emblem--alliance">
+        <div class="faction-emblem faction-emblem--alliance shrink-0">
           <img src="/factions/alliance.png" alt="Alliance" class="w-8 h-8 object-contain" />
         </div>
       </div>
@@ -49,6 +58,32 @@ const alliancePercent = computed(() => (total.value > 0 ? (props.alliance / tota
     <div class="flex justify-between mt-1.5">
       <span class="text-xs font-semibold text-[#aa6666]">{{ hordePercent.toFixed(1) }}%</span>
       <span class="text-xs font-semibold text-[#6688aa]">{{ alliancePercent.toFixed(1) }}%</span>
+    </div>
+
+    <!-- Top races -->
+    <div class="mt-5">
+      <h4 class="stats-label font-medium uppercase tracking-wide mb-2">Top Races</h4>
+      <div class="flex flex-col gap-1.5">
+        <div
+          v-for="race in topRaces"
+          :key="race.race_id"
+          class="flex items-center gap-2"
+        >
+          <RaceIcon :race-id="race.race_id" :size="20" />
+          <span data-test="race-name" class="text-xs text-[#e0d0b0] w-24 truncate">
+            {{ RACES[race.race_id] ?? `Race ${race.race_id}` }}
+          </span>
+          <div class="flex-1 h-[5px] rounded bg-[rgba(0,0,0,0.3)] overflow-hidden">
+            <div
+              class="h-full rounded bg-[#aa8855] opacity-70"
+              :style="{ width: `${(race.count / maxRaceCount) * 100}%` }"
+            />
+          </div>
+          <span class="text-[10px] tabular-nums text-[#e0d0b0]">
+            {{ race.count.toLocaleString() }}
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>

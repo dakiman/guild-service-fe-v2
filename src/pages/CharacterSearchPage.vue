@@ -110,6 +110,7 @@ const mostPopularSpec = computed(() => {
         <FactionSplitCard
           :horde="stats.faction_distribution.horde"
           :alliance="stats.faction_distribution.alliance"
+          :races="stats.race_distribution"
         />
       </div>
 
