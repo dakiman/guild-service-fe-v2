@@ -14,7 +14,7 @@ import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
 import { useCharacterStats } from '@/composables/useCharacterStats'
-import { CLASSES, CLASS_COLORS, RACES } from '@/utils/wowConstants'
+import { CLASSES, CLASS_COLORS } from '@/utils/wowConstants'
 import { SPEC_NAMES } from '@/utils/wowIcons'
 import type { Region } from '@/types/api'
 
@@ -42,12 +42,6 @@ const avgRating = computed(() => {
   const total = stats.value.class_distribution.reduce((sum, c) => sum + c.avg_mythic_plus_rating * c.count, 0)
   const count = stats.value.class_distribution.reduce((sum, c) => sum + c.count, 0)
   return (total / count).toFixed(0)
-})
-
-const topRace = computed(() => {
-  if (!stats.value?.race_distribution.length) return { name: '—', count: 0 }
-  const top = stats.value.race_distribution[0]
-  return { name: RACES[top.race_id] ?? `Race ${top.race_id}`, count: top.count }
 })
 
 const topClass = computed(() => {
@@ -117,10 +111,6 @@ const mostPopularSpec = computed(() => {
       <!-- Row 2: KPI Mini Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         <StatMiniCard
-          label="Total Characters"
-          :value="stats.total_characters.toLocaleString()"
-        />
-        <StatMiniCard
           label="Avg Item Level"
           :value="avgIlvl"
           tooltip="Endgame-active characters only"
@@ -131,20 +121,15 @@ const mostPopularSpec = computed(() => {
           tooltip="Endgame-active characters only"
         />
         <StatMiniCard
-          label="Top Race"
-          :value="topRace.name"
-          :subtitle="`${topRace.count.toLocaleString()} chars`"
+          label="Avg Achievements"
+          :value="avgAchievementPoints.toLocaleString()"
+          tooltip="Endgame-active characters only"
         />
         <StatMiniCard
           label="Top Class"
           :value="topClass.name"
           :subtitle="`${topClass.count.toLocaleString()} chars`"
           :accent-color="topClass.classId ? CLASS_COLORS[topClass.classId] : undefined"
-        />
-        <StatMiniCard
-          label="Avg Achievements"
-          :value="avgAchievementPoints.toLocaleString()"
-          tooltip="Endgame-active characters only"
         />
         <StatMiniCard
           v-if="mostPopularSpec"
