@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { SPEC_ROLES, CLASS_COLORS, CLASSES } from '@/utils/wowConstants'
+import { SPEC_ROLES, SPEC_TO_CLASS, CLASS_COLORS, CLASSES } from '@/utils/wowConstants'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
 import type { SpecDistribution } from '@/types/stats'
 
@@ -11,9 +11,13 @@ const props = defineProps<{
 
 const activeRole = ref<'all' | 'tank' | 'healer' | 'dps'>('all')
 
+const validSpecs = computed(() =>
+  props.specs.filter((s) => SPEC_TO_CLASS[s.spec_id] === s.class_id),
+)
+
 const filteredSpecs = computed(() => {
-  if (activeRole.value === 'all') return props.specs
-  return props.specs.filter((s) => SPEC_ROLES[s.spec_id] === activeRole.value)
+  if (activeRole.value === 'all') return validSpecs.value
+  return validSpecs.value.filter((s) => SPEC_ROLES[s.spec_id] === activeRole.value)
 })
 
 const filteredTotal = computed(() => filteredSpecs.value.reduce((sum, s) => sum + s.count, 0))
