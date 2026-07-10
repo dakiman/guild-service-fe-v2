@@ -145,38 +145,38 @@ const mostPopularSpec = computed(() => {
         </StatMiniCard>
       </div>
 
-      <!-- Row 3: Spec Popularity + Performance -->
+      <!-- Row 3: Spec Popularity + (Performance + Highest Keys) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <SpecPopularityCard :specs="stats.spec_distribution" :total="stats.total_characters" />
-        <PerformanceByClassCard :classes="stats.class_distribution" />
+        <div class="flex flex-col gap-4">
+          <PerformanceByClassCard :classes="stats.class_distribution" />
+          <HighestKeysCard />
+        </div>
       </div>
 
       <!-- Row 4: Raid Heatmap -->
       <RaidHeatmapCard />
 
-      <!-- Row 5: Highest Keys + Top Performers -->
-      <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4">
-        <HighestKeysCard />
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <TopPerformersCard
-            title="Top M+ Rating"
-            :entries="stats.top_performers.mythic_plus"
-            value-label="Rating"
-            :format-value="(v: number) => v.toFixed(1)"
-          />
-          <TopPerformersCard
-            title="Top Item Level"
-            :entries="stats.top_performers.item_level"
-            value-label="iLvl"
-            :format-value="(v: number) => v.toFixed(1)"
-          />
-          <TopPerformersCard
-            title="Top Achievement Points"
-            :entries="stats.top_performers.achievement_points"
-            value-label="Points"
-            :format-value="(v: number) => v.toLocaleString()"
-          />
-        </div>
+      <!-- Row 5: Top Performers -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <TopPerformersCard
+          title="Top M+ Rating"
+          :entries="stats.top_performers.mythic_plus"
+          value-label="Rating"
+          :format-value="(v: number) => v.toFixed(1)"
+        />
+        <TopPerformersCard
+          title="Top Item Level"
+          :entries="stats.top_performers.item_level"
+          value-label="iLvl"
+          :format-value="(v: number) => v.toFixed(1)"
+        />
+        <TopPerformersCard
+          title="Top Achievement Points"
+          :entries="stats.top_performers.achievement_points"
+          value-label="Points"
+          :format-value="(v: number) => v.toLocaleString()"
+        />
       </div>
 
       <!-- Row 6: Leaderboard -->
