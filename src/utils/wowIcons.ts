@@ -45,11 +45,11 @@ export const SPEC_ICON_POS: Record<number, readonly [number, number]> = {
   // Warlock
   265: [-320, -320], 266: [-384, 0], 267: [-384, -64],
   // Monk
-  268: [-256, -192], 269: [0, -256], 270: [-64, -256],
+  268: [-256, -192], 269: [-64, -256], 270: [0, -256],
   // Druid
   102: [0, -128], 103: [-64, -128], 104: [-128, -128], 105: [-192, 0],
   // Demon Hunter
-  577: [-128, 0], 581: [-128, -64],
+  577: [-128, 0], 581: [-128, -64], 1480: [-64, -64],
   // Evoker
   1467: [-192, -128], 1468: [0, -192], 1473: [-192, -64],
 }
@@ -64,8 +64,8 @@ export const SPEC_NAMES: Record<number, string> = {
   262: 'Elemental', 263: 'Enhancement', 264: 'Restoration',
   62: 'Arcane', 63: 'Fire', 64: 'Frost',
   265: 'Affliction', 266: 'Demonology', 267: 'Destruction',
-  268: 'Brewmaster', 269: 'Mistweaver', 270: 'Windwalker',
+  268: 'Brewmaster', 269: 'Windwalker', 270: 'Mistweaver',
   102: 'Balance', 103: 'Feral', 104: 'Guardian', 105: 'Restoration',
-  577: 'Havoc', 581: 'Vengeance',
+  577: 'Havoc', 581: 'Vengeance', 1480: 'Devourer',
   1467: 'Devastation', 1468: 'Preservation', 1473: 'Augmentation',
 }

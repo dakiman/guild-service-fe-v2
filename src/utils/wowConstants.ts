@@ -54,7 +54,7 @@ export const SPEC_TO_CLASS: Record<number, number> = {
   // Druid
   102: 11, 103: 11, 104: 11, 105: 11,
   // Demon Hunter
-  577: 12, 581: 12,
+  577: 12, 581: 12, 1480: 12,
   // Evoker
   1467: 13, 1468: 13, 1473: 13,
 }
@@ -212,7 +212,7 @@ export const SPEC_ROLES: Record<number, 'tank' | 'healer' | 'dps'> = {
   // Death Knight
   250: 'tank', 251: 'dps', 252: 'dps',
   // Demon Hunter
-  577: 'dps', 581: 'tank',
+  577: 'dps', 581: 'tank', 1480: 'dps',
   // Druid
   102: 'dps', 103: 'dps', 104: 'tank', 105: 'healer',
   // Evoker
