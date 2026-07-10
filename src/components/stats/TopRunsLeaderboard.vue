@@ -28,7 +28,7 @@ function rankIndex(index: number): number {
 
 <template>
   <div class="stats-card">
-    <h3 class="stats-card-title mb-4">Top M+ Runs</h3>
+    <h3 class="stats-card-title mb-4">Top 100 M+ Runs</h3>
 
     <div v-if="isLoading" class="text-xs text-[#665533] py-4 text-center">Loading...</div>
 

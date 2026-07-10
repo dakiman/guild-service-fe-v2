@@ -84,6 +84,7 @@ const navLinks = [
   { name: 'home', label: 'Home' },
   { name: 'guild-search', label: 'Guilds' },
   { name: 'character-search', label: 'Characters' },
+  { name: 'mythic-plus', label: 'Mythic+' },
 ]
 
 function isActive(name: string) {

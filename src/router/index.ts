@@ -33,6 +33,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/CharacterSearchPage.vue'),
   },
   {
+    path: '/mythic-plus',
+    name: 'mythic-plus',
+    component: () => import('@/pages/MythicPlusPage.vue'),
+  },
+  {
     path: '/characters/:region/:realm/:name',
     name: 'character-detail',
     component: () => import('@/pages/CharacterDetailLayout.vue'),
