@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { ChevronDown, ChevronUp, Search } from 'lucide-vue-next'
+import { ArrowRight, ChevronDown, ChevronUp, Search } from 'lucide-vue-next'
+import { RouterLink } from 'vue-router'
 import LookupForm from '@/components/form/LookupForm.vue'
 import StatsHeroCard from '@/components/stats/StatsHeroCard.vue'
 import StatMiniCard from '@/components/stats/StatMiniCard.vue'
@@ -9,9 +10,6 @@ import FactionSplitCard from '@/components/stats/FactionSplitCard.vue'
 import PerformanceByClassCard from '@/components/stats/PerformanceByClassCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
 import SpecPopularityCard from '@/components/stats/SpecPopularityCard.vue'
-import RaidHeatmapCard from '@/components/stats/RaidHeatmapCard.vue'
-import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
-import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
 import { useCharacterStats } from '@/composables/useCharacterStats'
 import { CLASSES, CLASS_COLORS } from '@/utils/wowConstants'
@@ -148,26 +146,14 @@ const mostPopularSpec = computed(() => {
         </StatMiniCard>
       </div>
 
-      <!-- Row 3: Spec Popularity + (Performance + Highest Keys) -->
+      <!-- Row 3: Spec Popularity + Performance -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <SpecPopularityCard :specs="stats.spec_distribution" :total="stats.total_characters" />
-        <div class="flex flex-col gap-4">
-          <PerformanceByClassCard :classes="stats.class_distribution" />
-          <HighestKeysCard />
-        </div>
+        <PerformanceByClassCard :classes="stats.class_distribution" />
       </div>
 
-      <!-- Row 4: Raid Heatmap -->
-      <RaidHeatmapCard />
-
       <!-- Row 5: Top Performers -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <TopPerformersCard
-          title="Top M+ Rating"
-          :entries="stats.top_performers.mythic_plus"
-          value-label="Rating"
-          :format-value="(v: number) => v.toFixed(1)"
-        />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <TopPerformersCard
           title="Top Item Level"
           :entries="stats.top_performers.item_level"
@@ -182,8 +168,17 @@ const mostPopularSpec = computed(() => {
         />
       </div>
 
-      <!-- Row 6: Leaderboard -->
-      <TopRunsLeaderboard />
+      <!-- Row 6: PvE page teasers -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <RouterLink :to="{ name: 'mythic-plus' }" class="pve-teaser">
+          <span class="text-sm font-semibold text-[#e0d0b0]">Mythic+ leaderboards</span>
+          <ArrowRight class="h-4 w-4 text-[#aa8855]" />
+        </RouterLink>
+        <RouterLink :to="{ name: 'raids' }" class="pve-teaser">
+          <span class="text-sm font-semibold text-[#e0d0b0]">Raid progress</span>
+          <ArrowRight class="h-4 w-4 text-[#aa8855]" />
+        </RouterLink>
+      </div>
     </template>
   </div>
 </template>
@@ -202,5 +197,23 @@ const mostPopularSpec = computed(() => {
 .search-cta:hover {
   border-color: #ffcc88;
   box-shadow: 0 0 12px rgba(255, 204, 136, 0.25);
+}
+
+.pve-teaser {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #5c4a32;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(170, 136, 85, 0.05);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.pve-teaser:hover {
+  border-color: #aa8855;
+  background: rgba(170, 136, 85, 0.1);
 }
 </style>

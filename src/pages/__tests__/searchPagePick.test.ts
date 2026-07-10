@@ -12,7 +12,10 @@ import GuildSearchPage from '@/pages/GuildSearchPage.vue'
 
 const { pushMock } = vi.hoisted(() => ({ pushMock: vi.fn() }))
 
-vi.mock('vue-router', () => ({ useRouter: () => ({ push: pushMock }) }))
+vi.mock('vue-router', () => ({
+  useRouter: () => ({ push: pushMock }),
+  RouterLink: { template: '<a><slot /></a>' },
+}))
 vi.mock('@/api/stats', () => ({
   fetchCharacterStats: vi.fn().mockResolvedValue(null),
   fetchRaidKillStats: vi.fn().mockResolvedValue(null),
