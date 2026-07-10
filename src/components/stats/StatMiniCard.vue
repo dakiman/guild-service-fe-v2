@@ -4,6 +4,7 @@ defineProps<{
   value: string | number
   subtitle?: string
   accentColor?: string
+  valueColor?: string
   tooltip?: string
 }>()
 </script>
@@ -18,7 +19,16 @@ defineProps<{
     <p class="stats-label font-medium uppercase tracking-wide">
       {{ label }}
     </p>
-    <p class="stats-value mt-1 text-2xl">{{ value }}</p>
+    <div class="mt-1 flex items-center gap-2">
+      <slot name="icon" />
+      <p
+        data-test="stat-value"
+        class="stats-value text-2xl"
+        :style="valueColor ? { color: valueColor } : undefined"
+      >
+        {{ value }}
+      </p>
+    </div>
     <p v-if="subtitle" class="mt-0.5 text-xs stats-muted">
       {{ subtitle }}
     </p>

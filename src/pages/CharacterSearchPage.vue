@@ -12,8 +12,10 @@ import SpecPopularityCard from '@/components/stats/SpecPopularityCard.vue'
 import RaidHeatmapCard from '@/components/stats/RaidHeatmapCard.vue'
 import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
+import SpecIcon from '@/components/wow/SpecIcon.vue'
 import { useCharacterStats } from '@/composables/useCharacterStats'
 import { CLASSES, CLASS_COLORS, RACES } from '@/utils/wowConstants'
+import { SPEC_NAMES } from '@/utils/wowIcons'
 import type { Region } from '@/types/api'
 
 const router = useRouter()
@@ -56,7 +58,22 @@ const topClass = computed(() => {
 
 const avgAchievementPoints = computed(() => stats.value?.avg_achievement_points ?? 0)
 
-const mostPopularSpec = computed(() => stats.value?.most_popular_spec)
+const mostPopularSpec = computed(() => {
+  const spec = stats.value?.most_popular_spec
+  if (!spec) return null
+  const specName = SPEC_NAMES[spec.spec_id]
+  const className = CLASSES[spec.class_id]
+  if (!specName || !className) {
+    // Unknown spec id — numeric fallback, same as the old display
+    return { ...spec, name: spec.count.toLocaleString(), subtitle: 'characters', color: undefined }
+  }
+  return {
+    ...spec,
+    name: specName,
+    subtitle: `${className} · ${spec.count.toLocaleString()} chars`,
+    color: CLASS_COLORS[spec.class_id],
+  }
+})
 </script>
 
 <template>
@@ -131,9 +148,15 @@ const mostPopularSpec = computed(() => stats.value?.most_popular_spec)
         <StatMiniCard
           v-if="mostPopularSpec"
           label="Most Popular Spec"
-          :value="mostPopularSpec.count.toLocaleString()"
-          subtitle="characters"
-        />
+          :value="mostPopularSpec.name"
+          :subtitle="mostPopularSpec.subtitle"
+          :accent-color="mostPopularSpec.color"
+          :value-color="mostPopularSpec.color"
+        >
+          <template #icon>
+            <SpecIcon :spec-id="mostPopularSpec.spec_id" :size="24" />
+          </template>
+        </StatMiniCard>
       </div>
 
       <!-- Row 3: Spec Popularity + Performance -->
