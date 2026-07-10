@@ -38,6 +38,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/MythicPlusPage.vue'),
   },
   {
+    path: '/raids',
+    name: 'raids',
+    component: () => import('@/pages/RaidsPage.vue'),
+  },
+  {
     path: '/characters/:region/:realm/:name',
     name: 'character-detail',
     component: () => import('@/pages/CharacterDetailLayout.vue'),

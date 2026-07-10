@@ -97,57 +97,59 @@ const raidMediaMap = computed(() => {
 
     <div
       v-else-if="data?.raids.length"
-      class="transition-opacity duration-200"
+      class="overflow-x-auto transition-opacity duration-200"
       :class="{ 'opacity-50 pointer-events-none': isFetching }"
     >
-      <!-- Class header row -->
-      <div class="heatmap-grid mb-2">
-        <div></div>
-        <div
-          v-for="classId in CLASS_IDS"
-          :key="classId"
-          class="flex items-center justify-center"
-        >
-          <ClassIcon :class-id="classId" :size="18" />
-        </div>
-      </div>
-
-      <!-- Raid sections -->
-      <div v-for="raid in data.raids" :key="raid.instance_id" class="mb-3">
-        <div class="flex items-center gap-1.5 mb-1.5 pl-2 border-l-3 border-[#5c4a32]">
-          <img
-            v-if="raidMediaMap.get(raid.instance_id)"
-            :src="raidMediaMap.get(raid.instance_id)"
-            :alt="raid.name"
-            class="w-5 h-5 rounded object-cover"
-          />
-          <span class="text-xs font-semibold text-[#aa8855]">{{ raid.name }}</span>
-        </div>
-
-        <!-- Boss rows -->
-        <div
-          v-for="boss in raid.bosses"
-          :key="boss.encounter_id"
-          class="heatmap-grid items-center py-0.5"
-        >
-          <span class="text-xs text-[#e0d0b0] truncate pr-2">{{ boss.name }}</span>
+      <div class="min-w-[520px]">
+        <!-- Class header row -->
+        <div class="heatmap-grid mb-2">
+          <div></div>
           <div
             v-for="classId in CLASS_IDS"
             :key="classId"
             class="flex items-center justify-center"
           >
-            <div
-              v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
-              class="heatmap-dot rounded-full"
-              :title="`${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
-              :style="
-                dotStyle(
-                  classId,
-                  boss.kills_by_class[String(classId)] ?? 0,
-                  getMaxInRow(boss.kills_by_class),
-                )
-              "
+            <ClassIcon :class-id="classId" :size="18" />
+          </div>
+        </div>
+
+        <!-- Raid sections -->
+        <div v-for="raid in data.raids" :key="raid.instance_id" class="mb-3">
+          <div class="flex items-center gap-1.5 mb-1.5 pl-2 border-l-3 border-[#5c4a32]">
+            <img
+              v-if="raidMediaMap.get(raid.instance_id)"
+              :src="raidMediaMap.get(raid.instance_id)"
+              :alt="raid.name"
+              class="w-5 h-5 rounded object-cover"
             />
+            <span class="text-xs font-semibold text-[#aa8855]">{{ raid.name }}</span>
+          </div>
+
+          <!-- Boss rows -->
+          <div
+            v-for="boss in raid.bosses"
+            :key="boss.encounter_id"
+            class="heatmap-grid items-center py-0.5"
+          >
+            <span class="text-xs text-[#e0d0b0] truncate pr-2">{{ boss.name }}</span>
+            <div
+              v-for="classId in CLASS_IDS"
+              :key="classId"
+              class="flex items-center justify-center"
+            >
+              <div
+                v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
+                class="heatmap-dot rounded-full"
+                :title="`${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
+                :style="
+                  dotStyle(
+                    classId,
+                    boss.kills_by_class[String(classId)] ?? 0,
+                    getMaxInRow(boss.kills_by_class),
+                  )
+                "
+              />
+            </div>
           </div>
         </div>
       </div>
