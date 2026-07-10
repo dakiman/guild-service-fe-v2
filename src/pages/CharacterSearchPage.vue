@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { ChevronDown, ChevronUp } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp, Search } from 'lucide-vue-next'
 import LookupForm from '@/components/form/LookupForm.vue'
 import StatsHeroCard from '@/components/stats/StatsHeroCard.vue'
 import StatMiniCard from '@/components/stats/StatMiniCard.vue'
@@ -73,13 +73,16 @@ const mostPopularSpec = computed(() => {
 <template>
   <div class="flex flex-col gap-6">
     <!-- Collapsible Search -->
-    <div class="stats-card">
+    <div class="search-cta">
       <button
         class="flex w-full items-center justify-between text-left"
         @click="searchOpen = !searchOpen"
       >
-        <span class="text-sm font-medium text-[#aa8855]">Search Characters</span>
-        <component :is="searchOpen ? ChevronUp : ChevronDown" class="h-4 w-4 text-[#665533]" />
+        <span class="flex items-center gap-2 text-sm font-semibold text-[#ffcc88]">
+          <Search class="h-4 w-4 text-[#aa8855]" />
+          Search Characters
+        </span>
+        <component :is="searchOpen ? ChevronUp : ChevronDown" class="h-4 w-4 text-[#aa8855]" />
       </button>
       <div v-show="searchOpen" class="mt-3">
         <LookupForm kind="character" @submit="onSubmit" @pick="onSubmit" />
@@ -184,3 +187,20 @@ const mostPopularSpec = computed(() => {
     </template>
   </div>
 </template>
+
+<style scoped>
+.search-cta {
+  border: 2px solid #aa8855;
+  border-radius: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  background: linear-gradient(135deg, rgba(170, 136, 85, 0.12), rgba(170, 136, 85, 0.04));
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.search-cta:hover {
+  border-color: #ffcc88;
+  box-shadow: 0 0 12px rgba(255, 204, 136, 0.25);
+}
+</style>
