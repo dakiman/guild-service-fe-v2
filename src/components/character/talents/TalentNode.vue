@@ -86,16 +86,18 @@ const nodeStyle = computed(() => {
    of overflowing the highlight ring. background-size is needed because the
    icon jpg otherwise renders at its natural 36px inside the shrunk box. */
 .talent-node :deep(span[class*='icon']),
-.talent-node :deep(span[class*='icon'] ins),
-.talent-node :deep(span[class*='icon'] del) {
+.talent-node :deep(span[class*='icon'] ins) {
   display: block;
   width: 100% !important;
   height: 100% !important;
   background-size: cover !important;
 }
+/* power.js also injects a <del> frame overlay — we render frameless icons. */
+.talent-node :deep(span[class*='icon'] del) {
+  display: none !important;
+}
 .talent-node--regular :deep(span[class*='icon']),
-.talent-node--regular :deep(span[class*='icon'] ins),
-.talent-node--regular :deep(span[class*='icon'] del) {
+.talent-node--regular :deep(span[class*='icon'] ins) {
   border-radius: 4px;
 }
 .talent-node__rank {
