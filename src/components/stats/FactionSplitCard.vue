@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import RaceIcon from '@/components/wow/RaceIcon.vue'
-import { RACES } from '@/utils/wowConstants'
+import { RACES, RACE_FACTIONS } from '@/utils/wowConstants'
 import type { RaceDistribution } from '@/types/stats'
 
 const props = defineProps<{
@@ -14,10 +14,53 @@ const total = computed(() => props.horde + props.alliance)
 const hordePercent = computed(() => (total.value > 0 ? (props.horde / total.value) * 100 : 50))
 const alliancePercent = computed(() => (total.value > 0 ? (props.alliance / total.value) * 100 : 50))
 
-const topRaces = computed(() =>
-  [...props.races].sort((a, b) => b.count - a.count).slice(0, 6),
-)
-const maxRaceCount = computed(() => topRaces.value[0]?.count ?? 1)
+const BAR_COLORS = { Alliance: '#153a6a', Horde: '#7a1515', mixed: '#aa8855' } as const
+
+interface MergedRace {
+  raceId: number
+  name: string
+  count: number
+  barColor: string
+}
+
+const mergedRaces = computed<MergedRace[]>(() => {
+  const groups = new Map<string, { ids: number[]; name: string; count: number }>()
+  for (const race of props.races) {
+    const known = RACES[race.race_id]
+    // Unknown ids never merge — each keeps its own "Race {id}" row.
+    const key = known ?? `#${race.race_id}`
+    const group = groups.get(key)
+    if (group) {
+      group.ids.push(race.race_id)
+      group.count += race.count
+    } else {
+      groups.set(key, {
+        ids: [race.race_id],
+        name: known ?? `Race ${race.race_id}`,
+        count: race.count,
+      })
+    }
+  }
+  return [...groups.values()]
+    .map((group) => {
+      const factions = new Set(group.ids.map((id) => RACE_FACTIONS[id] ?? null))
+      const faction = factions.size === 1 ? [...factions][0] : null
+      return {
+        raceId: Math.min(...group.ids),
+        name: group.name,
+        count: group.count,
+        barColor: faction ? BAR_COLORS[faction] : BAR_COLORS.mixed,
+      }
+    })
+    .sort((a, b) => b.count - a.count)
+})
+
+const raceTotal = computed(() => props.races.reduce((sum, race) => sum + race.count, 0))
+const maxRaceCount = computed(() => mergedRaces.value[0]?.count ?? 1)
+
+function sharePercent(count: number): string {
+  return raceTotal.value > 0 ? ((count / raceTotal.value) * 100).toFixed(1) : '0.0'
+}
 </script>
 
 <template>
@@ -60,27 +103,31 @@ const maxRaceCount = computed(() => topRaces.value[0]?.count ?? 1)
       <span class="text-xs font-semibold text-[#6688aa]">{{ alliancePercent.toFixed(1) }}%</span>
     </div>
 
-    <!-- Top races -->
+    <!-- Races -->
     <div class="mt-5">
-      <h4 class="stats-label font-medium uppercase tracking-wide mb-2">Top Races</h4>
+      <h4 class="stats-label font-medium uppercase tracking-wide mb-2">Races</h4>
       <div class="flex flex-col gap-1.5">
         <div
-          v-for="race in topRaces"
-          :key="race.race_id"
+          v-for="race in mergedRaces"
+          :key="race.raceId"
           class="flex items-center gap-2"
         >
-          <RaceIcon :race-id="race.race_id" :size="20" />
+          <RaceIcon :race-id="race.raceId" :size="20" />
           <span data-test="race-name" class="text-xs text-[#e0d0b0] w-24 truncate">
-            {{ RACES[race.race_id] ?? `Race ${race.race_id}` }}
+            {{ race.name }}
           </span>
           <div class="flex-1 h-[5px] rounded bg-[rgba(0,0,0,0.3)] overflow-hidden">
             <div
-              class="h-full rounded bg-[#aa8855] opacity-70"
-              :style="{ width: `${(race.count / maxRaceCount) * 100}%` }"
+              data-test="race-bar"
+              class="h-full rounded opacity-70"
+              :style="{
+                width: `${(race.count / maxRaceCount) * 100}%`,
+                backgroundColor: race.barColor,
+              }"
             />
           </div>
-          <span class="text-[10px] tabular-nums text-[#e0d0b0]">
-            {{ race.count.toLocaleString() }}
+          <span class="text-[10px] tabular-nums text-[#e0d0b0] whitespace-nowrap">
+            {{ race.count.toLocaleString() }} · {{ sharePercent(race.count) }}%
           </span>
         </div>
       </div>

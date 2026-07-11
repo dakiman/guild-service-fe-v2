@@ -100,7 +100,7 @@ const mostPopularSpec = computed(() => {
     <!-- Dashboard content -->
     <template v-else-if="stats">
       <!-- Row 1: Hero + Faction -->
-      <div class="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-4">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-4 lg:items-start">
         <StatsHeroCard :distribution="stats.class_distribution" :total="stats.total_characters" />
         <FactionSplitCard
           :horde="stats.faction_distribution.horde"
