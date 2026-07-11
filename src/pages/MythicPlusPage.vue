@@ -2,6 +2,7 @@
 import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
 import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
+import PerformanceByClassCard from '@/components/stats/PerformanceByClassCard.vue'
 import { useCharacterStats } from '@/composables/useCharacterStats'
 
 const { data: stats, isLoading, isError } = useCharacterStats()
@@ -18,13 +19,15 @@ const { data: stats, isLoading, isError } = useCharacterStats()
       <div v-else-if="isError" class="wsa-card !border-red-800/50 !p-4">
         <p class="text-sm text-[#ff4444]">Failed to load character stats.</p>
       </div>
-      <TopPerformersCard
-        v-else-if="stats"
-        title="Top M+ Rating"
-        :entries="stats.top_performers.mythic_plus"
-        value-label="Rating"
-        :format-value="(v: number) => v.toFixed(1)"
-      />
+      <template v-else-if="stats">
+        <TopPerformersCard
+          title="Top M+ Rating"
+          :entries="stats.top_performers.mythic_plus"
+          value-label="Rating"
+          :format-value="(v: number) => v.toFixed(1)"
+        />
+        <PerformanceByClassCard :classes="stats.class_distribution" />
+      </template>
     </div>
   </div>
 </template>

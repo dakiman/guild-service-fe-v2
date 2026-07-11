@@ -5,6 +5,7 @@ import MythicPlusPage from '@/pages/MythicPlusPage.vue'
 import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
 import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
+import PerformanceByClassCard from '@/components/stats/PerformanceByClassCard.vue'
 
 // useCharacterStats imports all four fetchers — the mock must export them all.
 vi.mock('@/api/stats', () => ({
@@ -31,7 +32,7 @@ function mountPage() {
 }
 
 describe('MythicPlusPage', () => {
-  it('renders the three moved M+ widgets', async () => {
+  it('renders the four M+ widgets', async () => {
     const wrapper = mountPage()
     await flushPromises()
 
@@ -40,5 +41,6 @@ describe('MythicPlusPage', () => {
     const performers = wrapper.findComponent(TopPerformersCard)
     expect(performers.exists()).toBe(true)
     expect(performers.props('title')).toBe('Top M+ Rating')
+    expect(wrapper.findComponent(PerformanceByClassCard).exists()).toBe(true)
   })
 })

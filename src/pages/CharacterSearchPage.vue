@@ -7,7 +7,6 @@ import LookupForm from '@/components/form/LookupForm.vue'
 import StatsHeroCard from '@/components/stats/StatsHeroCard.vue'
 import StatMiniCard from '@/components/stats/StatMiniCard.vue'
 import FactionSplitCard from '@/components/stats/FactionSplitCard.vue'
-import PerformanceByClassCard from '@/components/stats/PerformanceByClassCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
 import SpecPopularityCard from '@/components/stats/SpecPopularityCard.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
@@ -146,11 +145,8 @@ const mostPopularSpec = computed(() => {
         </StatMiniCard>
       </div>
 
-      <!-- Row 3: Spec Popularity + Performance -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <SpecPopularityCard :specs="stats.spec_distribution" :total="stats.total_characters" />
-        <PerformanceByClassCard :classes="stats.class_distribution" />
-      </div>
+      <!-- Row 3: Spec Popularity -->
+      <SpecPopularityCard :specs="stats.spec_distribution" :total="stats.total_characters" />
 
       <!-- Row 5: Top Performers -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
