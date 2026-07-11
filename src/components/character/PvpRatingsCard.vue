@@ -50,6 +50,10 @@ function formatBracket(slug: string): string {
     const parts = slug.slice(6).split('-')
     return 'Blitz ' + parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ')
   }
+  if (slug.startsWith('shuffle-')) {
+    const parts = slug.slice(8).split('-')
+    return 'Shuffle ' + parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ')
+  }
   return slug
 }
 </script>
