@@ -45,6 +45,10 @@ Possibly-stale resources call `useStaleAutoRefresh` to trigger a refetch.
 - **Dungeons.** `pages/character/CharacterDungeonsTab.vue` (route `character-dungeons`, path `/dungeons`). Composes `DungeonsHeadline` (M+ score colored from `rating.color`, season name, three "Timed N+" KPI pills) on top of a `wsa-tab` view-switcher between `MythicPlusBestPerDungeon` and `MythicPlusAllRuns` (NOT routes). `MythicPlusAllRuns.vue` renders one card per run with click-to-expand header; expand container animated via `grid-template-rows: 0fr ↔ 1fr` (no `v-show`). Expanded state is component-local `Set<runId>` — not persisted across navigations. Each run header is a `<button>`, so decorative children (member pills, chevron, name) must be non-interactive `<span>`s — `<ul>`/`<li>`/`<h3>` are invalid phrasing-content inside buttons.
 - **Raids.** `pages/character/CharacterRaidsTab.vue` (route `character-raids`, path `/raids`). Composes `RaidsHeadline` (hero `{killed}/{total} {diff}` for highest-progress instance via `useBestRaidProgression`, plus an `N · H · M` chip row) on top of `RaidProgressionSection` (per-instance cards, difficulty tabs, `BossRow` portraits).
 
+### Site-wide stats pages
+
+`CharacterSearchPage.vue` (`/characters` — roster stats + search), `MythicPlusPage.vue` (`/mythic-plus` — top runs capped at 100, highest keys, performance by class), `RaidsPage.vue` (`/raids` — raid-kills heatmap, current expansion only). All read the pre-warmed `/stats/characters*` endpoints — data can be up to an hour old by design; don't add refetch-on-focus or manual refresh.
+
 ### PvE game-data endpoints
 
 Two public endpoints:
