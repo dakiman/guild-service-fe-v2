@@ -10,7 +10,7 @@ import {
 describe('wowConstants race metadata', () => {
   const PLAYABLE_RACE_IDS = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 22, 24, 25, 26, 27, 28, 29, 30,
-    31, 32, 34, 35, 36, 37, 52, 70, 84, 85,
+    31, 32, 34, 35, 36, 37, 52, 70, 84, 85, 86, 91,
   ]
 
   it.each(PLAYABLE_RACE_IDS)('has a name for race id %i', (id) => {
@@ -34,6 +34,8 @@ describe('wowConstants race metadata', () => {
     expect(RACE_FACTIONS[26]).toBe('Horde')     // Pandaren (H)
     expect(RACE_FACTIONS[52]).toBe('Alliance')  // Dracthyr (A)
     expect(RACE_FACTIONS[70]).toBe('Horde')     // Dracthyr (H)
+    expect(RACE_FACTIONS[86]).toBe('Alliance')  // Haranir (A)
+    expect(RACE_FACTIONS[91]).toBe('Horde')     // Haranir (H)
   })
 
   it('fixes the Nightborne typo', () => {

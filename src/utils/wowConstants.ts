@@ -89,6 +89,8 @@ export const RACES: Record<number, string> = {
   70: 'Dracthyr',
   84: 'Earthen',
   85: 'Earthen',
+  86: 'Haranir',
+  91: 'Haranir',
 }
 
 // Wowhead zamimg URL slug per race_id (lowercase, no separators).
@@ -123,6 +125,8 @@ export const RACE_WOWHEAD_SLUGS: Record<number, string> = {
   70: 'dracthyr',
   84: 'earthendwarf',
   85: 'earthendwarf',
+  86: 'haranir',          // Not on zamimg yet (404) — RaceIcon falls back to initial badge
+  91: 'haranir',
 }
 
 export const RACE_DEFAULT_GENDERS: Record<number, 'male' | 'female'> = {
@@ -130,19 +134,19 @@ export const RACE_DEFAULT_GENDERS: Record<number, 'male' | 'female'> = {
   8: 'male', 9: 'male', 10: 'female', 11: 'male', 22: 'male', 24: 'male',
   25: 'male', 26: 'male', 27: 'female', 28: 'male', 29: 'male', 30: 'male',
   31: 'male', 32: 'male', 34: 'male', 35: 'male', 36: 'male', 37: 'male',
-  52: 'male', 70: 'male', 84: 'male', 85: 'male',
+  52: 'male', 70: 'male', 84: 'male', 85: 'male', 86: 'female', 91: 'female',
 }
 
-// Mirrors backend RaceFaction map. Server is the authority; this map is only
-// used for client-only contexts (e.g. test fixtures) — at runtime, faction
-// comes from the API response.
+// Mirrors backend RaceFaction map. Server is the authority for per-character
+// faction (API response); this map serves client-only contexts — test
+// fixtures and race-level displays like FactionSplitCard's bar tints.
 export const RACE_FACTIONS: Record<number, 'Alliance' | 'Horde' | null> = {
   1: 'Alliance', 3: 'Alliance', 4: 'Alliance', 7: 'Alliance', 11: 'Alliance',
   22: 'Alliance', 25: 'Alliance', 29: 'Alliance', 30: 'Alliance', 32: 'Alliance',
-  34: 'Alliance', 37: 'Alliance', 52: 'Alliance', 85: 'Alliance',
+  34: 'Alliance', 37: 'Alliance', 52: 'Alliance', 85: 'Alliance', 86: 'Alliance',
   2: 'Horde', 5: 'Horde', 6: 'Horde', 8: 'Horde', 9: 'Horde', 10: 'Horde',
   26: 'Horde', 27: 'Horde', 28: 'Horde', 31: 'Horde', 35: 'Horde', 36: 'Horde',
-  70: 'Horde', 84: 'Horde',
+  70: 'Horde', 84: 'Horde', 91: 'Horde',
   24: null, // Neutral Pandaren
 }
 
