@@ -147,6 +147,17 @@ const tabs = computed<TabDescriptor[]>(() => {
   const result: TabDescriptor[] = [
     { label: 'Summary',      to: { name: 'character-summary', params },      icon: Sparkles },
     { label: 'Talents',      to: { name: 'character-talents', params },      icon: BookOpen },
+    {
+      label: 'Dungeons',
+      to: { name: 'character-dungeons', params },
+      icon: Skull,
+    },
+    {
+      label: 'Raids',
+      to: { name: 'character-raids', params },
+      icon: Swords,
+    },
+    { label: 'Reputations',  to: { name: 'character-reputations', params },  icon: Star },
     { label: 'Titles',       to: { name: 'character-titles', params },       icon: Crown },
   ]
   if (collectionsEnabled) {
@@ -161,19 +172,6 @@ const tabs = computed<TabDescriptor[]>(() => {
       ],
     })
   }
-  result.push(
-    {
-      label: 'Dungeons',
-      to: { name: 'character-dungeons', params },
-      icon: Skull,
-    },
-    {
-      label: 'Raids',
-      to: { name: 'character-raids', params },
-      icon: Swords,
-    },
-    { label: 'Reputations',  to: { name: 'character-reputations', params },  icon: Star },
-  )
   if (achievementsEnabled) {
     result.push({ label: 'Achievements', to: { name: 'character-achievements', params }, icon: Trophy })
   }
