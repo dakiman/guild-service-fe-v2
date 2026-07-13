@@ -2,13 +2,21 @@
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useTopRuns } from '@/composables/useCharacterStats'
+import { useMythicDungeons } from '@/composables/usePveGameData'
 import { getClassColor } from '@/utils/wowConstants'
+import { upgradeCount } from '@/utils/keystoneUpgrades'
+import type { TopRun } from '@/types/stats'
 
 const page = ref(1)
 const { data, isLoading } = useTopRuns(page, 20)
+const { data: dungeonData } = useMythicDungeons()
 
 const runs = computed(() => data.value?.data ?? [])
 const lastPage = computed(() => data.value?.last_page ?? 1)
+
+const dungeonsById = computed(
+  () => new Map((dungeonData.value?.dungeons ?? []).map((d) => [d.id, d]))
+)
 
 function formatDuration(ms: number): string {
   const totalSec = Math.floor(ms / 1000)
@@ -23,6 +31,15 @@ function displayName(name: string): string {
 
 function rankIndex(index: number): number {
   return (page.value - 1) * 20 + index + 1
+}
+
+function dungeonIcon(run: TopRun): string | null {
+  return dungeonsById.value.get(run.dungeon_id)?.media_url ?? null
+}
+
+function stars(run: TopRun): string {
+  const dungeon = dungeonsById.value.get(run.dungeon_id)
+  return '✦'.repeat(upgradeCount(run.duration, dungeon?.keystone_upgrades))
 }
 </script>
 
@@ -59,9 +76,25 @@ function rankIndex(index: number): number {
                 {{ rankIndex(index) }}
               </td>
               <!-- Dungeon -->
-              <td class="py-2 text-[#e0d0b0] truncate max-w-[140px]">{{ run.dungeon_name }}</td>
-              <!-- Key Level -->
-              <td class="py-2 text-center font-bold text-[#ffcc88]">+{{ run.keystone_level }}</td>
+              <td class="py-2 text-[#e0d0b0]">
+                <div class="flex items-center gap-1.5 max-w-[160px]">
+                  <img
+                    v-if="dungeonIcon(run)"
+                    :src="dungeonIcon(run)!"
+                    :alt="run.dungeon_name"
+                    class="w-5 h-5 rounded shrink-0"
+                    loading="lazy"
+                  />
+                  <span class="truncate">{{ run.dungeon_name }}</span>
+                </div>
+              </td>
+              <!-- Key Level (+ upgrade stars from par times) -->
+              <td class="py-2 text-center font-bold text-[#ffcc88] whitespace-nowrap">
+                +{{ run.keystone_level
+                }}<span v-if="stars(run)" class="text-[9px] align-super text-[#ffe0aa]">{{
+                  stars(run)
+                }}</span>
+              </td>
               <!-- Duration -->
               <td class="py-2 text-right tabular-nums text-[#e0d0b0]">
                 {{ formatDuration(run.duration) }}
