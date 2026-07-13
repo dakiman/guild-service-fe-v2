@@ -30,10 +30,16 @@ export interface KeystoneAffixGameData {
   icon_url: string | null
 }
 
+export interface KeystoneUpgradeThreshold {
+  upgrade_level: number
+  qualifying_duration: number
+}
+
 export interface MythicKeystoneDungeonGameData {
   id: number
   name: string
   media_url: string | null
+  keystone_upgrades: KeystoneUpgradeThreshold[] | null
   journal_instance_id: number | null
 }
 
