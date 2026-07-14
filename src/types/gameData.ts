@@ -67,3 +67,17 @@ export interface RealmGameData {
 export interface RealmsResponse {
   realms: RealmGameData[]
 }
+
+export interface SeasonGameData {
+  id: number
+  slug: string
+  name: string
+  is_current: boolean
+  has_archive: boolean
+  started_at: string | null
+  ended_at: string | null
+}
+
+export interface SeasonsResponse {
+  seasons: SeasonGameData[]
+}

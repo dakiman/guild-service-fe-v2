@@ -3,6 +3,7 @@ import type {
   RaidInstancesResponse,
   MythicKeystoneDungeonsResponse,
   RealmsResponse,
+  SeasonsResponse,
 } from '@/types/gameData'
 
 export type RaidInstanceScope = 'current' | 'all'
@@ -49,6 +50,14 @@ export async function getMythicKeystoneDungeons(
 
 export async function getRealms(opts?: { signal?: AbortSignal }): Promise<RealmsResponse> {
   const res = await api.get<RealmsResponse>('/game-data/realms', {
+    signal: opts?.signal,
+  })
+  return res.data
+}
+
+export async function getSeasons(opts?: { signal?: AbortSignal }): Promise<SeasonsResponse> {
+  const res = await api.get<SeasonsResponse>('/game-data/seasons', {
+    headers: REVALIDATE_HEADERS,
     signal: opts?.signal,
   })
   return res.data

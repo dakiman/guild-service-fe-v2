@@ -1,3 +1,5 @@
+import type { KeystoneUpgradeThreshold } from './gameData'
+
 export interface ClassDistribution {
   class_id: number
   count: number
@@ -95,4 +97,28 @@ export interface TopRun {
   affixes: Record<string, unknown>[]
   completed_at: string
   members: RunMember[]
+}
+
+export interface ArchiveDungeon {
+  id: number
+  name: string
+  media_url: string | null
+  keystone_upgrades: KeystoneUpgradeThreshold[] | null
+}
+
+// Frozen /mythic-plus page payload written by the BE season:rollover
+// command — shapes intentionally mirror the live endpoints above.
+export interface SeasonArchivePayload {
+  meta: {
+    season_id: number
+    slug: string
+    name: string
+    snapshotted_at: string
+    total_runs: number
+  }
+  top_runs: TopRun[]
+  top_keys: TopKeysResponse
+  top_performers: { mythic_plus: TopPerformer[] }
+  class_distribution: ClassDistribution[]
+  dungeons: ArchiveDungeon[]
 }

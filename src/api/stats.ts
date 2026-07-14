@@ -4,6 +4,7 @@ import type {
   RaidKillStatsResponse,
   TopKeysResponse,
   TopRun,
+  SeasonArchivePayload,
 } from '@/types/stats'
 import type { Paginated } from '@/types/api'
 
@@ -43,6 +44,16 @@ export async function fetchTopRuns(
 ): Promise<Paginated<TopRun>> {
   const { data } = await api.get('/stats/characters/top-runs', {
     params: { page, per_page: perPage, dungeon_id: dungeonId },
+    signal: opts?.signal,
+  })
+  return data
+}
+
+export async function fetchSeasonArchive(
+  slug: string,
+  opts?: { signal?: AbortSignal },
+): Promise<SeasonArchivePayload> {
+  const { data } = await api.get<SeasonArchivePayload>(`/stats/archive/seasons/${slug}`, {
     signal: opts?.signal,
   })
   return data

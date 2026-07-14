@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/vue-query'
-import { getRaidInstances, getMythicKeystoneDungeons, getRealms } from '@/api/gameData'
+import { getRaidInstances, getMythicKeystoneDungeons, getRealms, getSeasons } from '@/api/gameData'
 import type {
   RaidInstancesResponse,
   MythicKeystoneDungeonsResponse,
   RealmsResponse,
+  SeasonsResponse,
 } from '@/types/gameData'
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
@@ -42,5 +43,14 @@ export function useRealmIndex() {
     queryFn: ({ signal }) => getRealms({ signal }),
     staleTime: Infinity,
     gcTime: ONE_WEEK_MS,
+  })
+}
+
+export function useSeasons() {
+  return useQuery<SeasonsResponse>({
+    queryKey: ['game-data', 'seasons'],
+    queryFn: ({ signal }) => getSeasons({ signal }),
+    staleTime: Infinity,
+    gcTime: ONE_DAY_MS,
   })
 }
