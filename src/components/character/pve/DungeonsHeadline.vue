@@ -26,16 +26,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useMythicDungeons } from '@/composables/usePveGameData'
 import type { DungeonRun, MythicPlusRating } from '@/types/character'
 
 const props = defineProps<{
   runs: DungeonRun[]
   rating: MythicPlusRating | null
   currentSeason: number | null
+  seasonName: string | null
 }>()
-
-const { data: dungeonData } = useMythicDungeons()
 
 const scoreLabel = computed(() => {
   if (!props.rating) return '—'
@@ -47,7 +45,7 @@ const scoreStyle = computed(() => {
   return { color: color ?? 'rgb(var(--wsa-gold))' }
 })
 
-const seasonLabel = computed<string | null>(() => dungeonData.value?.season?.name ?? null)
+const seasonLabel = computed<string | null>(() => props.seasonName)
 
 const seasonRuns = computed<DungeonRun[]>(() => {
   if (props.currentSeason == null) return props.runs
