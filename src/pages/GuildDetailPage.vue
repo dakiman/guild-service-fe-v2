@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref, toRef, watch } from 'vue'
 import { refDebounced } from '@vueuse/core'
+import { toast } from 'vue-sonner'
 import GuildHeader from '@/components/guild/GuildHeader.vue'
 import GuildStatsSection from '@/components/guild/GuildStatsSection.vue'
 import RosterTable from '@/components/guild/RosterTable.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import PollingState from '@/components/feedback/PollingState.vue'
 import StaleBadge from '@/components/feedback/StaleBadge.vue'
+import RefreshButton from '@/components/feedback/RefreshButton.vue'
 import { useGuildLookup } from '@/composables/usePollingLookup'
 import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
 import type { Region } from '@/types/api'
@@ -33,8 +35,16 @@ const lookup = useGuildLookup(region, realm, name, page, perPage, debouncedFilte
 
 const guild = computed(() => lookup.data.value?.guild ?? null)
 const members = computed(() => lookup.data.value?.members ?? null)
+const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
 const isSyncing = computed(() => lookup.data.value?.isSyncing ?? false)
+
+async function onForceRefresh() {
+  const result = await lookup.forceRefresh()
+  if (result.data?.meta?.forced_refresh === false) {
+    toast.error('Refreshed recently — try again in a few minutes')
+  }
+}
 
 // While the guild is still syncing (roster never synced), refetchInterval
 // already keeps polling every 30s — don't also let useStaleAutoRefresh fire
@@ -65,8 +75,14 @@ const guildQueueDepth = computed(() => {
       <div class="flex flex-wrap items-start justify-between gap-3">
         <GuildHeader :guild="guild" class="flex-1" />
       </div>
-      <div v-if="isStale" class="flex">
-        <StaleBadge :last-synced-at="guild.roster_synced_at ?? undefined" />
+      <div class="flex flex-wrap items-center gap-3">
+        <StaleBadge v-if="isStale" :last-synced-at="guild.roster_synced_at ?? undefined" />
+        <RefreshButton
+          v-if="meta"
+          :refresh="meta.refresh"
+          :syncing="isSyncing"
+          @refresh="onForceRefresh"
+        />
       </div>
 
       <GuildStatsSection :region="region" :realm="realm" :name="name" />

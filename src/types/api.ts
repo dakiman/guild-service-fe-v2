@@ -1,5 +1,14 @@
 export type Region = 'eu' | 'us' | 'kr' | 'tw'
 
+// Server-issued cooldown state for the manual Refresh button (Task 6/7).
+// `available_at` is the ISO timestamp the cooldown lifts — the FE derives
+// the countdown from it rather than tracking its own timer.
+export interface RefreshInfo {
+  available: boolean
+  available_at: string | null
+  cooldown_seconds: number
+}
+
 export interface ApiData<T> {
   data: T
 }

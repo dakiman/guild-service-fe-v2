@@ -1,4 +1,4 @@
-import type { Region } from './api'
+import type { Region, RefreshInfo } from './api'
 import type { Faction } from './wow'
 
 export interface GuildSummary {
@@ -52,9 +52,18 @@ export interface GuildMember {
   synced_at: string | null
 }
 
+// Task 6/7: guild lookup carries its own top-level meta block (unlike the
+// character resource, refresh/forced_refresh aren't nested inside a
+// full freshness/feature_flags MetaBlock).
+export interface GuildMetaBlock {
+  forced_refresh: boolean
+  refresh: RefreshInfo
+}
+
 export interface GuildLookupResult {
   guild: GuildResource
   members: import('./api').Paginated<GuildMember>
+  meta: GuildMetaBlock
   isStale: boolean
   isSyncing: boolean
 }

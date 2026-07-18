@@ -12,11 +12,12 @@ export async function fetchCharacter(
   region: Region,
   realm: string,
   name: string,
-  opts?: { signal?: AbortSignal },
+  opts?: { signal?: AbortSignal; refresh?: boolean },
 ): Promise<CharacterLookupResult> {
   const res = await api.get<CharacterResponse>(`/characters/${region}/${realm}/${name}`, {
     validateStatus: (s) => s === 200 || s === 202 || s === 404 || s === 429,
     signal: opts?.signal,
+    params: opts?.refresh ? { refresh: 1 } : undefined,
   })
 
   if (res.status === 202) {

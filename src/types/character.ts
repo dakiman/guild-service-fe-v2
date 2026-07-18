@@ -1,4 +1,4 @@
-import type { Region } from './api'
+import type { Region, RefreshInfo } from './api'
 import type { Faction, Slot } from './wow'
 import type { GuildSummary } from './guild'
 
@@ -277,6 +277,9 @@ export interface CharacterResource {
 export interface MetaBlock {
   game_version: GameVersion
   forced_refresh: boolean
+  // Task 6/7: server-side manual-refresh cooldown state. Optional so
+  // existing test fixtures/mocks built before Task 7 keep compiling.
+  refresh?: RefreshInfo
   sync_status: 'syncing' | 'complete'
   // 'full' = endgame, slices tracked; 'basic' = sub-max, profile-only.
   profile_tier: 'full' | 'basic'

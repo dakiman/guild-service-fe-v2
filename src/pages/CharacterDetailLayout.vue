@@ -19,6 +19,12 @@
 
       <div class="flex flex-wrap items-center gap-3">
         <StaleBadge v-if="isStale && !isSyncing" :last-synced-at="character.synced_at ?? undefined" />
+        <RefreshButton
+          v-if="meta"
+          :refresh="meta.refresh"
+          :syncing="isSyncing"
+          @refresh="onForceRefresh"
+        />
         <FreshnessChips v-if="meta && !isBasicProfile" :freshness="meta.freshness" />
         <button
           v-if="character.talent_loadout_code"
@@ -74,6 +80,7 @@ import CharacterTabStrip, {
 import PollingState from '@/components/feedback/PollingState.vue'
 import SyncingBadge from '@/components/feedback/SyncingBadge.vue'
 import StaleBadge from '@/components/feedback/StaleBadge.vue'
+import RefreshButton from '@/components/feedback/RefreshButton.vue'
 import BasicProfileNotice from '@/components/feedback/BasicProfileNotice.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import FreshnessChips from '@/components/feedback/FreshnessChips.vue'
@@ -200,6 +207,18 @@ async function onToggleRecruitment() {
     toast.error(getErrorMessage(err, 'Could not update recruitment status.'))
   } finally {
     isToggling.value = false
+  }
+}
+
+async function onForceRefresh() {
+  const result = await lookup.forceRefresh()
+  // A granted refresh flips sync_status to 'syncing' — the existing
+  // refetchInterval polling + SyncingBadge take over from there. If the
+  // cooldown was still active server-side (race with another tab, or the
+  // client's cached refresh.available was stale), forced_refresh comes
+  // back false and nothing changed — surface that instead of silence.
+  if (result.data?.meta?.forced_refresh === false) {
+    toast.error('Refreshed recently — try again in a few minutes')
   }
 }
 

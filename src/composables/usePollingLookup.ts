@@ -51,10 +51,21 @@ export function useCharacterLookup(
 ) {
   const budget = usePendingBudget(() => `${region.value}:${realm.value}:${name.value}`)
 
+  // Task 7: manual Refresh button. The query key must NOT include this flag
+  // (a forced refresh is still "the same lookup", and keying on it would
+  // fragment the cache) — instead queryFn reads-and-clears a local flag on
+  // every run, so exactly the fetch triggered by forceRefresh() carries
+  // refresh:true and every other fetch (automatic or manual refetch) is
+  // refresh:false. Cleared before the await so it's consumed even if the
+  // fetch throws (e.g. SyncPendingError/NotFoundError).
+  const forceNext = ref(false)
+
   const query = useQuery({
     queryKey: ['character', region, realm, name] as const,
     queryFn: async ({ signal }) => {
-      const result = await fetchCharacter(region.value, realm.value, name.value, { signal })
+      const refresh = forceNext.value
+      forceNext.value = false
+      const result = await fetchCharacter(region.value, realm.value, name.value, { signal, refresh })
       budget.onSuccess() // 200 resolved: the pending window is over
       return result
     },
@@ -82,6 +93,10 @@ export function useCharacterLookup(
       budget.restart()
       return query.refetch()
     },
+    forceRefresh: () => {
+      forceNext.value = true
+      return query.refetch()
+    },
   }
 }
 
@@ -95,12 +110,18 @@ export function useGuildLookup(
 ) {
   const budget = usePendingBudget(() => `${region.value}:${realm.value}:${name.value}`)
 
+  // See useCharacterLookup above — same forceNext/queryFn pattern so the
+  // manual Refresh button never perturbs the query key.
+  const forceNext = ref(false)
+
   const query = useQuery({
     queryKey: ['guild', region, realm, name, page, perPage, filter ?? ''] as const,
     queryFn: async ({ signal }) => {
+      const refresh = forceNext.value
+      forceNext.value = false
       const result = await fetchGuild(
         region.value, realm.value, name.value, perPage, page.value, filter?.value ?? '',
-        { signal },
+        { signal, refresh },
       )
       budget.onSuccess()
       return result
@@ -121,6 +142,10 @@ export function useGuildLookup(
     syncPendingSince: budget.syncPendingSince,
     restartPolling: () => {
       budget.restart()
+      return query.refetch()
+    },
+    forceRefresh: () => {
+      forceNext.value = true
       return query.refetch()
     },
   }

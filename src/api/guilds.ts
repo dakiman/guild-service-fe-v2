@@ -17,14 +17,20 @@ export async function fetchGuild(
   perPage = 50,
   page = 1,
   filter = '',
-  opts?: { signal?: AbortSignal },
+  opts?: { signal?: AbortSignal; refresh?: boolean },
 ): Promise<GuildLookupResult> {
-  const res = await api.get<{ guild: GuildResource; members: Paginated<GuildMember> }>(
+  const params: Record<string, string | number> = { per_page: perPage, page }
+  if (filter) params.filter = filter
+  if (opts?.refresh) params.refresh = 1
+
+  const res = await api.get<{
+    guild: GuildResource
+    members: Paginated<GuildMember>
+    meta: GuildLookupResult['meta']
+  }>(
     `/guilds/${region}/${realm}/${name}`,
     {
-      params: filter
-        ? { per_page: perPage, page, filter }
-        : { per_page: perPage, page },
+      params,
       validateStatus: (s) => s === 200 || s === 202 || s === 404 || s === 429,
       signal: opts?.signal,
     },
@@ -49,6 +55,7 @@ export async function fetchGuild(
   return {
     guild: res.data.guild,
     members: res.data.members,
+    meta: res.data.meta,
     isStale: res.headers['x-data-staleness'] === 'stale',
     isSyncing: res.headers['x-sync-status'] === 'syncing',
   }

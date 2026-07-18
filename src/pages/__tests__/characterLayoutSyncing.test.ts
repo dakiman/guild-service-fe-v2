@@ -78,6 +78,7 @@ vi.mock('@/composables/usePollingLookup', () => ({
     syncPendingSince: ref(null),
     refetch: vi.fn(),
     restartPolling: vi.fn(),
+    forceRefresh: vi.fn().mockResolvedValue({ data: null }),
   }),
 }))
 
