@@ -16,7 +16,7 @@ import { SPEC_NAMES } from '@/utils/wowIcons'
 import type { Region } from '@/types/api'
 
 const router = useRouter()
-const searchOpen = ref(false)
+const searchOpen = ref(true)
 
 const { data: stats, isLoading, isError } = useCharacterStats()
 

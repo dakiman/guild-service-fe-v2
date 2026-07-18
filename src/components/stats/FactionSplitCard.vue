@@ -106,7 +106,7 @@ function sharePercent(count: number): string {
     <!-- Races -->
     <div class="mt-5">
       <h4 class="stats-label font-medium uppercase tracking-wide mb-2">Races</h4>
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col gap-1.5 max-h-80 overflow-y-auto pr-1">
         <div
           v-for="race in mergedRaces"
           :key="race.raceId"
