@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import StatMiniCard from '@/components/stats/StatMiniCard.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 import { useGuildStats } from '@/composables/useGuildStats'
 
 const props = defineProps<{
@@ -19,7 +20,7 @@ const { data, isLoading, isError } = useGuildStats(
 <template>
   <div v-if="isLoading" class="text-xs text-wsa-disabled py-2">Loading stats...</div>
 
-  <div v-else-if="isError" class="text-xs text-[#ff6b6b] py-2">Couldn't load guild stats.</div>
+  <ErrorState v-else-if="isError" hide-retry title="Couldn't load guild stats" class="!p-3" />
 
   <template v-else-if="data">
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">

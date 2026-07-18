@@ -5,6 +5,7 @@ import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
 import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
 import PerformanceByClassCard from '@/components/stats/PerformanceByClassCard.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 import { useCharacterStats } from '@/composables/useCharacterStats'
 import { useSeasons } from '@/composables/usePveGameData'
 
@@ -53,9 +54,12 @@ function openArchive(event: Event) {
         <div v-if="isLoading" class="flex justify-center py-6">
           <div class="wsa-spinner"></div>
         </div>
-        <div v-else-if="isError" class="wsa-card !border-red-800/50 !p-4">
-          <p class="text-sm text-[#ff4444]">Failed to load character stats.</p>
-        </div>
+        <ErrorState
+          v-else-if="isError"
+          hide-retry
+          title="Failed to load stats"
+          message="Mythic+ statistics couldn't be loaded. They refresh hourly — check back shortly."
+        />
         <template v-else-if="stats">
           <TopPerformersCard
             title="Top M+ Rating"

@@ -10,6 +10,7 @@ import FactionSplitCard from '@/components/stats/FactionSplitCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
 import SpecPopularityCard from '@/components/stats/SpecPopularityCard.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 import { useCharacterStats } from '@/composables/useCharacterStats'
 import { CLASSES, CLASS_COLORS } from '@/utils/wowConstants'
 import { SPEC_NAMES } from '@/utils/wowIcons'
@@ -92,9 +93,12 @@ const mostPopularSpec = computed(() => {
     </div>
 
     <!-- Error state -->
-    <div v-else-if="isError" class="wsa-card !border-red-800/50 !p-4">
-      <p class="text-sm text-[#ff4444]">Failed to load character stats.</p>
-    </div>
+    <ErrorState
+      v-else-if="isError"
+      hide-retry
+      title="Failed to load stats"
+      message="Character statistics couldn't be loaded. They refresh hourly — check back shortly."
+    />
 
     <!-- Dashboard content -->
     <template v-else-if="stats">

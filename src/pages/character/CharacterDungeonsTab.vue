@@ -19,10 +19,12 @@
         <div class="wsa-skeleton h-4 w-12 hidden sm:block" />
       </div>
     </div>
-    <div v-else-if="isError" class="wsa-card p-6 text-sm text-red-300">
-      Couldn't load dungeon data.
-      <button type="button" class="underline" @click="() => refetch()">Retry</button>
-    </div>
+    <ErrorState
+      v-else-if="isError"
+      :error="error"
+      title="Couldn't load dungeon data"
+      @retry="refetch()"
+    />
     <template v-else>
       <div class="flex flex-wrap items-center justify-between gap-2">
         <nav class="flex gap-1" role="tablist">
@@ -78,6 +80,7 @@ import { useMythicDungeons, useSeasons } from '@/composables/usePveGameData'
 import DungeonsHeadline from '@/components/character/pve/DungeonsHeadline.vue'
 import MythicPlusBestPerDungeon from '@/components/character/pve/MythicPlusBestPerDungeon.vue'
 import MythicPlusAllRuns from '@/components/character/pve/MythicPlusAllRuns.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 
 const { character } = useCharacterContext()
 
@@ -94,7 +97,7 @@ const VIEWS: ViewDescriptor[] = [
 
 const activeView = ref<ViewDescriptor['key']>('best')
 
-const { data, isLoading, isError, refetch } = useMythicDungeons()
+const { data, isLoading, isError, error, refetch } = useMythicDungeons()
 const { data: seasonData } = useSeasons()
 
 const dungeons = computed(() => data.value?.dungeons ?? [])

@@ -6,6 +6,7 @@ import TopRunsTable from '@/components/stats/TopRunsTable.vue'
 import HighestKeysList from '@/components/stats/HighestKeysList.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
 import PerformanceByClassCard from '@/components/stats/PerformanceByClassCard.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 
 const props = defineProps<{ slug: string }>()
 
@@ -46,9 +47,7 @@ const frozenAt = computed(() => {
     <div v-if="isLoading" class="flex justify-center py-6">
       <div class="wsa-spinner"></div>
     </div>
-    <div v-else-if="isError" class="wsa-card !border-red-800/50 !p-4">
-      <p class="text-sm text-[#ff4444]">No archive found for this season.</p>
-    </div>
+    <ErrorState v-else-if="isError" hide-retry title="No archive found" message="This season has no archived data." />
 
     <div v-else-if="data" class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
       <!-- Frozen Top 100 (client-side pagination over the blob) -->

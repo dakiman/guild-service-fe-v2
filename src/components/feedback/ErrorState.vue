@@ -5,14 +5,14 @@
     :class="isThrottled ? '!border-amber-700/50' : '!border-red-800/50'"
   >
     <div class="flex-1 min-w-0">
-      <h3 class="text-sm font-semibold" :class="isThrottled ? 'text-wsa-gold' : 'text-[#ff4444]'">
+      <h3 class="text-sm font-semibold" :class="isThrottled ? 'text-wsa-gold' : 'text-red-400'">
         {{ resolvedTitle }}
       </h3>
-      <p v-if="resolvedMessage" class="text-xs mt-1" :class="isThrottled ? 'text-wsa-muted' : 'text-[#aa6666]'">
+      <p v-if="resolvedMessage" class="text-xs mt-1" :class="isThrottled ? 'text-wsa-muted' : 'text-red-300/80'">
         {{ resolvedMessage }}
       </p>
     </div>
-    <div class="flex-none">
+    <div v-if="!hideRetry" class="flex-none">
       <slot name="actions">
         <button
           type="button"
@@ -35,6 +35,7 @@ const props = defineProps<{
   title?: string
   message?: string
   error?: unknown
+  hideRetry?: boolean
 }>()
 
 const emit = defineEmits<{ retry: [] }>()
