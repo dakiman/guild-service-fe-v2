@@ -106,6 +106,7 @@ useWowheadRefresh(() => route.fullPath)
 useStaleAutoRefresh(
   computed(() => isStale.value && !isSyncing.value),
   () => ['character', region.value, realm.value, name.value],
+  { pollAfterSeconds: () => meta.value?.poll_after },
 )
 
 // The layout v-if-gates <router-view> on `character` non-null, so children
