@@ -144,14 +144,13 @@ const raidMediaMap = computed(() => {
             <div
               v-for="classId in CLASS_IDS"
               :key="classId"
-              class="flex items-center justify-center"
+              class="relative flex items-center justify-center group"
             >
               <div
                 v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
                 class="heatmap-dot rounded-full"
                 role="img"
                 :aria-label="`${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
-                :title="`${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
                 :style="
                   dotStyle(
                     classId,
@@ -160,6 +159,13 @@ const raidMediaMap = computed(() => {
                   )
                 "
               />
+              <span
+                v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
+                class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1 z-10 hidden group-hover:block px-1.5 py-0.5 rounded bg-black/90 border border-wsa-border text-[10px] font-semibold tabular-nums whitespace-nowrap"
+                :style="{ color: CLASS_COLORS[classId] ?? '#fff' }"
+              >
+                {{ boss.kills_by_class[String(classId)] }}
+              </span>
             </div>
           </div>
         </div>

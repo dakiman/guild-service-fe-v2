@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class="wsa-btn"
+    class="wsa-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap min-w-28"
     data-testid="refresh-button"
     :disabled="disabled"
     :title="onCooldown ? cooldownTitle : undefined"

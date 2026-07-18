@@ -101,7 +101,7 @@
         <h3 class="text-sm font-semibold uppercase tracking-wide text-wsa-muted mb-3">
           PvP Talents
         </h3>
-        <ul class="flex flex-wrap gap-3">
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <li
             v-for="p in talents.pvp"
             :key="`pvp-${p.slot}`"
