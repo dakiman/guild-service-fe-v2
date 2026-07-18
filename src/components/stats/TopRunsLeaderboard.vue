@@ -18,7 +18,9 @@ const rankOffset = computed(() => (page.value - 1) * 20)
   <div class="wsa-card">
     <h3 class="wsa-text-heading text-[15px] mb-4">Top 100 M+ Runs</h3>
 
-    <div v-if="isLoading" class="text-xs text-wsa-disabled py-4 text-center">Loading...</div>
+    <div v-if="isLoading" class="flex flex-col gap-2">
+      <div v-for="i in 10" :key="i" class="wsa-skeleton h-8" />
+    </div>
 
     <div v-else-if="runs.length">
       <TopRunsTable :runs="runs" :rank-offset="rankOffset" :dungeons="dungeons" />

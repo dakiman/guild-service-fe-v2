@@ -51,8 +51,9 @@ function openArchive(event: Event) {
       <TopRunsLeaderboard />
       <div class="flex flex-col gap-4">
         <HighestKeysCard />
-        <div v-if="isLoading" class="flex justify-center py-6">
-          <div class="wsa-spinner"></div>
+        <div v-if="isLoading" class="flex flex-col gap-4">
+          <div class="wsa-skeleton h-64" />
+          <div class="wsa-skeleton h-96" />
         </div>
         <ErrorState
           v-else-if="isError"

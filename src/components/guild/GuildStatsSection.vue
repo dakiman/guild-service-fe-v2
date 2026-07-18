@@ -18,7 +18,9 @@ const { data, isLoading, isError } = useGuildStats(
 </script>
 
 <template>
-  <div v-if="isLoading" class="text-xs text-wsa-disabled py-2">Loading stats...</div>
+  <div v-if="isLoading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+    <div v-for="i in 6" :key="i" class="wsa-skeleton h-[88px]" />
+  </div>
 
   <ErrorState v-else-if="isError" hide-retry title="Couldn't load guild stats" class="!p-3" />
 

@@ -93,7 +93,7 @@ const raidMediaMap = computed(() => {
       </div>
     </div>
 
-    <div v-if="isLoading" class="text-xs text-wsa-disabled py-4 text-center">Loading...</div>
+    <div v-if="isLoading" class="wsa-skeleton h-64" />
 
     <div
       v-else-if="data?.raids.length"

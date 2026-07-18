@@ -15,7 +15,9 @@ const gameDataDungeons = computed(() => dungeonData.value?.dungeons ?? [])
   <div class="wsa-card">
     <h3 class="wsa-text-heading text-[15px] mb-3">Highest Keys</h3>
 
-    <div v-if="isLoading" class="text-xs text-wsa-disabled py-2">Loading...</div>
+    <div v-if="isLoading" class="flex flex-col gap-2 py-1">
+      <div v-for="i in 8" :key="i" class="wsa-skeleton h-5" />
+    </div>
 
     <HighestKeysList v-else-if="dungeons.length" :dungeons="dungeons" :game-data-dungeons="gameDataDungeons" />
 

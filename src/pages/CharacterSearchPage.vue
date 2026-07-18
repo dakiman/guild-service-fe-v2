@@ -88,8 +88,14 @@ const mostPopularSpec = computed(() => {
     </div>
 
     <!-- Loading state -->
-    <div v-if="isLoading" class="flex justify-center py-12">
-      <div class="wsa-spinner"></div>
+    <div v-if="isLoading" class="flex flex-col gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-4">
+        <div class="wsa-skeleton h-96" />
+        <div class="wsa-skeleton h-96" />
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div v-for="i in 5" :key="i" class="wsa-skeleton h-24" />
+      </div>
     </div>
 
     <!-- Error state -->
