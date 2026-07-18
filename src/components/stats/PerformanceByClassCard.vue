@@ -1,3 +1,8 @@
+<script lang="ts">
+// Module-scope: shimmer plays only on the first mount per page load.
+let shimmerPlayed = false
+</script>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { CLASSES, CLASS_COLORS, SPEC_ROLES, SPEC_TO_CLASS } from '@/utils/wowConstants'
@@ -7,6 +12,9 @@ import type { ClassDistribution } from '@/types/stats'
 const props = defineProps<{
   classes: ClassDistribution[]
 }>()
+
+const showShimmer = !shimmerPlayed
+shimmerPlayed = true
 
 const activeRole = ref<'all' | 'tank' | 'healer' | 'dps'>('all')
 
@@ -98,6 +106,7 @@ function roleLabel(role: string): string {
         >
           <div
             class="perf-bar"
+            :class="{ 'perf-bar--shimmer': showShimmer }"
             :style="innerGlowStyle(entry.class_id, (entry.avg_mythic_plus_rating / maxRating) * 100)"
           />
         </div>
@@ -121,7 +130,7 @@ function roleLabel(role: string): string {
   position: relative;
   overflow: hidden;
 }
-.perf-bar::after {
+.perf-bar--shimmer::after {
   content: '';
   position: absolute;
   inset: 0;

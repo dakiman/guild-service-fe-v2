@@ -1,3 +1,8 @@
+<script lang="ts">
+// Module-scope: donut rotate-in plays only on the first mount per page load.
+let rotatePlayed = false
+</script>
+
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Doughnut } from 'vue-chartjs'
@@ -16,6 +21,9 @@ const props = defineProps<{
   distribution: ClassDistribution[]
   total: number
 }>()
+
+const animateEntry = !rotatePlayed
+rotatePlayed = true
 
 function compactNumber(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
@@ -44,11 +52,9 @@ const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   cutout: '65%',
-  animation: {
-    animateRotate: true,
-    duration: 800,
-    easing: 'easeOutQuart' as const,
-  },
+  animation: animateEntry
+    ? { animateRotate: true, duration: 800, easing: 'easeOutQuart' as const }
+    : { duration: 0 },
   plugins: {
     legend: { display: false },
     tooltip: {
