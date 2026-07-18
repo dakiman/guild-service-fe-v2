@@ -28,6 +28,13 @@
   --stat-versatility: 191 191 191;
 }
 
+@layer base {
+  :focus-visible {
+    outline: 2px solid rgb(var(--wsa-gold) / 0.7);
+    outline-offset: 2px;
+  }
+}
+
 @layer components {
   /* ── Card frame ─────────────────────────────────────────────── */
   .wsa-card {
@@ -172,7 +179,7 @@
   }
   .wsa-input:focus {
     border-color: rgb(var(--wsa-text-muted));
-    outline: none;
+    outline: none; /* border-color change is the focus affordance */
   }
 
   /* ── Spinner ────────────────────────────────────────────────── */

@@ -37,6 +37,7 @@
             type="button"
             class="p-1.5 rounded-md text-wsa-muted/60 hover:text-wsa-gold transition-colors"
             title="Copy profile link"
+            aria-label="Copy profile link"
             @click="onShareLink"
           >
             <Share2 class="w-4 h-4" />

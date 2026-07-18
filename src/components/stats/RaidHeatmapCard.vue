@@ -64,6 +64,7 @@ const raidMediaMap = computed(() => {
         <select
           v-if="(data?.expansions?.length ?? 0) > 1"
           v-model="expansionModel"
+          aria-label="Expansion"
           class="text-[10px] px-2 py-0.5 rounded border border-wsa-border bg-transparent text-wsa-text outline-none cursor-pointer"
         >
           <option
