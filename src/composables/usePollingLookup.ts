@@ -111,6 +111,7 @@ export function useGuildLookup(
     // Keep the current page mounted while the next page/filter loads instead of
     // flashing the loading state and unmounting the filter input mid-typing. (P2.5)
     placeholderData: keepPreviousData,
+    refetchInterval: (query) => (query.state.data?.isSyncing ? 30_000 : false),
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   })

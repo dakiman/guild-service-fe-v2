@@ -56,6 +56,7 @@ export interface GuildLookupResult {
   guild: GuildResource
   members: import('./api').Paginated<GuildMember>
   isStale: boolean
+  isSyncing: boolean
 }
 
 export interface GuildStatsResponse {

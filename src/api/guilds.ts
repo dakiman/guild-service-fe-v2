@@ -1,5 +1,5 @@
 import { api } from './client'
-import { NotFoundError, SyncPendingError } from '@/types/api'
+import { NotFoundError, SyncPendingError, ThrottledError } from '@/types/api'
 import type {
   GuildDiscoverData,
   GuildLookupResult,
@@ -25,7 +25,7 @@ export async function fetchGuild(
       params: filter
         ? { per_page: perPage, page, filter }
         : { per_page: perPage, page },
-      validateStatus: (s) => s === 200 || s === 202 || s === 404,
+      validateStatus: (s) => s === 200 || s === 202 || s === 404 || s === 429,
       signal: opts?.signal,
     },
   )
@@ -42,10 +42,15 @@ export async function fetchGuild(
     throw new NotFoundError()
   }
 
+  if (res.status === 429) {
+    throw new ThrottledError(parseInt(res.headers['retry-after'] ?? '60', 10) * 1000)
+  }
+
   return {
     guild: res.data.guild,
     members: res.data.members,
     isStale: res.headers['x-data-staleness'] === 'stale',
+    isSyncing: res.headers['x-sync-status'] === 'syncing',
   }
 }
 

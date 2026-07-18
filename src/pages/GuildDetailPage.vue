@@ -34,8 +34,12 @@ const lookup = useGuildLookup(region, realm, name, page, perPage, debouncedFilte
 const guild = computed(() => lookup.data.value?.guild ?? null)
 const members = computed(() => lookup.data.value?.members ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
+const isSyncing = computed(() => lookup.data.value?.isSyncing ?? false)
 
-useStaleAutoRefresh(isStale, () => [
+// While the guild is still syncing (roster never synced), refetchInterval
+// already keeps polling every 30s — don't also let useStaleAutoRefresh fire
+// a redundant refetch on top of that.
+useStaleAutoRefresh(computed(() => isStale.value && !isSyncing.value), () => [
   'guild', region.value, realm.value, name.value, page.value, perPage, debouncedFilter.value,
 ])
 
