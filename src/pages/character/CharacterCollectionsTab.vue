@@ -1,18 +1,28 @@
 <template>
   <div class="flex flex-col gap-4">
-    <CharacterTabStrip :tabs="subTabs" />
-    <router-view />
+    <EmptyTab
+      v-if="subTabs.length === 0"
+      slice="collections"
+      title="Collections aren't tracked"
+      message="Mount, pet, and toy syncing is disabled on this instance, so there's nothing to show here."
+      :icon="Gem"
+    />
+    <template v-else>
+      <CharacterTabStrip :tabs="subTabs" />
+      <router-view />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { Mountain, Cat, Sparkles } from 'lucide-vue-next'
+import { Mountain, Cat, Sparkles, Gem } from 'lucide-vue-next'
 import CharacterTabStrip, {
   type TabDescriptor,
 } from '@/components/character/CharacterTabStrip.vue'
 import { useCharacterContext } from '@/composables/useCharacterContext'
+import EmptyTab from '@/components/character/EmptyTab.vue'
 
 const route = useRoute()
 const { character, meta } = useCharacterContext()
