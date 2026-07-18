@@ -23,7 +23,6 @@ const { data, isLoading, isError } = useGuildStats(
 
   <template v-else-if="data">
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
-      <StatMiniCard label="Members" :value="data.member_count" />
       <StatMiniCard
         label="Avg iLvl"
         :value="data.avg_item_level.toFixed(1)"
@@ -42,6 +41,7 @@ const { data, isLoading, isError } = useGuildStats(
       />
       <StatMiniCard label="Tanks" :value="data.role_coverage.tank" />
       <StatMiniCard label="Healers" :value="data.role_coverage.healer" />
+      <StatMiniCard label="DPS" :value="data.role_coverage.dps" />
     </div>
 
     <div v-if="data.best_keys.length" class="stats-card mb-4">

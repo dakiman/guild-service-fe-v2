@@ -16,7 +16,7 @@ const createdDate = computed(() => {
   if (!ts) return null
   const d = new Date(ts)
   if (Number.isNaN(d.getTime())) return null
-  return d.toLocaleDateString()
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 })
 
 const memberCount = computed(() => props.guild.member_count.toLocaleString())
