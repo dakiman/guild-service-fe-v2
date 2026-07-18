@@ -1,6 +1,8 @@
 <template>
   <div class="wsa-card flex flex-col items-center text-center gap-3 py-8">
-    <div class="wsa-spinner" />
+    <slot name="visual">
+      <div class="wsa-spinner" />
+    </slot>
     <p class="text-sm font-medium text-wsa-text">{{ message ?? tierMessage }}</p>
     <p class="text-xs text-wsa-disabled">{{ subtext ?? tierSubtext }}</p>
     <p v-if="showQueueBusy" class="text-xs text-wsa-disabled">

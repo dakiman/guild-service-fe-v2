@@ -94,6 +94,17 @@ const guildQueueDepth = computed(() => {
       :pending-since="lookup.syncPendingSince.value"
       :queue-depth="guildQueueDepth"
       @check-now="lookup.refetch()"
-    />
+    >
+      <template #visual>
+        <div class="w-full flex flex-col gap-2">
+          <div v-for="i in 6" :key="i" class="flex items-center gap-3">
+            <div class="wsa-skeleton h-4 w-1/4" />
+            <div class="wsa-skeleton h-4 w-6 shrink-0" />
+            <div class="wsa-skeleton h-4 w-6 shrink-0" />
+            <div class="wsa-skeleton h-4 w-10 ml-auto" />
+          </div>
+        </div>
+      </template>
+    </PollingState>
   </div>
 </template>

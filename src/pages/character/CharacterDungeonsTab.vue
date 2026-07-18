@@ -7,8 +7,17 @@
       :season-name="selectedSeasonName"
     />
 
-    <div v-if="isLoading" class="wsa-card p-6 text-sm text-wsa-muted/70">
-      Loading dungeon data…
+    <div v-if="isLoading" class="wsa-card overflow-hidden">
+      <div
+        v-for="i in 6"
+        :key="i"
+        class="flex items-center gap-3 px-3 py-2.5 border-b border-wsa-border/15 last:border-0"
+      >
+        <div class="wsa-skeleton w-7 h-7 shrink-0" />
+        <div class="wsa-skeleton h-4 w-1/3" />
+        <div class="wsa-skeleton h-4 w-10 ml-auto" />
+        <div class="wsa-skeleton h-4 w-12 hidden sm:block" />
+      </div>
     </div>
     <div v-else-if="isError" class="wsa-card p-6 text-sm text-red-300">
       Couldn't load dungeon data.

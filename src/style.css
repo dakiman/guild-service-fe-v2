@@ -185,6 +185,13 @@
     animation: spin 0.8s linear infinite;
   }
 
+  /* ── Skeleton (loading placeholder) ────────────────────────── */
+  .wsa-skeleton {
+    border-radius: 0.375rem;
+    background-color: rgba(var(--wsa-border) / 0.2);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
   /* ── Badge / pill ───────────────────────────────────────────── */
   .wsa-badge {
     display: inline-flex;
