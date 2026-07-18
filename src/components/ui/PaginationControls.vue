@@ -1,5 +1,5 @@
 <template>
-  <nav class="flex items-center gap-2" :class="summary ? 'justify-between' : 'justify-center'">
+  <nav class="flex flex-wrap items-center gap-2" :class="summary ? 'justify-between' : 'justify-center'">
     <p v-if="summary" class="text-xs text-wsa-disabled">{{ summary }}</p>
     <div class="flex justify-center gap-2">
       <button type="button" class="wsa-btn" :disabled="page <= 1" @click="go(page - 1)">
