@@ -64,7 +64,7 @@ const guildQueueDepth = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4">
+  <div class="flex flex-col gap-4">
     <ErrorState
       v-if="showError"
       :error="lookup.error.value"

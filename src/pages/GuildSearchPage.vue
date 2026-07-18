@@ -53,7 +53,7 @@ function formatCreatedAgo(item: GuildSummaryWithMetric): string {
 </script>
 
 <template>
-  <div class="p-4 max-w-6xl mx-auto">
+  <div class="max-w-6xl mx-auto">
     <header class="mb-6">
       <h1 class="text-3xl font-bold text-wsa-heading">Guilds</h1>
       <p class="text-wsa-muted mt-1">
