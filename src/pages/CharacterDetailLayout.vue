@@ -25,15 +25,11 @@
           :syncing="isSyncing"
           @refresh="onForceRefresh"
         />
-        <FreshnessChips v-if="meta && !isBasicProfile" :freshness="meta.freshness" />
-        <button
-          v-if="character.talent_loadout_code"
-          type="button"
-          class="wsa-btn"
-          @click="onCopyLoadout"
-        >
-          Copy loadout
-        </button>
+        <FreshnessSummary
+          v-if="meta && !isBasicProfile"
+          :freshness="meta.freshness"
+          :hidden-keys="hiddenFreshnessKeys"
+        />
         <button
           v-if="canToggleRecruitment"
           type="button"
@@ -83,7 +79,7 @@ import StaleBadge from '@/components/feedback/StaleBadge.vue'
 import RefreshButton from '@/components/feedback/RefreshButton.vue'
 import BasicProfileNotice from '@/components/feedback/BasicProfileNotice.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
-import FreshnessChips from '@/components/feedback/FreshnessChips.vue'
+import FreshnessSummary from '@/components/feedback/FreshnessSummary.vue'
 import type { Region } from '@/types/api'
 import type { CharacterLookupResult, CharacterResource, MetaBlock } from '@/types/character'
 import { getErrorMessage } from '@/utils/errors'
@@ -179,6 +175,16 @@ const tabs = computed<TabDescriptor[]>(() => {
   return result
 })
 
+const hiddenFreshnessKeys = computed(() => {
+  const keys: string[] = []
+  const flags = meta.value?.feature_flags
+  if (flags?.achievements === false) keys.push('achievements')
+  if (flags?.mounts === false && flags?.pets === false && flags?.toys === false) {
+    keys.push('collections')
+  }
+  return keys
+})
+
 const canToggleRecruitment = computed(() => {
   if (!auth.user || !character.value) return false
   return auth.user.characters?.some((c) => c.id === character.value!.id) ?? false
@@ -219,17 +225,6 @@ async function onForceRefresh() {
   // back false and nothing changed — surface that instead of silence.
   if (result.data?.meta?.forced_refresh === false) {
     toast.error('Refreshed recently — try again in a few minutes')
-  }
-}
-
-async function onCopyLoadout() {
-  const code = character.value?.talent_loadout_code
-  if (!code) return
-  try {
-    await navigator.clipboard.writeText(code)
-    toast.success('Talent loadout copied to clipboard')
-  } catch {
-    toast.error('Could not copy loadout')
   }
 }
 </script>

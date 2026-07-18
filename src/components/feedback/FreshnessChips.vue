@@ -46,10 +46,10 @@ function iconFor(state: FreshnessState | undefined): LucideIcon {
 }
 
 function iconClass(state: FreshnessState | undefined): string {
-  if (state === 'fresh') return 'text-success'
-  if (state === 'stale') return 'text-warning'
-  if (state === 'never_synced') return 'text-info animate-spin'
-  return 'text-base-content/40'
+  if (state === 'fresh') return 'text-emerald-400'
+  if (state === 'stale') return 'text-amber-400'
+  if (state === 'never_synced') return 'text-sky-400 animate-spin'
+  return 'text-wsa-disabled'
 }
 
 function tooltip(sliceLabel: string, state: FreshnessState | undefined): string {
