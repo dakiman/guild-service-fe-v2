@@ -79,11 +79,10 @@ const instanceProgress = computed<RaidEncounterProgress[]>(() => {
   return props.progress.filter((row) => row.instance_id === props.instance.id)
 })
 
-// Default to the highest difficulty that has at least one kill, falling back
-// to Mythic when nothing is killed yet (so the user lands on the most
-// aspirational view by default — matches raider.io's behavior).
+// Default to the highest difficulty that has at least one kill. With no kills
+// at all, land on Normal — an empty orange "Mythic 0/N" reads like a bug.
 const DIFFICULTY_PRIORITY: DifficultyDescriptor['key'][] = ['mythic', 'heroic', 'normal', 'lfr']
-const initialActive = DIFFICULTY_PRIORITY.find((key) => killedCountFor(key) > 0) ?? 'mythic'
+const initialActive = DIFFICULTY_PRIORITY.find((key) => killedCountFor(key) > 0) ?? 'normal'
 const activeDifficulty = ref<DifficultyDescriptor['key']>(initialActive)
 
 const sortedEncounters = computed(() =>
