@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { CLASS_COLORS } from '@/utils/wowConstants'
+import { capitalizeName } from '@/utils/display'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import type { TopPerformer } from '@/types/stats'
 
@@ -13,10 +14,6 @@ defineProps<{
 
 function defaultFormat(v: number): string {
   return v.toLocaleString(undefined, { maximumFractionDigits: 1 })
-}
-
-function displayName(name: string): string {
-  return name.charAt(0).toUpperCase() + name.slice(1)
 }
 </script>
 
@@ -57,7 +54,7 @@ function displayName(name: string): string {
             class="flex-1 truncate text-sm font-medium hover:underline"
             :style="{ color: CLASS_COLORS[entry.class_id] }"
           >
-            {{ displayName(entry.name) }}
+            {{ capitalizeName(entry.name) }}
           </RouterLink>
 
           <!-- Value -->

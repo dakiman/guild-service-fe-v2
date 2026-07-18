@@ -25,3 +25,9 @@ export function displayGuildName(slug: string, raw?: string | null): string {
     .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1) : w))
     .join(' ')
 }
+
+// First-letter capitalization for character-name slugs where no raw
+// display_name is available (stats payloads carry slugs only).
+export function capitalizeName(slug: string): string {
+  return slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : slug
+}

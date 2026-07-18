@@ -31,7 +31,7 @@
       </template>
       <template v-else>
         <router-link :to="{ name: 'login' }" class="text-sm text-wsa-muted hover:text-wsa-heading transition-colors px-2 py-1">
-          Login
+          Sign in
         </router-link>
         <router-link :to="{ name: 'register' }" class="wsa-btn wsa-btn--primary">
           Register

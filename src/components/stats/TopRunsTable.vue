@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { getClassColor } from '@/utils/wowConstants'
+import { capitalizeName } from '@/utils/display'
 import { upgradeCount } from '@/utils/keystoneUpgrades'
 import type { TopRun } from '@/types/stats'
 import type { KeystoneUpgradeThreshold } from '@/types/gameData'
@@ -25,10 +26,6 @@ function formatDuration(ms: number): string {
   const min = Math.floor(totalSec / 60)
   const sec = totalSec % 60
   return `${min}:${sec.toString().padStart(2, '0')}`
-}
-
-function displayName(name: string): string {
-  return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
 function dungeonIcon(run: TopRun): string | null {
@@ -102,7 +99,7 @@ function stars(run: TopRun): string {
                 class="hover:underline truncate max-w-[80px]"
                 :style="{ color: getClassColor(member.class_id ?? 0) ?? 'rgb(var(--wsa-text))' }"
               >
-                {{ displayName(member.name) }}
+                {{ capitalizeName(member.name) }}
               </RouterLink>
             </div>
           </td>

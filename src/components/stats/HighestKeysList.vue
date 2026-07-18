@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { getClassColor } from '@/utils/wowConstants'
+import { capitalizeName } from '@/utils/display'
 import { upgradeCount } from '@/utils/keystoneUpgrades'
 import type { TopKeyDungeon } from '@/types/stats'
 import type { KeystoneUpgradeThreshold } from '@/types/gameData'
@@ -26,10 +27,6 @@ const props = defineProps<{
 const sortedDungeons = computed(() => [...props.dungeons].sort((a, b) => b.key_level - a.key_level))
 
 const dungeonsById = computed(() => new Map(props.gameDataDungeons.map((gd) => [gd.id, gd])))
-
-function displayName(name: string): string {
-  return name.charAt(0).toUpperCase() + name.slice(1)
-}
 
 function dungeonIcon(d: { dungeon_id: number }): string | null {
   return dungeonsById.value.get(d.dungeon_id)?.media_url ?? null
@@ -60,7 +57,7 @@ function stars(d: { dungeon_id: number; duration?: number }): string {
         :to="{ name: 'character-detail', params: { region: d.character.region, realm: d.character.realm, name: d.character.name } }"
         class="text-xs font-semibold truncate max-w-[100px] hover:underline"
         :style="{ color: getClassColor(d.character.class_id ?? 0) ?? 'rgb(var(--wsa-text))' }">
-        {{ displayName(d.character.name) }}
+        {{ capitalizeName(d.character.name) }}
       </RouterLink>
     </div>
   </div>

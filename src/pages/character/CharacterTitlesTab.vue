@@ -80,6 +80,7 @@ import { computed, ref } from 'vue'
 import { Crown } from 'lucide-vue-next'
 import { useCharacterContext } from '@/composables/useCharacterContext'
 import EmptyTab from '@/components/character/EmptyTab.vue'
+import { capitalizeName } from '@/utils/display'
 import type { CharacterTitle } from '@/types/character'
 
 const { character, freshness } = useCharacterContext()
@@ -89,10 +90,7 @@ const titles = computed(() => character.value.titles ?? [])
 
 const previewedTitleId = ref<number | null>(null)
 
-const displayName = computed(() => {
-  const n = character.value.name
-  return n ? n.charAt(0).toUpperCase() + n.slice(1) : n
-})
+const displayName = computed(() => capitalizeName(character.value.name))
 
 function rawFor(title: CharacterTitle): string {
   return character.value.gender?.toLowerCase() === 'female'

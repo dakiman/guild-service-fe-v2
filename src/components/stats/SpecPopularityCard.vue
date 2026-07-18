@@ -80,8 +80,12 @@ function roleLabel(role: string): string {
     </div>
 
     <!-- Class groups -->
-    <div class="flex flex-col gap-3">
-      <div v-for="group in groupedByClass" :key="group.classId" class="flex flex-col gap-1">
+    <div class="sm:columns-2 xl:columns-3 gap-6">
+      <div
+        v-for="group in groupedByClass"
+        :key="group.classId"
+        class="flex flex-col gap-1 mb-4 break-inside-avoid"
+      >
         <!-- Class header -->
         <div class="flex items-center gap-1.5">
           <span class="text-[11px] font-semibold" :style="{ color: CLASS_COLORS[group.classId] }">
