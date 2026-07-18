@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import StatMiniCard from '@/components/stats/StatMiniCard.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
+import HighestKeysList from '@/components/stats/HighestKeysList.vue'
 import { useGuildStats } from '@/composables/useGuildStats'
+import { useMythicDungeons } from '@/composables/usePveGameData'
 
 const props = defineProps<{
   region: string
@@ -15,6 +18,9 @@ const { data, isLoading, isError } = useGuildStats(
   () => props.realm,
   () => props.name,
 )
+
+const { data: dungeonData } = useMythicDungeons()
+const gameDataDungeons = computed(() => dungeonData.value?.dungeons ?? [])
 </script>
 
 <template>
@@ -49,12 +55,7 @@ const { data, isLoading, isError } = useGuildStats(
 
     <div v-if="data.best_keys.length" class="wsa-card mb-4">
       <h3 class="wsa-text-heading text-[15px] mb-3">Best Keys</h3>
-      <div class="flex flex-col gap-1.5">
-        <div v-for="k in data.best_keys" :key="k.dungeon_id" class="flex items-center justify-between">
-          <span class="text-xs text-wsa-text truncate">{{ k.dungeon_name }}</span>
-          <span class="text-sm font-bold text-wsa-gold">+{{ k.key_level }}</span>
-        </div>
-      </div>
+      <HighestKeysList :dungeons="data.best_keys" :game-data-dungeons="gameDataDungeons" />
     </div>
   </template>
 </template>

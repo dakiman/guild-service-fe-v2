@@ -9,7 +9,13 @@ import type { KeystoneUpgradeThreshold } from '@/types/gameData'
 // Presentational core shared by the live Highest Keys card and the
 // season-archive page.
 const props = defineProps<{
-  dungeons: TopKeyDungeon[]
+  dungeons: Array<{
+    dungeon_id: number
+    dungeon_name: string
+    key_level: number
+    duration?: number
+    character?: TopKeyDungeon['character']
+  }>
   gameDataDungeons: Array<{
     id: number
     media_url: string | null
@@ -25,11 +31,12 @@ function displayName(name: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
-function dungeonIcon(d: TopKeyDungeon): string | null {
+function dungeonIcon(d: { dungeon_id: number }): string | null {
   return dungeonsById.value.get(d.dungeon_id)?.media_url ?? null
 }
 
-function stars(d: TopKeyDungeon): string {
+function stars(d: { dungeon_id: number; duration?: number }): string {
+  if (d.duration == null) return ''
   const dungeon = dungeonsById.value.get(d.dungeon_id)
   return '✦'.repeat(upgradeCount(d.duration, dungeon?.keystone_upgrades))
 }
