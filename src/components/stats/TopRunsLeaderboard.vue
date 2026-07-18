@@ -18,7 +18,7 @@ const rankOffset = computed(() => (page.value - 1) * 20)
   <div class="wsa-card">
     <h3 class="wsa-text-heading text-[15px] mb-4">Top 100 M+ Runs</h3>
 
-    <div v-if="isLoading" class="text-xs text-[#665533] py-4 text-center">Loading...</div>
+    <div v-if="isLoading" class="text-xs text-wsa-disabled py-4 text-center">Loading...</div>
 
     <div v-else-if="runs.length">
       <TopRunsTable :runs="runs" :rank-offset="rankOffset" :dungeons="dungeons" />
@@ -27,21 +27,21 @@ const rankOffset = computed(() => (page.value - 1) * 20)
         <button
           @click="page = Math.max(1, page - 1)"
           :disabled="page <= 1"
-          class="text-xs px-3 py-1 rounded border border-[#5c4a32] text-[#aa8855] disabled:opacity-30"
+          class="text-xs px-3 py-1 rounded border border-wsa-border text-wsa-muted disabled:opacity-30"
         >
           Prev
         </button>
-        <span class="text-xs text-[#665533] flex items-center">{{ page }} / {{ lastPage }}</span>
+        <span class="text-xs text-wsa-disabled flex items-center">{{ page }} / {{ lastPage }}</span>
         <button
           @click="page = Math.min(lastPage, page + 1)"
           :disabled="page >= lastPage"
-          class="text-xs px-3 py-1 rounded border border-[#5c4a32] text-[#aa8855] disabled:opacity-30"
+          class="text-xs px-3 py-1 rounded border border-wsa-border text-wsa-muted disabled:opacity-30"
         >
           Next
         </button>
       </div>
     </div>
 
-    <div v-else class="text-xs text-[#665533] italic py-4 text-center">No run data yet</div>
+    <div v-else class="text-xs text-wsa-disabled italic py-4 text-center">No run data yet</div>
   </div>
 </template>

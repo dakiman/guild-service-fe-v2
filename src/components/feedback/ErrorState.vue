@@ -5,7 +5,7 @@
     :class="isThrottled ? '!border-amber-700/50' : '!border-red-800/50'"
   >
     <div class="flex-1 min-w-0">
-      <h3 class="text-sm font-semibold" :class="isThrottled ? 'text-[#ffcc88]' : 'text-[#ff4444]'">
+      <h3 class="text-sm font-semibold" :class="isThrottled ? 'text-wsa-gold' : 'text-[#ff4444]'">
         {{ resolvedTitle }}
       </h3>
       <p v-if="resolvedMessage" class="text-xs mt-1" :class="isThrottled ? 'text-wsa-muted' : 'text-[#aa6666]'">

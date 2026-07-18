@@ -57,8 +57,8 @@ function roleLabel(role: string): string {
           class="text-[10px] px-2 py-0.5 rounded border"
           :class="
             activeRole === role
-              ? 'border-[#aa8855] text-[#ffcc88] bg-[rgba(170,136,85,0.15)]'
-              : 'border-[#5c4a32] text-[#665533]'
+              ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15'
+              : 'border-wsa-border text-wsa-disabled'
           "
           @click="activeRole = role"
         >
@@ -76,7 +76,7 @@ function roleLabel(role: string): string {
         <!-- Rank -->
         <span
           class="w-6 text-right text-xs font-bold tabular-nums"
-          :class="index < 3 ? 'text-[#aa8855]' : 'text-[#665533]'"
+          :class="index < 3 ? 'text-wsa-muted' : 'text-wsa-disabled'"
         >
           {{ index < 3 ? '#' : '' }}{{ index + 1 }}
         </span>
@@ -94,7 +94,7 @@ function roleLabel(role: string): string {
 
         <!-- Bar -->
         <div
-          class="flex-1 h-[10px] rounded bg-[rgba(0,0,0,0.3)] border border-[rgba(92,74,50,0.3)] overflow-hidden flex items-center"
+          class="flex-1 h-[10px] rounded bg-black/30 border border-wsa-border/30 overflow-hidden flex items-center"
         >
           <div
             class="perf-bar"

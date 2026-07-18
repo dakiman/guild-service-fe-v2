@@ -113,10 +113,10 @@ function sharePercent(count: number): string {
           class="flex items-center gap-2"
         >
           <RaceIcon :race-id="race.raceId" :size="20" />
-          <span data-test="race-name" class="text-xs text-[#e0d0b0] w-24 truncate">
+          <span data-test="race-name" class="text-xs text-wsa-text w-24 truncate">
             {{ race.name }}
           </span>
-          <div class="flex-1 h-[5px] rounded bg-[rgba(0,0,0,0.3)] overflow-hidden">
+          <div class="flex-1 h-[5px] rounded bg-black/30 overflow-hidden">
             <div
               data-test="race-bar"
               class="h-full rounded opacity-70"
@@ -126,7 +126,7 @@ function sharePercent(count: number): string {
               }"
             />
           </div>
-          <span class="text-[10px] tabular-nums text-[#e0d0b0] whitespace-nowrap">
+          <span class="text-[10px] tabular-nums text-wsa-text whitespace-nowrap">
             {{ race.count.toLocaleString() }} · {{ sharePercent(race.count) }}%
           </span>
         </div>

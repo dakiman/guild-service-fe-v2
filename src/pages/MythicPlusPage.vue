@@ -32,12 +32,12 @@ function openArchive(event: Event) {
       v-if="currentSeason || archivedSeasons.length"
       class="flex flex-wrap items-center justify-between gap-2"
     >
-      <h2 v-if="currentSeason" class="text-sm font-semibold text-[#aa8855]">
+      <h2 v-if="currentSeason" class="text-sm font-semibold text-wsa-muted">
         {{ currentSeason.name }}
       </h2>
       <select
         v-if="archivedSeasons.length"
-        class="text-xs bg-transparent border border-[#5c4a32] rounded px-2 py-1 text-[#aa8855]"
+        class="text-xs bg-transparent border border-wsa-border rounded px-2 py-1 text-wsa-muted"
         aria-label="Past seasons"
         @change="openArchive"
       >

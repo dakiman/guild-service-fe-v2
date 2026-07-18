@@ -64,13 +64,13 @@ const raidMediaMap = computed(() => {
         <select
           v-if="(data?.expansions?.length ?? 0) > 1"
           v-model="expansionModel"
-          class="text-[10px] px-2 py-0.5 rounded border border-[#5c4a32] bg-transparent text-[#e0d0b0] outline-none cursor-pointer"
+          class="text-[10px] px-2 py-0.5 rounded border border-wsa-border bg-transparent text-wsa-text outline-none cursor-pointer"
         >
           <option
             v-for="exp in data?.expansions ?? []"
             :key="exp"
             :value="exp"
-            class="bg-[#1a1410] text-[#e0d0b0]"
+            class="bg-base-100 text-wsa-text"
           >
             {{ exp }}
           </option>
@@ -82,8 +82,8 @@ const raidMediaMap = computed(() => {
             class="text-[10px] px-2 py-0.5 rounded border capitalize"
             :class="
               difficulty === diff
-                ? 'border-[#aa8855] text-[#ffcc88] bg-[rgba(170,136,85,0.15)]'
-                : 'border-[#5c4a32] text-[#665533]'
+                ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15'
+                : 'border-wsa-border text-wsa-disabled'
             "
             @click="difficulty = diff"
           >
@@ -93,7 +93,7 @@ const raidMediaMap = computed(() => {
       </div>
     </div>
 
-    <div v-if="isLoading" class="text-xs text-[#665533] py-4 text-center">Loading...</div>
+    <div v-if="isLoading" class="text-xs text-wsa-disabled py-4 text-center">Loading...</div>
 
     <div
       v-else-if="data?.raids.length"
@@ -115,14 +115,14 @@ const raidMediaMap = computed(() => {
 
         <!-- Raid sections -->
         <div v-for="raid in data.raids" :key="raid.instance_id" class="mb-3">
-          <div class="flex items-center gap-1.5 mb-1.5 pl-2 border-l-3 border-[#5c4a32]">
+          <div class="flex items-center gap-1.5 mb-1.5 pl-2 border-l-3 border-wsa-border">
             <img
               v-if="raidMediaMap.get(raid.instance_id)"
               :src="raidMediaMap.get(raid.instance_id)"
               :alt="raid.name"
               class="w-5 h-5 rounded object-cover"
             />
-            <span class="text-xs font-semibold text-[#aa8855]">{{ raid.name }}</span>
+            <span class="text-xs font-semibold text-wsa-muted">{{ raid.name }}</span>
           </div>
 
           <!-- Boss rows -->
@@ -131,7 +131,7 @@ const raidMediaMap = computed(() => {
             :key="boss.encounter_id"
             class="heatmap-grid items-center py-0.5"
           >
-            <span class="text-xs text-[#e0d0b0] truncate pr-2">{{ boss.name }}</span>
+            <span class="text-xs text-wsa-text truncate pr-2">{{ boss.name }}</span>
             <div
               v-for="classId in CLASS_IDS"
               :key="classId"
@@ -155,7 +155,7 @@ const raidMediaMap = computed(() => {
       </div>
     </div>
 
-    <div v-else class="text-xs text-[#665533] italic py-4 text-center">No raid data</div>
+    <div v-else class="text-xs text-wsa-disabled italic py-4 text-center">No raid data</div>
   </div>
 </template>
 

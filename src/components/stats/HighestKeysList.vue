@@ -46,13 +46,13 @@ function stars(d: TopKeyDungeon): string {
         class="w-5 h-5 rounded shrink-0"
         loading="lazy"
       />
-      <span class="text-xs text-[#e0d0b0] truncate flex-1">{{ d.dungeon_name }}</span>
-      <span class="text-sm font-bold text-[#ffcc88] mx-2 whitespace-nowrap">+{{ d.key_level
-      }}<span v-if="stars(d)" class="text-[9px] align-super text-[#ffe0aa]">{{ stars(d) }}</span></span>
+      <span class="text-xs text-wsa-text truncate flex-1">{{ d.dungeon_name }}</span>
+      <span class="text-sm font-bold text-wsa-gold mx-2 whitespace-nowrap">+{{ d.key_level
+      }}<span v-if="stars(d)" class="text-[9px] align-super text-wsa-gold">{{ stars(d) }}</span></span>
       <RouterLink v-if="d.character"
         :to="{ name: 'character-detail', params: { region: d.character.region, realm: d.character.realm, name: d.character.name } }"
         class="text-xs font-semibold truncate max-w-[100px] hover:underline"
-        :style="{ color: getClassColor(d.character.class_id ?? 0) ?? '#e0d0b0' }">
+        :style="{ color: getClassColor(d.character.class_id ?? 0) ?? 'rgb(var(--wsa-text))' }">
         {{ displayName(d.character.name) }}
       </RouterLink>
     </div>

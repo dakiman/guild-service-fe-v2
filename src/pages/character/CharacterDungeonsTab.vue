@@ -44,7 +44,7 @@
         <select
           v-if="seasonOptions.length > 1"
           aria-label="Season"
-          class="text-xs bg-transparent border border-[#5c4a32] rounded px-2 py-1 text-[#aa8855]"
+          class="text-xs bg-transparent border border-wsa-border rounded px-2 py-1 text-wsa-muted"
           :value="selectedSeason ?? ''"
           @change="onSeasonChange"
         >

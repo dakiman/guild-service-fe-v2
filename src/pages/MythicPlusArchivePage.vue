@@ -32,13 +32,13 @@ const frozenAt = computed(() => {
     <!-- Frozen-season banner -->
     <div v-if="data" class="wsa-card !p-4 flex flex-wrap items-center justify-between gap-2">
       <div>
-        <h2 class="text-lg font-bold text-[#e0d0b0]">{{ data.meta.name }}</h2>
-        <p class="text-xs text-[#aa8855]">
+        <h2 class="text-lg font-bold text-wsa-text">{{ data.meta.name }}</h2>
+        <p class="text-xs text-wsa-muted">
           Frozen at season end<span v-if="frozenAt"> — {{ frozenAt }}</span> ·
           {{ data.meta.total_runs.toLocaleString() }} runs recorded
         </p>
       </div>
-      <RouterLink :to="{ name: 'mythic-plus' }" class="text-xs text-[#aa8855] hover:underline">
+      <RouterLink :to="{ name: 'mythic-plus' }" class="text-xs text-wsa-muted hover:underline">
         ← Current season
       </RouterLink>
     </div>
@@ -59,15 +59,15 @@ const frozenAt = computed(() => {
           <button
             @click="page = Math.max(1, page - 1)"
             :disabled="page <= 1"
-            class="text-xs px-3 py-1 rounded border border-[#5c4a32] text-[#aa8855] disabled:opacity-30"
+            class="text-xs px-3 py-1 rounded border border-wsa-border text-wsa-muted disabled:opacity-30"
           >
             Prev
           </button>
-          <span class="text-xs text-[#665533] flex items-center">{{ page }} / {{ lastPage }}</span>
+          <span class="text-xs text-wsa-disabled flex items-center">{{ page }} / {{ lastPage }}</span>
           <button
             @click="page = Math.min(lastPage, page + 1)"
             :disabled="page >= lastPage"
-            class="text-xs px-3 py-1 rounded border border-[#5c4a32] text-[#aa8855] disabled:opacity-30"
+            class="text-xs px-3 py-1 rounded border border-wsa-border text-wsa-muted disabled:opacity-30"
           >
             Next
           </button>

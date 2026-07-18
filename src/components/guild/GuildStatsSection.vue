@@ -17,7 +17,7 @@ const { data, isLoading, isError } = useGuildStats(
 </script>
 
 <template>
-  <div v-if="isLoading" class="text-xs text-[#665533] py-2">Loading stats...</div>
+  <div v-if="isLoading" class="text-xs text-wsa-disabled py-2">Loading stats...</div>
 
   <div v-else-if="isError" class="text-xs text-[#ff6b6b] py-2">Couldn't load guild stats.</div>
 
@@ -48,8 +48,8 @@ const { data, isLoading, isError } = useGuildStats(
       <h3 class="wsa-text-heading text-[15px] mb-3">Best Keys</h3>
       <div class="flex flex-col gap-1.5">
         <div v-for="k in data.best_keys" :key="k.dungeon_id" class="flex items-center justify-between">
-          <span class="text-xs text-[#e0d0b0] truncate">{{ k.dungeon_name }}</span>
-          <span class="text-sm font-bold text-[#ffcc88]">+{{ k.key_level }}</span>
+          <span class="text-xs text-wsa-text truncate">{{ k.dungeon_name }}</span>
+          <span class="text-sm font-bold text-wsa-gold">+{{ k.key_level }}</span>
         </div>
       </div>
     </div>

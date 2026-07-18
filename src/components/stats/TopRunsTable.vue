@@ -45,7 +45,7 @@ function stars(run: TopRun): string {
   <div class="overflow-x-auto">
     <table class="w-full text-xs min-w-[560px]">
       <thead>
-        <tr class="text-[#aa8855] text-left">
+        <tr class="text-wsa-muted text-left">
           <th class="py-1.5 w-8">#</th>
           <th class="py-1.5">Dungeon</th>
           <th class="py-1.5 w-12 text-center">Key</th>
@@ -57,15 +57,15 @@ function stars(run: TopRun): string {
         <tr
           v-for="(run, index) in runs"
           :key="run.id"
-          class="border-b border-[rgba(92,74,50,0.2)]"
+          class="border-b border-wsa-border/20"
         >
           <td
             class="py-2 font-bold tabular-nums"
-            :class="rankOffset + index + 1 < 3 ? 'text-[#aa8855]' : 'text-[#665533]'"
+            :class="rankOffset + index + 1 < 3 ? 'text-wsa-muted' : 'text-wsa-disabled'"
           >
             {{ rankOffset + index + 1 }}
           </td>
-          <td class="py-2 text-[#e0d0b0]">
+          <td class="py-2 text-wsa-text">
             <div class="flex items-center gap-1.5 max-w-[160px]">
               <img
                 v-if="dungeonIcon(run)"
@@ -77,13 +77,13 @@ function stars(run: TopRun): string {
               <span class="truncate">{{ run.dungeon_name }}</span>
             </div>
           </td>
-          <td class="py-2 text-center font-bold text-[#ffcc88] whitespace-nowrap">
+          <td class="py-2 text-center font-bold text-wsa-gold whitespace-nowrap">
             +{{ run.keystone_level
-            }}<span v-if="stars(run)" class="text-[9px] align-super text-[#ffe0aa]">{{
+            }}<span v-if="stars(run)" class="text-[9px] align-super text-wsa-gold">{{
               stars(run)
             }}</span>
           </td>
-          <td class="py-2 text-right tabular-nums text-[#e0d0b0]">
+          <td class="py-2 text-right tabular-nums text-wsa-text">
             {{ formatDuration(run.duration) }}
           </td>
           <td class="py-2 pl-3">
@@ -100,7 +100,7 @@ function stars(run: TopRun): string {
                   },
                 }"
                 class="hover:underline truncate max-w-[80px]"
-                :style="{ color: getClassColor(member.class_id ?? 0) ?? '#e0d0b0' }"
+                :style="{ color: getClassColor(member.class_id ?? 0) ?? 'rgb(var(--wsa-text))' }"
               >
                 {{ displayName(member.name) }}
               </RouterLink>

@@ -64,8 +64,8 @@ function roleLabel(role: string): string {
           class="text-[10px] px-2 py-0.5 rounded border"
           :class="
             activeRole === role
-              ? 'border-[#aa8855] text-[#ffcc88] bg-[rgba(170,136,85,0.15)]'
-              : 'border-[#5c4a32] text-[#665533]'
+              ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15'
+              : 'border-wsa-border text-wsa-disabled'
           "
           @click="activeRole = role"
         >
@@ -75,7 +75,7 @@ function roleLabel(role: string): string {
     </div>
 
     <!-- Sample count -->
-    <div class="text-[10px] text-[#665533] mb-3">
+    <div class="text-[10px] text-wsa-disabled mb-3">
       {{ filteredTotal.toLocaleString() }} characters
     </div>
 
@@ -87,7 +87,7 @@ function roleLabel(role: string): string {
           <span class="text-[11px] font-semibold" :style="{ color: CLASS_COLORS[group.classId] }">
             {{ CLASSES[group.classId] }}
           </span>
-          <span class="text-[10px] text-[#665533]">{{ group.totalCount }}</span>
+          <span class="text-[10px] text-wsa-disabled">{{ group.totalCount }}</span>
         </div>
 
         <!-- Spec bars within class -->
@@ -97,7 +97,7 @@ function roleLabel(role: string): string {
           class="flex items-center gap-2"
         >
           <SpecIcon :spec-id="spec.spec_id" :size="16" />
-          <div class="flex-1 h-[6px] rounded bg-[rgba(0,0,0,0.3)] overflow-hidden">
+          <div class="flex-1 h-[6px] rounded bg-black/30 overflow-hidden">
             <div
               class="h-full rounded"
               :style="{
@@ -107,7 +107,7 @@ function roleLabel(role: string): string {
               }"
             />
           </div>
-          <span class="text-[10px] tabular-nums text-[#e0d0b0] w-8 text-right">
+          <span class="text-[10px] tabular-nums text-wsa-text w-8 text-right">
             {{ filteredTotal > 0 ? ((spec.count / filteredTotal) * 100).toFixed(1) : '0.0' }}%
           </span>
         </div>
@@ -116,7 +116,7 @@ function roleLabel(role: string): string {
 
     <div
       v-if="filteredSpecs.length === 0"
-      class="text-xs text-[#665533] italic py-4 text-center"
+      class="text-xs text-wsa-disabled italic py-4 text-center"
     >
       No spec data
     </div>

@@ -75,11 +75,11 @@ const mostPopularSpec = computed(() => {
         class="flex w-full items-center justify-between text-left"
         @click="searchOpen = !searchOpen"
       >
-        <span class="flex items-center gap-2 text-sm font-semibold text-[#ffcc88]">
-          <Search class="h-4 w-4 text-[#aa8855]" />
+        <span class="flex items-center gap-2 text-sm font-semibold text-wsa-gold">
+          <Search class="h-4 w-4 text-wsa-muted" />
           Search Characters
         </span>
-        <component :is="searchOpen ? ChevronUp : ChevronDown" class="h-4 w-4 text-[#aa8855]" />
+        <component :is="searchOpen ? ChevronUp : ChevronDown" class="h-4 w-4 text-wsa-muted" />
       </button>
       <div v-show="searchOpen" class="mt-3">
         <LookupForm kind="character" @submit="onSubmit" @pick="onSubmit" />
@@ -167,12 +167,12 @@ const mostPopularSpec = computed(() => {
       <!-- Row 6: PvE page teasers -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <RouterLink :to="{ name: 'mythic-plus' }" class="pve-teaser">
-          <span class="text-sm font-semibold text-[#e0d0b0]">Mythic+ leaderboards</span>
-          <ArrowRight class="h-4 w-4 text-[#aa8855]" />
+          <span class="text-sm font-semibold text-wsa-text">Mythic+ leaderboards</span>
+          <ArrowRight class="h-4 w-4 text-wsa-muted" />
         </RouterLink>
         <RouterLink :to="{ name: 'raids' }" class="pve-teaser">
-          <span class="text-sm font-semibold text-[#e0d0b0]">Raid progress</span>
-          <ArrowRight class="h-4 w-4 text-[#aa8855]" />
+          <span class="text-sm font-semibold text-wsa-text">Raid progress</span>
+          <ArrowRight class="h-4 w-4 text-wsa-muted" />
         </RouterLink>
       </div>
     </template>
@@ -181,35 +181,35 @@ const mostPopularSpec = computed(() => {
 
 <style scoped>
 .search-cta {
-  border: 2px solid #aa8855;
+  border: 2px solid rgb(var(--wsa-text-muted));
   border-radius: 0.5rem;
   padding: 0.875rem 1.25rem;
-  background: linear-gradient(135deg, rgba(170, 136, 85, 0.12), rgba(170, 136, 85, 0.04));
+  background: linear-gradient(135deg, rgba(var(--wsa-text-muted) / 0.12), rgba(var(--wsa-text-muted) / 0.04));
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
 .search-cta:hover {
-  border-color: #ffcc88;
-  box-shadow: 0 0 12px rgba(255, 204, 136, 0.25);
+  border-color: rgb(var(--wsa-gold));
+  box-shadow: 0 0 12px rgba(var(--wsa-gold) / 0.25);
 }
 
 .pve-teaser {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #5c4a32;
+  border: 1px solid rgb(var(--wsa-border));
   border-radius: 0.5rem;
   padding: 0.75rem 1.25rem;
-  background: rgba(170, 136, 85, 0.05);
+  background: rgba(var(--wsa-text-muted) / 0.05);
   transition:
     border-color 0.2s ease,
     background 0.2s ease;
 }
 
 .pve-teaser:hover {
-  border-color: #aa8855;
-  background: rgba(170, 136, 85, 0.1);
+  border-color: rgb(var(--wsa-text-muted));
+  background: rgba(var(--wsa-text-muted) / 0.1);
 }
 </style>

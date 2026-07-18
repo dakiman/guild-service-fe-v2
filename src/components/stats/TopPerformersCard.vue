@@ -39,10 +39,10 @@ function displayName(name: string): string {
                 : index === 1 ? 'rgba(192, 192, 192, 0.2)'
                 : index === 2 ? 'rgba(205, 127, 50, 0.2)'
                 : 'rgba(0, 0, 0, 0.3)',
-              color: index === 0 ? '#ffcc88'
+              color: index === 0 ? 'rgb(var(--wsa-gold))'
                 : index === 1 ? '#c0c0c0'
                 : index === 2 ? '#cd7f32'
-                : '#665533',
+                : 'rgb(var(--wsa-text-disabled))',
             }"
           >
             {{ index + 1 }}
@@ -61,12 +61,12 @@ function displayName(name: string): string {
           </RouterLink>
 
           <!-- Value -->
-          <span class="text-sm font-semibold tabular-nums" style="color: #e0d0b0">
+          <span class="text-sm font-semibold tabular-nums text-wsa-text">
             {{ (formatValue ?? defaultFormat)(entry.value) }}
           </span>
         </div>
 
-        <p v-if="entries.length === 0" class="text-sm py-2 text-center" style="color: #665533">
+        <p v-if="entries.length === 0" class="text-sm py-2 text-center text-wsa-disabled">
           No data yet
         </p>
       </div>

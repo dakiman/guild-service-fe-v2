@@ -80,8 +80,8 @@ const chartOptions = computed(() => ({
         <div class="relative h-72 w-72 flex-shrink-0">
           <Doughnut :data="chartData" :options="chartOptions" />
           <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span class="text-3xl font-bold" style="color: #e0d0b0">{{ compactNumber(total) }}</span>
-            <span class="text-xs" style="color: #aa8855">characters</span>
+            <span class="text-3xl font-bold text-wsa-text">{{ compactNumber(total) }}</span>
+            <span class="text-xs text-wsa-muted">characters</span>
           </div>
         </div>
 
@@ -100,17 +100,17 @@ const chartOptions = computed(() => ({
             >
               {{ CLASSES[item.class_id] }}
             </span>
-            <span class="text-sm font-semibold tabular-nums w-12 text-right" style="color: #e0d0b0">
+            <span class="text-sm font-semibold tabular-nums w-12 text-right text-wsa-text">
               {{ compactNumber(item.count) }}
             </span>
-            <span class="text-xs tabular-nums w-10 text-right" style="color: #aa8855">
+            <span class="text-xs tabular-nums w-10 text-right text-wsa-muted">
               {{ ((item.count / total) * 100).toFixed(1) }}%
             </span>
             <div class="ml-auto flex items-center gap-3">
-              <span class="text-xs tabular-nums" style="color: #aa8855">
+              <span class="text-xs tabular-nums text-wsa-muted">
                 {{ item.avg_ilvl.toFixed(0) }} ilvl
               </span>
-              <span class="text-xs tabular-nums" style="color: #aa8855">
+              <span class="text-xs tabular-nums text-wsa-muted">
                 {{ item.avg_mythic_plus_rating.toFixed(0) }} m+
               </span>
             </div>
