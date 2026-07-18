@@ -21,9 +21,9 @@ function displayName(name: string): string {
 </script>
 
 <template>
-  <div class="stats-card">
+  <div class="wsa-card">
     <div class="p-2">
-      <h2 class="stats-card-title text-lg mb-4">{{ title }}</h2>
+      <h2 class="wsa-text-heading text-[15px] text-lg mb-4">{{ title }}</h2>
       <div class="flex flex-col gap-1.5">
         <div
           v-for="(entry, index) in entries"

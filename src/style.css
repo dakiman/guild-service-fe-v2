@@ -206,21 +206,6 @@
   }
 
   /* ── Stats theme classes (absorbed from stats-theme.css) ──── */
-  .stats-card {
-    background: linear-gradient(135deg, rgb(var(--wsa-card-2)), rgb(var(--wsa-card)));
-    border: 2px solid rgb(var(--wsa-border));
-    border-radius: 0.5rem;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-    padding: 1.25rem;
-  }
-
-  .stats-card-title {
-    color: rgb(var(--wsa-heading));
-    font-size: 15px;
-    font-weight: 600;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-  }
-
   .stats-label {
     color: rgb(var(--wsa-text-muted));
     font-size: 11px;

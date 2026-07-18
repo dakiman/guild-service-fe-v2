@@ -11,7 +11,7 @@ defineProps<{
 
 <template>
   <div
-    class="stats-card p-4 transition-all hover:brightness-110"
+    class="wsa-card p-4 transition-all hover:brightness-110"
     :class="{ 'stats-border-accent': accentColor }"
     :style="accentColor ? { '--stats-accent': accentColor } as any : undefined"
     :title="tooltip"

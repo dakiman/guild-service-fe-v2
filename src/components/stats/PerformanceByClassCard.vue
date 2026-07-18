@@ -47,9 +47,9 @@ function roleLabel(role: string): string {
 </script>
 
 <template>
-  <div class="stats-card">
+  <div class="wsa-card">
     <div class="flex items-center justify-between mb-3">
-      <h2 class="stats-card-title">Performance by Class</h2>
+      <h2 class="wsa-text-heading text-[15px]">Performance by Class</h2>
       <div class="flex gap-1">
         <button
           v-for="role in roles"

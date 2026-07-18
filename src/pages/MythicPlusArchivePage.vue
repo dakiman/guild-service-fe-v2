@@ -52,8 +52,8 @@ const frozenAt = computed(() => {
 
     <div v-else-if="data" class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
       <!-- Frozen Top 100 (client-side pagination over the blob) -->
-      <div class="stats-card">
-        <h3 class="stats-card-title mb-4">Top 100 M+ Runs</h3>
+      <div class="wsa-card">
+        <h3 class="wsa-text-heading text-[15px] mb-4">Top 100 M+ Runs</h3>
         <TopRunsTable :runs="pageRuns" :rank-offset="rankOffset" :dungeons="data.dungeons" />
         <div v-if="lastPage > 1" class="flex justify-center gap-2 mt-4">
           <button
@@ -75,8 +75,8 @@ const frozenAt = computed(() => {
       </div>
 
       <div class="flex flex-col gap-4">
-        <div class="stats-card">
-          <h3 class="stats-card-title mb-3">Highest Keys</h3>
+        <div class="wsa-card">
+          <h3 class="wsa-text-heading text-[15px] mb-3">Highest Keys</h3>
           <HighestKeysList :dungeons="data.top_keys.dungeons" :game-data-dungeons="data.dungeons" />
         </div>
         <TopPerformersCard

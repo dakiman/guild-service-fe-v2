@@ -72,9 +72,9 @@ const chartOptions = computed(() => ({
 </script>
 
 <template>
-  <div class="stats-card">
+  <div class="wsa-card">
     <div class="p-2">
-      <h2 class="stats-card-title text-lg mb-4">Class Distribution</h2>
+      <h2 class="wsa-text-heading text-[15px] text-lg mb-4">Class Distribution</h2>
       <div class="flex flex-col items-center gap-6 lg:flex-row lg:items-start">
         <!-- Chart -->
         <div class="relative h-72 w-72 flex-shrink-0">

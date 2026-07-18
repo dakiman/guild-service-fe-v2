@@ -57,9 +57,9 @@ const raidMediaMap = computed(() => {
 </script>
 
 <template>
-  <div class="stats-card">
+  <div class="wsa-card">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="stats-card-title">Raid Boss Kills by Class</h3>
+      <h3 class="wsa-text-heading text-[15px]">Raid Boss Kills by Class</h3>
       <div class="flex items-center gap-2">
         <select
           v-if="(data?.expansions?.length ?? 0) > 1"

@@ -1,6 +1,6 @@
 <template>
   <div class="wsa-card">
-    <h3 class="stats-card-title text-base">{{ title }}</h3>
+    <h3 class="wsa-text-heading text-[15px] text-base">{{ title }}</h3>
 
     <div v-if="isPending" class="space-y-2 mt-2">
       <div v-for="i in 3" :key="i" class="h-6 w-full rounded bg-wsa-border/20 animate-pulse"></div>

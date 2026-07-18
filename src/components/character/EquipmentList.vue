@@ -1,7 +1,7 @@
 <template>
   <div class="wsa-card">
     <div>
-      <h2 class="stats-card-title mb-3">Equipment</h2>
+      <h2 class="wsa-text-heading text-[15px] mb-3">Equipment</h2>
       <p v-if="!equipment.length" class="text-wsa-disabled text-sm">No equipment recorded.</p>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div

@@ -12,8 +12,8 @@ const gameDataDungeons = computed(() => dungeonData.value?.dungeons ?? [])
 </script>
 
 <template>
-  <div class="stats-card">
-    <h3 class="stats-card-title mb-3">Highest Keys</h3>
+  <div class="wsa-card">
+    <h3 class="wsa-text-heading text-[15px] mb-3">Highest Keys</h3>
 
     <div v-if="isLoading" class="text-xs text-[#665533] py-2">Loading...</div>
 

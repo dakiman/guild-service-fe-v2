@@ -1,6 +1,6 @@
 <template>
   <div class="wsa-card max-w-md mx-auto">
-    <h1 class="stats-card-title text-lg mb-4">Forgot password</h1>
+    <h1 class="wsa-text-heading text-[15px] text-lg mb-4">Forgot password</h1>
 
     <div v-if="submitted" class="wsa-card !border-emerald-800/50 !p-3">
       <p class="text-sm text-emerald-400">If that email exists, a reset link has been sent.</p>

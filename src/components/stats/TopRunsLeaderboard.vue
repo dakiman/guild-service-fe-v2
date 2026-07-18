@@ -15,8 +15,8 @@ const rankOffset = computed(() => (page.value - 1) * 20)
 </script>
 
 <template>
-  <div class="stats-card">
-    <h3 class="stats-card-title mb-4">Top 100 M+ Runs</h3>
+  <div class="wsa-card">
+    <h3 class="wsa-text-heading text-[15px] mb-4">Top 100 M+ Runs</h3>
 
     <div v-if="isLoading" class="text-xs text-[#665533] py-4 text-center">Loading...</div>
 

@@ -9,11 +9,11 @@
 
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <div class="wsa-card">
-        <h2 class="stats-card-title mb-3">Find a character</h2>
+        <h2 class="wsa-text-heading text-[15px] mb-3">Find a character</h2>
         <LookupForm kind="character" @submit="onCharacterSubmit" @pick="onCharacterSubmit" />
       </div>
       <div class="wsa-card">
-        <h2 class="stats-card-title mb-3">Find a guild</h2>
+        <h2 class="wsa-text-heading text-[15px] mb-3">Find a guild</h2>
         <LookupForm kind="guild" @submit="onGuildSubmit" @pick="onGuildSubmit" />
       </div>
     </section>
@@ -47,7 +47,7 @@
         <h2 id="characters-heading" class="text-xl font-semibold text-wsa-heading">Characters</h2>
 
         <div class="wsa-card">
-          <h3 class="stats-card-title mb-3">Recently searched</h3>
+          <h3 class="wsa-text-heading text-[15px] mb-3">Recently searched</h3>
 
           <div v-if="charactersQuery.isPending.value" class="space-y-2">
             <div v-for="i in 3" :key="i" class="h-6 w-full rounded bg-wsa-border/20 animate-pulse"></div>
@@ -84,7 +84,7 @@
         </div>
 
         <div class="wsa-card">
-          <h3 class="stats-card-title mb-3">Most popular</h3>
+          <h3 class="wsa-text-heading text-[15px] mb-3">Most popular</h3>
 
           <div v-if="charactersQuery.isPending.value" class="space-y-2">
             <div v-for="i in 3" :key="i" class="h-6 w-full rounded bg-wsa-border/20 animate-pulse"></div>

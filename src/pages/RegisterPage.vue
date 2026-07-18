@@ -1,6 +1,6 @@
 <template>
   <div class="wsa-card max-w-md mx-auto">
-    <h1 class="stats-card-title text-lg mb-4">Create an account</h1>
+    <h1 class="wsa-text-heading text-[15px] text-lg mb-4">Create an account</h1>
     <form class="flex flex-col gap-3" @submit.prevent="onSubmit">
       <label class="flex flex-col gap-1">
         <span class="stats-label font-medium uppercase tracking-wide">Name</span>

@@ -44,8 +44,8 @@ const { data, isLoading, isError } = useGuildStats(
       <StatMiniCard label="DPS" :value="data.role_coverage.dps" />
     </div>
 
-    <div v-if="data.best_keys.length" class="stats-card mb-4">
-      <h3 class="stats-card-title mb-3">Best Keys</h3>
+    <div v-if="data.best_keys.length" class="wsa-card mb-4">
+      <h3 class="wsa-text-heading text-[15px] mb-3">Best Keys</h3>
       <div class="flex flex-col gap-1.5">
         <div v-for="k in data.best_keys" :key="k.dungeon_id" class="flex items-center justify-between">
           <span class="text-xs text-[#e0d0b0] truncate">{{ k.dungeon_name }}</span>

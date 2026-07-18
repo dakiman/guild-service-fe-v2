@@ -1,7 +1,7 @@
 <template>
   <div v-if="user" class="max-w-3xl mx-auto p-4 flex flex-col gap-6">
     <section class="wsa-card">
-      <h2 class="stats-card-title text-lg mb-3">Account</h2>
+      <h2 class="wsa-text-heading text-[15px] text-lg mb-3">Account</h2>
       <div class="flex flex-col gap-1 text-sm">
         <div>
           <span class="text-wsa-muted">Name:</span>
@@ -25,7 +25,7 @@
     </section>
 
     <section class="wsa-card">
-      <h2 class="stats-card-title text-lg mb-3">{{ user.bnet_id ? 'Re-sync Battle.net' : 'Connect Battle.net' }}</h2>
+      <h2 class="wsa-text-heading text-[15px] text-lg mb-3">{{ user.bnet_id ? 'Re-sync Battle.net' : 'Connect Battle.net' }}</h2>
       <p class="text-sm text-wsa-muted">
         Choose your region and authorize with Battle.net to import your characters.
       </p>
@@ -47,7 +47,7 @@
     </section>
 
     <section class="wsa-card">
-      <h2 class="stats-card-title text-lg mb-3">My Characters</h2>
+      <h2 class="wsa-text-heading text-[15px] text-lg mb-3">My Characters</h2>
       <p v-if="user.characters.length === 0" class="text-sm text-wsa-disabled">
         No characters yet. Connect to Battle.net above to sync them.
       </p>

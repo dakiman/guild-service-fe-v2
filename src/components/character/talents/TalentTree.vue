@@ -2,7 +2,7 @@
   <div class="wsa-card">
     <div class="p-6">
       <header class="flex items-center justify-between gap-3 flex-wrap">
-        <h2 class="stats-card-title">Talents</h2>
+        <h2 class="wsa-text-heading text-[15px]">Talents</h2>
         <div v-if="!classic" class="flex items-center gap-2">
           <a
             v-if="loadoutCode"

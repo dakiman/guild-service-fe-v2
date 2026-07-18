@@ -62,7 +62,7 @@ function formatCreatedAgo(item: GuildSummaryWithMetric): string {
     </header>
 
     <section class="wsa-card mb-6">
-      <h2 class="stats-card-title text-base">Find a guild</h2>
+      <h2 class="wsa-text-heading text-[15px] text-base">Find a guild</h2>
       <LookupForm kind="guild" @submit="onSubmit" @pick="onSubmit" />
     </section>
 
@@ -121,7 +121,7 @@ function formatCreatedAgo(item: GuildSummaryWithMetric): string {
       />
 
       <div class="wsa-card md:col-span-2 xl:col-span-2">
-        <h3 class="stats-card-title text-base">Faction & region</h3>
+        <h3 class="wsa-text-heading text-[15px] text-base">Faction & region</h3>
 
         <div v-if="discoverQuery.isPending.value" class="space-y-2 mt-2">
           <div class="h-3 w-full rounded bg-wsa-border/20 animate-pulse"></div>

@@ -64,8 +64,8 @@ function sharePercent(count: number): string {
 </script>
 
 <template>
-  <div class="stats-card">
-    <h3 class="stats-card-title mb-4">Faction Balance</h3>
+  <div class="wsa-card">
+    <h3 class="wsa-text-heading text-[15px] mb-4">Faction Balance</h3>
 
     <div class="flex items-center justify-between gap-4 mb-3">
       <!-- Horde emblem + count -->
