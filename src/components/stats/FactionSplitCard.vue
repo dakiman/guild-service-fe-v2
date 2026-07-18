@@ -166,7 +166,7 @@ function sharePercent(count: number): string {
   border-radius: 4px;
   overflow: hidden;
   display: flex;
-  border: 1px solid #5c4a32;
+  border: 1px solid rgb(var(--wsa-border));
 }
 
 .territory-horde {
