@@ -94,6 +94,14 @@ const raidMediaMap = computed(() => {
       </div>
     </div>
 
+    <p class="text-[10px] text-wsa-disabled mb-3 flex items-center gap-1.5">
+      Dot size = kills by that class, scaled per boss row
+      <span class="inline-block rounded-full bg-wsa-muted" style="width: 4px; height: 4px" />
+      few
+      <span class="inline-block rounded-full bg-wsa-muted" style="width: 14px; height: 14px" />
+      many
+    </p>
+
     <div v-if="isLoading" class="wsa-skeleton h-64" />
 
     <div
@@ -101,7 +109,7 @@ const raidMediaMap = computed(() => {
       class="overflow-x-auto transition-opacity duration-200"
       :class="{ 'opacity-50 pointer-events-none': isFetching }"
     >
-      <div class="min-w-[520px]">
+      <div class="min-w-[580px]">
         <!-- Class header row -->
         <div class="heatmap-grid mb-2">
           <div></div>
@@ -141,6 +149,8 @@ const raidMediaMap = computed(() => {
               <div
                 v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
                 class="heatmap-dot rounded-full"
+                role="img"
+                :aria-label="`${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
                 :title="`${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
                 :style="
                   dotStyle(
@@ -163,7 +173,7 @@ const raidMediaMap = computed(() => {
 <style scoped>
 .heatmap-grid {
   display: grid;
-  grid-template-columns: minmax(140px, 1fr) repeat(13, minmax(28px, 1fr));
+  grid-template-columns: minmax(200px, 1.4fr) repeat(13, minmax(28px, 1fr));
 }
 .heatmap-dot {
   transition:
