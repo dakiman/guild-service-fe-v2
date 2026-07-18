@@ -7,6 +7,7 @@ import FactionBadge from '@/components/wow/FactionBadge.vue'
 import { CLASS_COLORS, STALE_DATA_DAYS } from '@/utils/wowConstants'
 import { displayName } from '@/utils/display'
 import { useTableSort } from '@/composables/useTableSort'
+import PaginationControls from '@/components/ui/PaginationControls.vue'
 import type { Paginated, Region } from '@/types/api'
 import type { GuildMember } from '@/types/guild'
 
@@ -54,26 +55,6 @@ function sortGlyph(key: SortKey): string {
   return sortDir.value === 'asc' ? ' ▲' : ' ▼'
 }
 
-function goPrev() { if (currentPage.value > 1) emit('pageChange', currentPage.value - 1) }
-function goNext() { if (currentPage.value < lastPage.value) emit('pageChange', currentPage.value + 1) }
-function goTo(p: number) {
-  if (p !== currentPage.value && p >= 1 && p <= lastPage.value) emit('pageChange', p)
-}
-
-const pageWindow = computed<number[]>(() => {
-  const total = lastPage.value
-  const cur = currentPage.value
-  if (total <= 1) return [1]
-  const radius = 2
-  const start = Math.max(1, cur - radius)
-  const end = Math.min(total, cur + radius)
-  const out: number[] = []
-  for (let i = start; i <= end; i++) out.push(i)
-  return out
-})
-
-const hasPrev = computed(() => currentPage.value > 1)
-const hasNext = computed(() => currentPage.value < lastPage.value)
 </script>
 
 <template>
@@ -203,25 +184,14 @@ const hasNext = computed(() => currentPage.value < lastPage.value)
       </table>
     </div>
 
-    <nav v-if="lastPage > 1" class="flex items-center justify-between gap-2">
-      <p class="text-xs text-wsa-disabled">
-        Page {{ currentPage }} of {{ lastPage }} · {{ members.total }} members
-      </p>
-      <div class="flex justify-center gap-2">
-        <button type="button" class="wsa-btn" :disabled="!hasPrev" @click="goPrev">Prev</button>
-        <button
-          v-for="p in pageWindow"
-          :key="p"
-          type="button"
-          class="wsa-btn"
-          :class="{ 'wsa-btn--primary': p === currentPage }"
-          @click="goTo(p)"
-        >
-          {{ p }}
-        </button>
-        <button type="button" class="wsa-btn" :disabled="!hasNext" @click="goNext">Next</button>
-      </div>
-    </nav>
+    <PaginationControls
+      v-if="lastPage > 1"
+      :page="currentPage"
+      :last-page="lastPage"
+      :window-size="5"
+      :summary="`Page ${currentPage} of ${lastPage} · ${members.total} members`"
+      @update:page="emit('pageChange', $event)"
+    />
   </div>
 </template>
 

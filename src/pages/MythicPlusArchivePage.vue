@@ -7,6 +7,7 @@ import HighestKeysList from '@/components/stats/HighestKeysList.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
 import PerformanceByClassCard from '@/components/stats/PerformanceByClassCard.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
+import PaginationControls from '@/components/ui/PaginationControls.vue'
 
 const props = defineProps<{ slug: string }>()
 
@@ -58,23 +59,13 @@ const frozenAt = computed(() => {
       <div class="wsa-card">
         <h3 class="wsa-text-heading text-[15px] mb-4">Top 100 M+ Runs</h3>
         <TopRunsTable :runs="pageRuns" :rank-offset="rankOffset" :dungeons="data.dungeons" />
-        <div v-if="lastPage > 1" class="flex justify-center gap-2 mt-4">
-          <button
-            @click="page = Math.max(1, page - 1)"
-            :disabled="page <= 1"
-            class="text-xs px-3 py-1 rounded border border-wsa-border text-wsa-muted disabled:opacity-30"
-          >
-            Prev
-          </button>
-          <span class="text-xs text-wsa-disabled flex items-center">{{ page }} / {{ lastPage }}</span>
-          <button
-            @click="page = Math.min(lastPage, page + 1)"
-            :disabled="page >= lastPage"
-            class="text-xs px-3 py-1 rounded border border-wsa-border text-wsa-muted disabled:opacity-30"
-          >
-            Next
-          </button>
-        </div>
+        <PaginationControls
+          v-if="lastPage > 1"
+          class="mt-4"
+          :page="page"
+          :last-page="lastPage"
+          @update:page="page = $event"
+        />
       </div>
 
       <div class="flex flex-col gap-4">
