@@ -11,7 +11,7 @@
       Stats not available yet — refresh shortly.
     </div>
 
-    <div v-else class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
       <StatRow label="Health" :value="formatInt(stats.health)" />
       <StatRow label="Primary" :value="primaryStatLabel" />
       <StatRow label="Crit" :value="formatPercent(stats.melee_crit?.value)" />

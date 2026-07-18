@@ -43,7 +43,7 @@ function stars(run: TopRun): string {
 
 <template>
   <div class="overflow-x-auto">
-    <table class="w-full text-xs">
+    <table class="w-full text-xs min-w-[560px]">
       <thead>
         <tr class="text-[#aa8855] text-left">
           <th class="py-1.5 w-8">#</th>
