@@ -19,16 +19,17 @@ Vue 3 (`<script setup>` + TS) + Vite + Pinia + vue-router + TanStack Query + Tai
 
 ### Backend contract (load-bearing)
 
-BE uses async sync-on-read. `src/api/characters.ts` and `src/api/guilds.ts` accept three statuses:
-- **200** — fresh; `x-data-staleness: stale` header marks stale-but-usable.
+BE uses async sync-on-read. `src/api/characters.ts` and `src/api/guilds.ts` accept four statuses:
+- **200** — fresh; `x-data-staleness: stale` header marks stale-but-usable. `x-sync-status: syncing` (character: never-synced; guild: `roster_synced_at` null) maps to `isSyncing` and rides alongside a `Retry-After: 30` header.
 - **202** — sync in progress, empty body, `Retry-After` seconds. API layer throws `SyncPendingError(retryAfter)`.
 - **404** — throws `NotFoundError`.
+- **429** — rate-limited; API layer throws `ThrottledError(retryAfter)`.
 
-`src/composables/usePollingLookup.ts` wires this into Vue Query with a time budget (`src/composables/pollingSchedule.ts`): poll at the server's `Retry-After` for 3 min, then once per minute until 15 min, then surface a real error. `SyncPendingError` carries `retryAfter` (ms) + `queueDepth` (from the 202 body's `queue_depth`); both lookups expose `syncPendingSince` (drives `PollingState`'s message tiers) and `restartPolling()` (resets the budget — bind it to ErrorState's retry, NOT plain `refetch()`). **New 202-capable endpoints must use `validateStatus: (s) => s === 200 || s === 202 || s === 404` + throw typed errors** so the composable keeps working.
+`src/composables/usePollingLookup.ts` wires this into Vue Query with a time budget (`src/composables/pollingSchedule.ts`): poll at the server's `Retry-After` for 3 min, then once per minute until 15 min, then surface a real error. `SyncPendingError` carries `retryAfter` (ms) + `queueDepth` (from the 202 body's `queue_depth`); both lookups expose `syncPendingSince` (drives `PollingState`'s message tiers), `restartPolling()` (resets the budget — bind it to ErrorState's retry, NOT plain `refetch()`), and `forceRefresh()` (a local one-shot flag consumed by the next `queryFn` run, so `?refresh=1` never fragments the query key/cache) for the `RefreshButton` component, which renders a server-derived cooldown from the response's `meta.refresh`. While `isSyncing`, the character layout also shows a `SyncingBadge` banner. **New 202-capable endpoints must use `validateStatus: (s) => s === 200 || s === 202 || s === 404 || s === 429` + throw typed errors** so the composable keeps working.
 
 Paginated responses (`Paginated<T>` in `src/types/api.ts`) match Laravel's `LengthAwarePaginator::toArray()` directly — BE does **not** wrap in `ResourceCollection`, so there's **no outer `data` envelope**; `data` is the items array, pagination fields are siblings.
 
-Possibly-stale resources call `useStaleAutoRefresh` to trigger a refetch.
+Possibly-stale resources call `useStaleAutoRefresh(isStale, queryKey, opts?)`, which polls-until-fresh: first invalidate after the server's `poll_after` hint (default 10s), then every 30s, up to 6 attempts, stopping as soon as `isStale` clears.
 
 ### Character tabs
 
