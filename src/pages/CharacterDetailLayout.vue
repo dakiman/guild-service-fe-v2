@@ -13,44 +13,36 @@
         :synced-at="character.synced_at"
       />
 
-      <template v-if="isSyncing">
-        <PollingState
-          message="Syncing character data…"
-          subtext="We're fetching this character's full profile from Blizzard. This page will update automatically."
-          :queue-depth="meta?.queue_depth"
-        />
-      </template>
+      <SyncingBadge v-if="isSyncing" data-testid="sync-banner" :queue-depth="meta?.queue_depth" />
 
-      <template v-else>
-        <BasicProfileNotice v-if="isBasicProfile" :level="character.level" />
+      <BasicProfileNotice v-if="isBasicProfile" :level="character.level" />
 
-        <div class="flex flex-wrap items-center gap-3">
-          <StaleBadge v-if="isStale" :last-synced-at="character.synced_at ?? undefined" />
-          <FreshnessChips v-if="meta && !isBasicProfile" :freshness="meta.freshness" />
-          <button
-            v-if="character.talent_loadout_code"
-            type="button"
-            class="wsa-btn"
-            @click="onCopyLoadout"
-          >
-            Copy loadout
-          </button>
-          <button
-            v-if="canToggleRecruitment"
-            type="button"
-            class="wsa-btn"
-            :class="character.recruitment ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400' : ''"
-            :disabled="isToggling"
-            @click="onToggleRecruitment"
-          >
-            <span v-if="isToggling" class="wsa-spinner !w-3 !h-3 inline-block mr-1" />
-            {{ character.recruitment ? 'Looking for guild' : 'Not looking for guild' }}
-          </button>
-        </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <StaleBadge v-if="isStale && !isSyncing" :last-synced-at="character.synced_at ?? undefined" />
+        <FreshnessChips v-if="meta && !isBasicProfile" :freshness="meta.freshness" />
+        <button
+          v-if="character.talent_loadout_code"
+          type="button"
+          class="wsa-btn"
+          @click="onCopyLoadout"
+        >
+          Copy loadout
+        </button>
+        <button
+          v-if="canToggleRecruitment"
+          type="button"
+          class="wsa-btn"
+          :class="character.recruitment ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400' : ''"
+          :disabled="isToggling"
+          @click="onToggleRecruitment"
+        >
+          <span v-if="isToggling" class="wsa-spinner !w-3 !h-3 inline-block mr-1" />
+          {{ character.recruitment ? 'Looking for guild' : 'Not looking for guild' }}
+        </button>
+      </div>
 
-        <CharacterTabStrip :tabs="tabs" />
-        <router-view />
-      </template>
+      <CharacterTabStrip :tabs="tabs" />
+      <router-view />
     </template>
 
     <PollingState
@@ -80,6 +72,7 @@ import CharacterTabStrip, {
   type TabDescriptor,
 } from '@/components/character/CharacterTabStrip.vue'
 import PollingState from '@/components/feedback/PollingState.vue'
+import SyncingBadge from '@/components/feedback/SyncingBadge.vue'
 import StaleBadge from '@/components/feedback/StaleBadge.vue'
 import BasicProfileNotice from '@/components/feedback/BasicProfileNotice.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
