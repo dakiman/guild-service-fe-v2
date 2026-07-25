@@ -1,4 +1,5 @@
-# WoW Service Armory — Frontend
+# Peon — Frontend
+Peon (peon.pro) — WoW character & guild lookup. Brand spec: ../docs/superpowers/specs/2026-07-25-peon-rebrand-design.md (monorepo-only path).
 
 Vue 3 + TypeScript character and guild lookup UI for World of Warcraft.
 
