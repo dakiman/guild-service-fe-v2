@@ -44,3 +44,17 @@ describe('PollingState tiers', () => {
     expect(w.text()).toContain('custom')
   })
 })
+
+describe('PollingState mascot art', () => {
+  it('renders the digging plaque and work-work accent by default', () => {
+    const w = mount(PollingState, { props: {} })
+    expect(w.get('img').attributes('src')).toBe('/brand/state-loading.jpg')
+    expect(w.text()).toContain('Work, work…')
+  })
+
+  it('keeps a caller-provided visual slot intact', () => {
+    const w = mount(PollingState, { slots: { visual: '<b class="custom">X</b>' } })
+    expect(w.find('img').exists()).toBe(false)
+    expect(w.find('b.custom').exists()).toBe(true)
+  })
+})

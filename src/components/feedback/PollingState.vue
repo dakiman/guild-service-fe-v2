@@ -1,6 +1,13 @@
 <template>
   <div class="wsa-card flex flex-col items-center text-center gap-3 py-8">
     <slot name="visual">
+      <img
+        src="/brand/state-loading.jpg"
+        alt=""
+        aria-hidden="true"
+        class="h-28 w-28 rounded-full border-2 border-wsa-border object-cover"
+      />
+      <p class="text-[11px] italic text-wsa-disabled -mt-1">Work, work…</p>
       <div class="wsa-spinner" />
     </slot>
     <p class="text-sm font-medium text-wsa-text">{{ message ?? tierMessage }}</p>
