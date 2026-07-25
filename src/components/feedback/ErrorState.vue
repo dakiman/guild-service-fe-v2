@@ -4,6 +4,13 @@
     class="wsa-card !p-4 flex items-start justify-between gap-3"
     :class="isThrottled ? '!border-amber-700/50' : '!border-red-800/50'"
   >
+    <img
+      v-if="!hideArt"
+      :src="artSrc"
+      alt=""
+      aria-hidden="true"
+      class="h-16 w-16 flex-none rounded-full border border-wsa-border/50 object-cover"
+    />
     <div class="flex-1 min-w-0">
       <h3 class="text-sm font-semibold" :class="isThrottled ? 'text-wsa-gold' : 'text-red-400'">
         {{ resolvedTitle }}
@@ -11,6 +18,7 @@
       <p v-if="resolvedMessage" class="text-xs mt-1" :class="isThrottled ? 'text-wsa-muted' : 'text-red-300/80'">
         {{ resolvedMessage }}
       </p>
+      <p v-if="quip && !hideArt" class="text-[11px] italic text-wsa-disabled mt-1">{{ quip }}</p>
     </div>
     <div v-if="!hideRetry" class="flex-none">
       <slot name="actions">
@@ -36,6 +44,7 @@ const props = defineProps<{
   message?: string
   error?: unknown
   hideRetry?: boolean
+  hideArt?: boolean
 }>()
 
 const emit = defineEmits<{ retry: [] }>()
@@ -43,6 +52,17 @@ const emit = defineEmits<{ retry: [] }>()
 const isNotFound = computed(() => props.error instanceof NotFoundError)
 const isThrottled = computed(() => props.error instanceof ThrottledError)
 const isSyncPending = computed(() => props.error instanceof SyncPendingError)
+
+const artSrc = computed(() => {
+  if (isNotFound.value) return '/brand/state-empty.jpg'
+  if (isThrottled.value) return '/brand/state-syncing.jpg'
+  return '/brand/state-error.jpg'
+})
+const quip = computed(() => {
+  if (isNotFound.value) return 'Nothing need doing here.'
+  if (isThrottled.value) return null // informative countdown copy is enough
+  return "Job's… not done."
+})
 
 const remainingSeconds = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
