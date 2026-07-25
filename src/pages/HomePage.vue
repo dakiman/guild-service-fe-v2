@@ -1,5 +1,11 @@
 <template>
   <div class="max-w-6xl mx-auto">
+    <img
+      src="/brand/hero-banner.jpg"
+      alt=""
+      aria-hidden="true"
+      class="w-full h-28 sm:h-36 object-cover rounded-lg border-2 border-wsa-border mb-6"
+    />
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <div class="wsa-card">
         <h2 class="wsa-text-heading text-[15px] mb-3">Find a character</h2>
