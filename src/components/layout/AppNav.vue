@@ -4,8 +4,12 @@
     style="background: linear-gradient(135deg, rgb(var(--wsa-card-2)), rgb(var(--wsa-card))); box-shadow: inset 0 0 20px rgba(0,0,0,0.3)"
   >
     <div class="flex items-center gap-1">
-      <router-link :to="{ name: 'home' }" class="text-lg font-bold text-wsa-heading hover:brightness-110 transition-all">
-        WoW Service
+      <router-link
+        :to="{ name: 'home' }"
+        class="flex items-center gap-2 text-lg font-bold text-wsa-heading hover:brightness-110 transition-all"
+      >
+        <img src="/favicon.svg" alt="" aria-hidden="true" class="h-6 w-6" />
+        <span class="tracking-[0.18em]">PEON</span>
       </router-link>
       <div class="ml-4 hidden gap-1 md:flex">
         <router-link
