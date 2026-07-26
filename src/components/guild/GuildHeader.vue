@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import FactionBadge from '@/components/wow/FactionBadge.vue'
+import ExternalProfileLinks from '@/components/wow/ExternalProfileLinks.vue'
 import { displayGuildName, displayRealm } from '@/utils/display'
 import type { GuildResource } from '@/types/guild'
 
@@ -35,7 +36,16 @@ const realmDisplay = computed(() =>
           <h1 class="text-3xl font-bold leading-tight text-wsa-heading">{{ guildDisplay }}</h1>
           <p class="text-wsa-muted">{{ realmDisplay }}</p>
         </div>
-        <FactionBadge :faction="guild.faction" />
+        <div class="flex items-center gap-1">
+          <ExternalProfileLinks
+            kind="guild"
+            :region="guild.region"
+            :realm="guild.realm"
+            :name="guild.name"
+            :display-name="guild.display_name"
+          />
+          <FactionBadge :faction="guild.faction" />
+        </div>
       </div>
 
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">

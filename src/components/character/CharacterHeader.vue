@@ -42,6 +42,12 @@
           >
             <Share2 class="w-4 h-4" />
           </button>
+          <ExternalProfileLinks
+            kind="character"
+            :region="character.region"
+            :realm="character.realm"
+            :name="character.name"
+          />
         </div>
 
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
@@ -84,6 +90,7 @@ import { Share2, Clock } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import FactionBadge from '@/components/wow/FactionBadge.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
+import ExternalProfileLinks from '@/components/wow/ExternalProfileLinks.vue'
 import CharacterStatPills from '@/components/character/CharacterStatPills.vue'
 import { CLASSES, CLASS_COLORS, RACES } from '@/utils/wowConstants'
 import { displayGuildName, displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'
