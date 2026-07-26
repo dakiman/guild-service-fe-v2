@@ -52,3 +52,31 @@ describe('ProfilePage header', () => {
     expect(header.props('title')).toBe('Profile')
   })
 })
+
+describe('ProfilePage account card', () => {
+  it('shows a connected badge with tag and region', () => {
+    const w = mountPage(
+      makeUser({ bnet_id: '123', bnet_tag: 'Daki#2107', bnet_region: 'eu' }),
+    )
+    const badge = w.get('[data-testid="bnet-badge"]')
+    expect(badge.text()).toContain('Daki#2107')
+    expect(badge.text()).toContain('EU')
+  })
+
+  it('shows a muted not-connected badge without bnet', () => {
+    const w = mountPage(makeUser())
+    expect(w.get('[data-testid="bnet-badge"]').text()).toContain('Not connected')
+  })
+
+  it('surfaces bnet_sync_status with the Work, work… quip', () => {
+    const w = mountPage(
+      makeUser({ bnet_id: '123', bnet_tag: 'Daki#2107', bnet_region: 'eu', bnet_sync_status: 'syncing' }),
+    )
+    expect(w.text()).toContain('Work, work…')
+  })
+
+  it('hides the syncing quip when not syncing', () => {
+    const w = mountPage(makeUser({ bnet_id: '123', bnet_tag: 'Daki#2107', bnet_region: 'eu' }))
+    expect(w.text()).not.toContain('Work, work…')
+  })
+})

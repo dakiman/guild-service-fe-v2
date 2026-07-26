@@ -3,31 +3,44 @@
     <PageHeader icon="/brand/icon-profile.jpg" title="Profile" />
 
     <section class="wsa-card">
-      <h2 class="wsa-text-heading text-[15px] text-lg mb-3">Account</h2>
-      <div class="flex flex-col gap-1 text-sm">
-        <div>
-          <span class="text-wsa-muted">Name:</span>
-          <span class="ml-2 font-medium text-wsa-text">{{ user.name }}</span>
+      <h2 class="wsa-text-heading text-lg mb-3">Account</h2>
+      <dl class="flex flex-col gap-2 text-sm">
+        <div class="flex items-baseline gap-2">
+          <dt class="w-24 flex-none text-wsa-muted">Name</dt>
+          <dd class="font-medium text-wsa-text">{{ user.name }}</dd>
         </div>
-        <div>
-          <span class="text-wsa-muted">Email:</span>
-          <span class="ml-2 font-medium text-wsa-text">{{ user.email }}</span>
+        <div class="flex items-baseline gap-2">
+          <dt class="w-24 flex-none text-wsa-muted">Email</dt>
+          <dd class="font-medium text-wsa-text">{{ user.email }}</dd>
         </div>
-        <div class="mt-2">
-          <span class="text-wsa-muted">Battle.net:</span>
-          <span v-if="user.bnet_id" class="ml-2 font-medium text-wsa-text">
-            Connected as {{ user.bnet_tag }} ({{ (user.bnet_region ?? '').toUpperCase() }})
-          </span>
-          <span v-else class="ml-2 font-medium text-wsa-text">Not connected to Battle.net</span>
+        <div class="flex items-center gap-2">
+          <dt class="w-24 flex-none text-wsa-muted">Battle.net</dt>
+          <dd class="flex min-w-0 flex-wrap items-center gap-2">
+            <span
+              v-if="user.bnet_id"
+              data-testid="bnet-badge"
+              class="wsa-badge !border-emerald-700/50 !text-emerald-300"
+            >
+              Connected — {{ user.bnet_tag }} ({{ (user.bnet_region ?? '').toUpperCase() }})
+            </span>
+            <span v-else data-testid="bnet-badge" class="wsa-badge">Not connected</span>
+            <span
+              v-if="user.bnet_sync_status === 'syncing'"
+              class="inline-flex items-center gap-1.5 text-xs italic text-wsa-muted"
+            >
+              <span class="wsa-spinner !w-3 !h-3 inline-block" />
+              Work, work…
+            </span>
+          </dd>
         </div>
-        <div v-if="user.bnet_id && user.bnet_synced_at" class="text-xs text-wsa-disabled">
-          Last synced {{ relativeTime(user.bnet_synced_at) }}
-        </div>
+      </dl>
+      <div v-if="user.bnet_id && user.bnet_synced_at" class="mt-1 pl-[6.5rem] text-xs text-wsa-disabled">
+        Last synced {{ relativeTime(user.bnet_synced_at) }}
       </div>
     </section>
 
     <section class="wsa-card">
-      <h2 class="wsa-text-heading text-[15px] text-lg mb-3">{{ user.bnet_id ? 'Re-sync Battle.net' : 'Connect Battle.net' }}</h2>
+      <h2 class="wsa-text-heading text-lg mb-3">{{ user.bnet_id ? 'Re-sync Battle.net' : 'Connect Battle.net' }}</h2>
       <p class="text-sm text-wsa-muted">
         Choose your region and authorize with Battle.net to import your characters.
       </p>
