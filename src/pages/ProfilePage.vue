@@ -62,7 +62,7 @@
     </section>
 
     <section class="wsa-card">
-      <h2 class="wsa-text-heading text-[15px] text-lg mb-3">My Characters</h2>
+      <h2 class="wsa-text-heading text-lg mb-3">My Characters</h2>
       <p v-if="user.characters.length === 0" class="text-sm text-wsa-disabled">
         No characters yet. Connect to Battle.net above to sync them.
       </p>
@@ -70,15 +70,8 @@
         <li
           v-for="character in user.characters"
           :key="character.id"
-          class="flex flex-wrap items-center gap-3 py-3"
+          class="flex items-center gap-2 py-1.5"
         >
-          <ClassIcon :class-id="character.class_id" />
-          <div class="flex-1 min-w-0">
-            <div class="text-sm text-wsa-text">
-              <span class="font-bold">{{ displayName(character.name, character.display_name) }}</span>
-              <span> on {{ displayRealm(character.realm, character.display_realm) }} ({{ character.region.toUpperCase() }}) — L{{ character.level }}</span>
-            </div>
-          </div>
           <router-link
             :to="{
               name: 'character-detail',
@@ -88,13 +81,44 @@
                 name: character.name,
               },
             }"
-            class="wsa-btn text-xs"
+            class="flex min-w-0 flex-1 items-center gap-3 rounded-md border-l-2 py-2 pl-3 pr-2 transition-colors hover:bg-wsa-border/10"
+            :style="{ borderLeftColor: factionAccent(character.faction) }"
           >
-            View
+            <img
+              v-if="character.media && !portraitFailed[character.id]"
+              data-testid="char-portrait"
+              :src="character.media"
+              alt=""
+              aria-hidden="true"
+              class="h-12 w-12 flex-none rounded-lg border border-wsa-border/50 object-cover"
+              @error="portraitFailed[character.id] = true"
+            />
+            <ClassIcon v-else :class-id="character.class_id" :size="48" />
+            <div class="min-w-0 flex-1">
+              <div class="truncate text-sm">
+                <span
+                  data-testid="char-name"
+                  class="font-bold"
+                  :style="{ color: getClassColor(character.class_id) }"
+                >
+                  {{ displayName(character.name, character.display_name) }}
+                </span>
+                <span class="text-wsa-muted">
+                  — {{ displayRealm(character.realm, character.display_realm) }}
+                  ({{ character.region.toUpperCase() }}) · L{{ character.level }}
+                </span>
+              </div>
+              <div
+                v-if="character.active_specialization"
+                class="truncate text-xs text-wsa-muted/80"
+              >
+                {{ character.active_specialization }}
+              </div>
+            </div>
           </router-link>
           <button
             type="button"
-            class="wsa-btn text-xs"
+            class="wsa-btn flex-none text-xs"
             :disabled="recruitmentBusy[character.id]"
             @click="onToggleRecruitment(character.id)"
           >
@@ -122,6 +146,8 @@ import PageHeader from '@/components/layout/PageHeader.vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import { env } from '@/utils/env'
 import { displayName, displayRealm } from '@/utils/display'
+import { FACTION_COLORS, getClassColor } from '@/utils/wowConstants'
+import type { Faction } from '@/types/wow'
 import type { Region } from '@/types/api'
 import { getErrorMessage } from '@/utils/errors'
 
@@ -132,6 +158,7 @@ const user = computed(() => auth.user)
 const oauthRegion = ref<Region>(((user.value?.bnet_region as Region) ?? 'eu'))
 
 const recruitmentBusy = reactive<Record<number, boolean>>({})
+const portraitFailed = reactive<Record<number, boolean>>({})
 
 const oauthBusy = ref(false)
 
@@ -172,6 +199,11 @@ async function onToggleRecruitment(id: number) {
   } finally {
     recruitmentBusy[id] = false
   }
+}
+
+function factionAccent(faction: Faction): string {
+  // 40% alpha so the accent reads as a tint, not a stripe.
+  return `${FACTION_COLORS[faction] ?? '#888888'}66`
 }
 
 function relativeTime(iso: string): string {
