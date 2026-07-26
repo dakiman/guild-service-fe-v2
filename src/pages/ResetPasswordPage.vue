@@ -1,4 +1,5 @@
 <template>
+  <BrandLockup />
   <div class="wsa-card max-w-md mx-auto">
     <h1 class="wsa-text-heading text-[15px] text-lg mb-4">Reset password</h1>
 
@@ -53,6 +54,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import { resetPassword } from '@/api/auth'
+import BrandLockup from '@/components/layout/BrandLockup.vue'
 import { getErrorMessage } from '@/utils/errors'
 
 const route = useRoute()
