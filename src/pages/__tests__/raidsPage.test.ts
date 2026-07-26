@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import RaidsPage from '@/pages/RaidsPage.vue'
 import RaidHeatmapCard from '@/components/stats/RaidHeatmapCard.vue'
+import PageHeader from '@/components/layout/PageHeader.vue'
 
 vi.mock('@/api/stats', () => ({
   fetchCharacterStats: vi.fn().mockResolvedValue(null),
@@ -22,5 +23,10 @@ describe('RaidsPage', () => {
     })
 
     expect(wrapper.findComponent(RaidHeatmapCard).exists()).toBe(true)
+
+    const header = wrapper.findComponent(PageHeader)
+    expect(header.exists()).toBe(true)
+    expect(header.props('title')).toBe('Raids')
+    expect(header.props('icon')).toBe('/brand/icon-raids.jpg')
   })
 })

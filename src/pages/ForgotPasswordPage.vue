@@ -1,4 +1,5 @@
 <template>
+  <BrandLockup />
   <div class="wsa-card max-w-md mx-auto">
     <h1 class="wsa-text-heading text-[15px] text-lg mb-4">Forgot password</h1>
 
@@ -40,6 +41,7 @@
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
 import { forgotPassword } from '@/api/auth'
+import BrandLockup from '@/components/layout/BrandLockup.vue'
 
 const email = ref('')
 const isSubmitting = ref(false)

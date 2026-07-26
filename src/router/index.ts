@@ -152,6 +152,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/BlizzardOAuthCallbackPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('@/pages/NotFoundPage.vue'),
+  },
 ]
 
 export const router = createRouter({

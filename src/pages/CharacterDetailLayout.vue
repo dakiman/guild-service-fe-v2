@@ -13,7 +13,7 @@
         :synced-at="character.synced_at"
       />
 
-      <SyncingBadge v-if="isSyncing" data-testid="sync-banner" :queue-depth="meta?.queue_depth" />
+      <SyncingBadge :syncing="isSyncing" :queue-depth="meta?.queue_depth" />
 
       <BasicProfileNotice v-if="isBasicProfile" :level="character.level" />
 

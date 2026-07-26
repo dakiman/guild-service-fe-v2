@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import PageHeader from '@/components/layout/PageHeader.vue'
 import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
 import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
@@ -28,24 +29,22 @@ function openArchive(event: Event) {
 
 <template>
   <div class="flex flex-col gap-4">
-    <!-- Season header: only rendered once the registry answers -->
-    <div
-      v-if="currentSeason || archivedSeasons.length"
-      class="flex flex-wrap items-center justify-between gap-2"
-    >
-      <h2 v-if="currentSeason" class="text-sm font-semibold text-wsa-muted">
-        {{ currentSeason.name }}
-      </h2>
-      <select
-        v-if="archivedSeasons.length"
-        class="text-xs bg-transparent border border-wsa-border rounded px-2 py-1 text-wsa-muted"
-        aria-label="Past seasons"
-        @change="openArchive"
-      >
-        <option value="">Past seasons…</option>
-        <option v-for="s in archivedSeasons" :key="s.slug" :value="s.slug">{{ s.name }}</option>
-      </select>
-    </div>
+    <PageHeader icon="/brand/icon-mythicplus.jpg" title="Mythic+">
+      <template #right>
+        <span v-if="currentSeason" class="text-sm font-semibold text-wsa-muted">
+          {{ currentSeason.name }}
+        </span>
+        <select
+          v-if="archivedSeasons.length"
+          class="text-xs bg-transparent border border-wsa-border rounded px-2 py-1 text-wsa-muted"
+          aria-label="Past seasons"
+          @change="openArchive"
+        >
+          <option value="">Past seasons…</option>
+          <option v-for="s in archivedSeasons" :key="s.slug" :value="s.slug">{{ s.name }}</option>
+        </select>
+      </template>
+    </PageHeader>
 
     <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
       <TopRunsLeaderboard />

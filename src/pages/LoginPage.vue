@@ -1,4 +1,5 @@
 <template>
+  <BrandLockup />
   <div class="wsa-card max-w-md mx-auto">
     <h1 class="wsa-text-heading text-[15px] text-lg mb-4">Sign in</h1>
     <form class="flex flex-col gap-3" @submit.prevent="onSubmit">
@@ -49,6 +50,7 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
+import BrandLockup from '@/components/layout/BrandLockup.vue'
 import { useAuthStore } from '@/stores/auth'
 import { getErrorMessage } from '@/utils/errors'
 

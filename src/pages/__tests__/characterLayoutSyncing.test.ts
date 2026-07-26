@@ -106,8 +106,11 @@ describe('CharacterDetailLayout tabs during sync', () => {
     const wrapper = mountLayout()
 
     expect(wrapper.findComponent(CharacterTabStrip).exists()).toBe(true)
-    expect(wrapper.find('[data-testid="sync-banner"]').exists()).toBe(true)
-    expect(wrapper.findComponent(SyncingBadge).exists()).toBe(true)
+    // SyncingBadge is always mounted and owns its own visibility (banner /
+    // success flash live inside it — see its own spec); the layout only has to
+    // hand it the right `syncing` value. shallowMount stubs the child, so we
+    // assert on the prop rather than the internal testid.
+    expect(wrapper.findComponent(SyncingBadge).props('syncing')).toBe(true)
   })
 
   it('renders the tab strip without the sync banner once syncing is done', () => {
@@ -122,6 +125,6 @@ describe('CharacterDetailLayout tabs during sync', () => {
 
     expect(wrapper.findComponent(CharacterTabStrip).exists()).toBe(true)
     expect(wrapper.find('[data-testid="sync-banner"]').exists()).toBe(false)
-    expect(wrapper.findComponent(SyncingBadge).exists()).toBe(false)
+    expect(wrapper.findComponent(SyncingBadge).props('syncing')).toBe(false)
   })
 })
