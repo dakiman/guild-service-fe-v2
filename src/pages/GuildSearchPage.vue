@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
 import { useRouter } from 'vue-router'
+import PageHeader from '@/components/layout/PageHeader.vue'
 import LookupForm from '@/components/form/LookupForm.vue'
 import GuildSummaryCard from '@/components/guild/GuildSummaryCard.vue'
 import FactionSplitBar from '@/components/guild/FactionSplitBar.vue'
@@ -54,12 +55,12 @@ function formatCreatedAgo(item: GuildSummaryWithMetric): string {
 
 <template>
   <div class="max-w-6xl mx-auto">
-    <header class="mb-6">
-      <h1 class="text-3xl font-bold text-wsa-heading">Guilds</h1>
-      <p class="text-wsa-muted mt-1">
+    <div class="mb-6">
+      <PageHeader icon="/brand/icon-guilds.jpg" title="Guilds" />
+      <p class="text-wsa-muted mt-2">
         Find a guild, or browse what's active across regions.
       </p>
-    </header>
+    </div>
 
     <section class="wsa-card mb-6">
       <h2 class="wsa-text-heading text-[15px] text-base">Find a guild</h2>

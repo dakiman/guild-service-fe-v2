@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowRight, ChevronDown, ChevronUp, Search } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
+import PageHeader from '@/components/layout/PageHeader.vue'
 import LookupForm from '@/components/form/LookupForm.vue'
 import StatsHeroCard from '@/components/stats/StatsHeroCard.vue'
 import StatMiniCard from '@/components/stats/StatMiniCard.vue'
@@ -70,6 +71,8 @@ const mostPopularSpec = computed(() => {
 
 <template>
   <div class="flex flex-col gap-6">
+    <PageHeader icon="/brand/icon-characters.jpg" title="Characters" />
+
     <!-- Collapsible Search -->
     <div class="search-cta">
       <button
