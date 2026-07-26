@@ -24,6 +24,7 @@ const jobs = [
   square('icon-guilds.jpg', 'icon-guilds.jpg'),
   square('icon-mythicplus.jpg', 'icon-mythicplus.jpg'),
   square('icon-raids.jpg', 'icon-raids.jpg'),
+  square('face-rune-ring.jpg', 'icon-profile.jpg'),
   sharp(resolve(SRC, 'hero-banner.jpg')).resize({ width: 1600 })
     .jpeg({ quality: 82, mozjpeg: true }).toFile(resolve(PUB, 'brand', 'hero-banner.jpg')),
   sharp(resolve(SRC, 'hero-banner.jpg')).resize(1200, 630, { fit: 'cover' })
