@@ -139,3 +139,14 @@ describe('ProfilePage character rows', () => {
     expect(w.text()).toContain('Looking for guild')
   })
 })
+
+describe('ProfilePage empty state', () => {
+  it('renders the brand empty state when there are no characters', () => {
+    const w = mountPage(makeUser({ characters: [] }))
+    const img = w.get('[data-testid="empty-art"]')
+    expect(img.attributes('src')).toBe('/brand/state-empty.jpg')
+    expect(img.attributes('alt')).toBe('')
+    expect(img.attributes('aria-hidden')).toBe('true')
+    expect(w.text()).toContain('No characters yet')
+  })
+})

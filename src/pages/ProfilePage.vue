@@ -63,9 +63,21 @@
 
     <section class="wsa-card">
       <h2 class="wsa-text-heading text-lg mb-3">My Characters</h2>
-      <p v-if="user.characters.length === 0" class="text-sm text-wsa-disabled">
-        No characters yet. Connect to Battle.net above to sync them.
-      </p>
+      <div
+        v-if="user.characters.length === 0"
+        class="flex flex-col items-center gap-3 py-8 text-center"
+      >
+        <img
+          data-testid="empty-art"
+          src="/brand/state-empty.jpg"
+          alt=""
+          aria-hidden="true"
+          class="h-20 w-20 rounded-full border border-wsa-border/50 object-cover"
+        />
+        <p class="max-w-md text-sm text-wsa-muted">
+          No characters yet. Connect to Battle.net above to sync them.
+        </p>
+      </div>
       <ul v-else class="flex flex-col divide-y divide-wsa-border/30">
         <li
           v-for="character in user.characters"
