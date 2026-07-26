@@ -1,5 +1,7 @@
 <template>
   <div v-if="user" class="max-w-3xl mx-auto p-4 flex flex-col gap-6">
+    <PageHeader icon="/brand/icon-profile.jpg" title="Profile" />
+
     <section class="wsa-card">
       <h2 class="wsa-text-heading text-[15px] text-lg mb-3">Account</h2>
       <div class="flex flex-col gap-1 text-sm">
@@ -103,6 +105,7 @@ import { toggleRecruitment } from '@/api/characters'
 import { mintOAuthState } from '@/api/blizzard'
 import { setOAuthPending } from '@/utils/oauthPending'
 import RegionSelect from '@/components/form/RegionSelect.vue'
+import PageHeader from '@/components/layout/PageHeader.vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import { env } from '@/utils/env'
 import { displayName, displayRealm } from '@/utils/display'
