@@ -140,6 +140,59 @@ describe('ProfilePage character rows', () => {
   })
 })
 
+describe('ProfilePage character sorting and search', () => {
+  function roster(): CharacterSummary[] {
+    return [
+      makeCharacter({ id: 1, name: 'lowbie', level: 23, media: null }),
+      makeCharacter({ id: 2, name: 'melaniya', level: 80, media: null }),
+      makeCharacter({ id: 3, name: 'midling', realm: 'silvermoon', level: 60, media: null }),
+    ]
+  }
+
+  function rowNames(w: ReturnType<typeof mountPage>): string[] {
+    return w.findAll('[data-testid="char-name"]').map((n) => n.text())
+  }
+
+  it('orders rows by level, highest first', () => {
+    const w = mountPage(makeUser({ characters: roster() }))
+    expect(rowNames(w)).toEqual(['Melaniya', 'Midling', 'Lowbie'])
+  })
+
+  it('filters rows by name, case-insensitive', async () => {
+    const w = mountPage(makeUser({ characters: roster() }))
+    await w.get('[data-testid="char-search"]').setValue('MEL')
+    expect(rowNames(w)).toEqual(['Melaniya'])
+  })
+
+  it('matches realm names too', async () => {
+    const w = mountPage(makeUser({ characters: roster() }))
+    await w.get('[data-testid="char-search"]').setValue('silvermoon')
+    expect(rowNames(w)).toEqual(['Midling'])
+  })
+
+  it('restores the full sorted list when the search is cleared', async () => {
+    const w = mountPage(makeUser({ characters: roster() }))
+    const input = w.get('[data-testid="char-search"]')
+    await input.setValue('mel')
+    expect(rowNames(w)).toEqual(['Melaniya'])
+    await input.setValue('')
+    expect(rowNames(w)).toEqual(['Melaniya', 'Midling', 'Lowbie'])
+  })
+
+  it('shows a no-match note instead of the brand empty state', async () => {
+    const w = mountPage(makeUser({ characters: roster() }))
+    await w.get('[data-testid="char-search"]').setValue('zzzzz')
+    expect(rowNames(w)).toEqual([])
+    expect(w.text()).toContain('No characters match')
+    expect(w.find('[data-testid="empty-art"]').exists()).toBe(false)
+  })
+
+  it('hides the search input when there are no characters', () => {
+    const w = mountPage(makeUser())
+    expect(w.find('[data-testid="char-search"]').exists()).toBe(false)
+  })
+})
+
 describe('ProfilePage empty state', () => {
   it('renders the brand empty state when there are no characters', () => {
     const w = mountPage(makeUser({ characters: [] }))

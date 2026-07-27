@@ -62,7 +62,17 @@
     </section>
 
     <section class="wsa-card">
-      <h2 class="wsa-text-heading text-lg mb-3">My Characters</h2>
+      <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="wsa-text-heading text-lg">My Characters</h2>
+        <input
+          v-if="user.characters.length > 0"
+          v-model="search"
+          data-testid="char-search"
+          type="search"
+          placeholder="Search characters…"
+          class="wsa-input !w-56 py-1.5 text-sm"
+        />
+      </div>
       <div
         v-if="user.characters.length === 0"
         class="flex flex-col items-center gap-3 py-8 text-center"
@@ -78,9 +88,12 @@
           No characters yet. Connect to Battle.net above to sync them.
         </p>
       </div>
+      <p v-else-if="visibleCharacters.length === 0" class="py-6 text-center text-sm text-wsa-muted">
+        No characters match “{{ search.trim() }}”.
+      </p>
       <ul v-else class="flex flex-col divide-y divide-wsa-border/30">
         <li
-          v-for="character in user.characters"
+          v-for="character in visibleCharacters"
           :key="character.id"
           class="flex items-center gap-2 py-1.5"
         >
@@ -171,6 +184,19 @@ const oauthRegion = ref<Region>(((user.value?.bnet_region as Region) ?? 'eu'))
 
 const recruitmentBusy = reactive<Record<number, boolean>>({})
 const portraitFailed = reactive<Record<number, boolean>>({})
+
+const search = ref('')
+
+const visibleCharacters = computed(() => {
+  const sorted = [...(user.value?.characters ?? [])].sort((a, b) => b.level - a.level)
+  const query = search.value.trim().toLowerCase()
+  if (!query) return sorted
+  return sorted.filter(
+    (c) =>
+      displayName(c.name, c.display_name).toLowerCase().includes(query) ||
+      displayRealm(c.realm, c.display_realm).toLowerCase().includes(query),
+  )
+})
 
 const oauthBusy = ref(false)
 
