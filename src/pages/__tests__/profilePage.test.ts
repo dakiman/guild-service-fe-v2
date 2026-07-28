@@ -193,6 +193,17 @@ describe('ProfilePage character sorting and search', () => {
   })
 })
 
+describe('ProfilePage with a partial user payload', () => {
+  it('renders the empty state when the payload omits characters entirely', () => {
+    // The login/register payload used to ship without the `characters` key.
+    const user = makeUser()
+    delete (user as Partial<User>).characters
+    const w = mountPage(user)
+    expect(w.find('[data-testid="empty-art"]').exists()).toBe(true)
+    expect(w.find('[data-testid="char-search"]').exists()).toBe(false)
+  })
+})
+
 describe('ProfilePage empty state', () => {
   it('renders the brand empty state when there are no characters', () => {
     const w = mountPage(makeUser({ characters: [] }))

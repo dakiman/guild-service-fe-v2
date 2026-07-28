@@ -65,7 +65,7 @@
       <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
         <h2 class="wsa-text-heading text-lg">My Characters</h2>
         <input
-          v-if="user.characters.length > 0"
+          v-if="characters.length > 0"
           v-model="search"
           data-testid="char-search"
           type="search"
@@ -74,7 +74,7 @@
         />
       </div>
       <div
-        v-if="user.characters.length === 0"
+        v-if="characters.length === 0"
         class="flex flex-col items-center gap-3 py-8 text-center"
       >
         <img
@@ -187,8 +187,11 @@ const portraitFailed = reactive<Record<number, boolean>>({})
 
 const search = ref('')
 
+// The login/register payloads don't eager-load the relation, so the key can be absent.
+const characters = computed(() => user.value?.characters ?? [])
+
 const visibleCharacters = computed(() => {
-  const sorted = [...(user.value?.characters ?? [])].sort((a, b) => b.level - a.level)
+  const sorted = [...characters.value].sort((a, b) => b.level - a.level)
   const query = search.value.trim().toLowerCase()
   if (!query) return sorted
   return sorted.filter(

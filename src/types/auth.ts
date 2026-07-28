@@ -9,7 +9,8 @@ export interface User {
   bnet_region: string | null
   bnet_synced_at: string | null
   bnet_sync_status: 'syncing' | null
-  characters: CharacterSummary[]
+  // Only the /auth/user payload eager-loads the relation; guard at every read.
+  characters?: CharacterSummary[]
 }
 
 export interface AuthPayload {
