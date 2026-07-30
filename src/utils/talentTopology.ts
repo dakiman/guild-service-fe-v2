@@ -72,3 +72,32 @@ export function resolveNodeSpellId(node: TalentNode, picked?: TalentEntry): numb
   }
   return node.ranks[0]?.spell_id ?? 0
 }
+
+/**
+ * Prepare a node family for absolute-grid rendering: collapse same-cell
+ * duplicate ids (Blizzard ships e.g. Paladin's Lightforged Blessing as two
+ * nodes on one cell — the picked twin must win or its highlight renders
+ * dimmed under the unpicked copy), then shift coords so the minimum
+ * row/col become 0. Relative offsets are preserved — genuinely empty
+ * columns (Havoc's spec tree) are part of the in-game geometry.
+ */
+export function normalizeGridNodes(
+  nodes: TalentNode[],
+  pickedIds: ReadonlySet<number>,
+): TalentNode[] {
+  if (nodes.length === 0) return []
+  const byCell = new Map<string, TalentNode>()
+  for (const n of nodes) {
+    const key = `${n.display_row}:${n.display_col}`
+    const prev = byCell.get(key)
+    if (!prev || (pickedIds.has(n.id) && !pickedIds.has(prev.id))) byCell.set(key, n)
+  }
+  const deduped = Array.from(byCell.values())
+  const minRow = Math.min(...deduped.map((n) => n.display_row))
+  const minCol = Math.min(...deduped.map((n) => n.display_col))
+  return deduped.map((n) => ({
+    ...n,
+    display_row: n.display_row - minRow,
+    display_col: n.display_col - minCol,
+  }))
+}

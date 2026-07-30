@@ -55,7 +55,7 @@ import TalentEdges from './TalentEdges.vue'
 import TalentNode from './TalentNode.vue'
 import type { TalentEdge, TalentNode as TalentNodeT } from '@/types/talents'
 import type { TalentEntry } from '@/types/character'
-import { resolveNodeSpellId } from '@/utils/talentTopology'
+import { normalizeGridNodes, resolveNodeSpellId } from '@/utils/talentTopology'
 
 const props = defineProps<{
   title: string
@@ -96,27 +96,11 @@ const gridEdges = computed(() => {
   return props.edges.filter((e) => !entryIds.has(e.from) && !entryIds.has(e.to))
 })
 
-// Pack rows/cols to a dense 0..N-1 sequence keyed off the unique values
-// present in the grid. Blizzard's display coords are absolute across the
-// full tree response and can leave both an outer gutter (e.g. spec starts
-// at col=15) and inner gaps (e.g. Sub Rogue class jumps 7 → 11 over three
-// empty cols). Without packing, the rendered grid bloats to the worst-case
-// span and auto-fit shrinks every cell to fit, even though most of that
-// width is empty. Edges still join by node id so visual connectivity is
-// preserved across the collapsed gaps.
-const gridNodes = computed(() => {
-  const raw = rawGridNodes.value
-  if (raw.length === 0) return []
-  const uniqueRows = Array.from(new Set(raw.map((n) => n.display_row))).sort((a, b) => a - b)
-  const uniqueCols = Array.from(new Set(raw.map((n) => n.display_col))).sort((a, b) => a - b)
-  const rowMap = new Map(uniqueRows.map((r, i) => [r, i] as const))
-  const colMap = new Map(uniqueCols.map((c, i) => [c, i] as const))
-  return raw.map((n) => ({
-    ...n,
-    display_row: rowMap.get(n.display_row)!,
-    display_col: colMap.get(n.display_col)!,
-  }))
-})
+// Shift Blizzard's absolute display coords so the family's min row/col land
+// at 0, preserving relative offsets — real empty columns (e.g. Havoc's spec
+// tree) are part of the in-game geometry. sanitizeTopology has already
+// stripped ghosts and off-grid strays, so no dense packing is needed.
+const gridNodes = computed(() => normalizeGridNodes(rawGridNodes.value, pickedIds.value))
 
 const cols = computed(() => {
   if (gridNodes.value.length === 0) return 1

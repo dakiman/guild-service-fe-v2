@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { isGhostTalentNode, resolveNodeSpellId, sanitizeTopology } from './talentTopology'
+import {
+  isGhostTalentNode,
+  normalizeGridNodes,
+  resolveNodeSpellId,
+  sanitizeTopology,
+} from './talentTopology'
 import type { TalentNode, TalentTreeTopology } from '@/types/talents'
 import type { TalentEntry } from '@/types/character'
 
@@ -188,5 +193,62 @@ describe('resolveNodeSpellId', () => {
 
   it('returns 0 when there is nothing to resolve', () => {
     expect(resolveNodeSpellId(node({ id: 3, ranks: [], choice_options: null }))).toBe(0)
+  })
+})
+
+describe('normalizeGridNodes', () => {
+  const none: ReadonlySet<number> = new Set()
+
+  it('shifts coords so min row/col become 0', () => {
+    const out = normalizeGridNodes(
+      [
+        node({ id: 1, display_row: 4, display_col: 2 }),
+        node({ id: 2, display_row: 6, display_col: 5 }),
+      ],
+      none,
+    )
+    expect(out.map((n) => [n.display_row, n.display_col])).toEqual([
+      [0, 0],
+      [2, 3],
+    ])
+  })
+
+  it('preserves empty columns instead of packing them away', () => {
+    // Havoc-style: cols 14 and 16 used, 15 empty — spacing must survive.
+    const out = normalizeGridNodes(
+      [
+        node({ id: 1, display_row: 3, display_col: 14 }),
+        node({ id: 2, display_row: 3, display_col: 16 }),
+      ],
+      none,
+    )
+    expect(out.map((n) => n.display_col)).toEqual([0, 2])
+  })
+
+  it('dedupes same-cell twins, preferring the picked id', () => {
+    // Paladin Lightforged Blessing: two node ids on one cell.
+    const out = normalizeGridNodes(
+      [
+        node({ id: 1, display_row: 9, display_col: 1 }),
+        node({ id: 2, display_row: 9, display_col: 1 }),
+      ],
+      new Set([2]),
+    )
+    expect(out.map((n) => n.id)).toEqual([2])
+  })
+
+  it('dedupes same-cell twins keeping the first when neither is picked', () => {
+    const out = normalizeGridNodes(
+      [
+        node({ id: 1, display_row: 9, display_col: 1 }),
+        node({ id: 2, display_row: 9, display_col: 1 }),
+      ],
+      none,
+    )
+    expect(out.map((n) => n.id)).toEqual([1])
+  })
+
+  it('returns [] for empty input', () => {
+    expect(normalizeGridNodes([], none)).toEqual([])
   })
 })
