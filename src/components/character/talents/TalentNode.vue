@@ -92,6 +92,13 @@ const nodeStyle = computed(() => {
   height: 100% !important;
   background-size: cover !important;
 }
+/* Wowhead absolutely positions the <ins> 6px down/right to sit inside its
+   frame border — we hide the frame, so pin the icon back to the node origin
+   or every icon renders offset from its highlight ring. */
+.talent-node :deep(span[class*='icon'] ins) {
+  top: 0 !important;
+  left: 0 !important;
+}
 /* power.js also injects a <del> frame overlay — we render frameless icons. */
 .talent-node :deep(span[class*='icon'] del) {
   display: none !important;
