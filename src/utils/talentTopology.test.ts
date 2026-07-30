@@ -75,6 +75,93 @@ describe('sanitizeTopology', () => {
   })
 })
 
+describe('sanitizeTopology — off-grid node stripping', () => {
+  // Evoker Devastation shape: class body cols 1-7, granted duplicate
+  // (Mass Disintegrate) parked at row 2 / col 23.
+  const evokerClass = [
+    node({ id: 10, display_row: 4, display_col: 2 }),
+    node({ id: 11, display_row: 4, display_col: 4 }),
+    node({ id: 12, display_row: 4, display_col: 6 }),
+    node({ id: 13, display_row: 6, display_col: 1 }),
+    node({ id: 14, display_row: 6, display_col: 7 }),
+    node({ id: 15, display_row: 2, display_col: 23 }), // outlier
+  ]
+
+  it('strips single nodes in columns separated from the body by a gap >= 3', () => {
+    const out = sanitizeTopology({
+      class_nodes: evokerClass,
+      spec_nodes: [],
+      hero_trees: [],
+      edges: [],
+    })
+    expect(out.class_nodes.map((n) => n.id)).toEqual([10, 11, 12, 13, 14])
+  })
+
+  it('keeps bodies with internal 2-col gaps (Havoc spec shape)', () => {
+    // Havoc spec: cols 14,15,16,18,19,21,22 — cols 17 and 20 empty but real.
+    const havocSpec = [14, 15, 16, 18, 19, 21, 22].map((c, i) =>
+      node({ id: 20 + i, display_row: 3 + (i % 2), display_col: c }),
+    )
+    const out = sanitizeTopology({
+      class_nodes: [],
+      spec_nodes: havocSpec,
+      hero_trees: [],
+      edges: [],
+    })
+    expect(out.spec_nodes).toHaveLength(7)
+  })
+
+  it('keeps the cluster with the most nodes, not the leftmost', () => {
+    // Outlier column left of the body must also be stripped.
+    const nodes = [
+      node({ id: 30, display_row: 2, display_col: 1 }), // outlier
+      node({ id: 31, display_row: 2, display_col: 8 }),
+      node({ id: 32, display_row: 3, display_col: 9 }),
+      node({ id: 33, display_row: 4, display_col: 10 }),
+    ]
+    const out = sanitizeTopology({
+      class_nodes: nodes,
+      spec_nodes: [],
+      hero_trees: [],
+      edges: [],
+    })
+    expect(out.class_nodes.map((n) => n.id)).toEqual([31, 32, 33])
+  })
+
+  it('applies per hero tree', () => {
+    const out = sanitizeTopology({
+      class_nodes: [],
+      spec_nodes: [],
+      hero_trees: [
+        {
+          id: 50,
+          name: 'Scalecommander',
+          nodes: [
+            node({ id: 40, display_row: 1, display_col: 10 }),
+            node({ id: 41, display_row: 2, display_col: 11 }),
+            node({ id: 42, display_row: 1, display_col: 20 }), // outlier
+          ],
+        },
+      ],
+      edges: [],
+    })
+    expect(out.hero_trees[0].nodes.map((n) => n.id)).toEqual([40, 41])
+  })
+
+  it('drops edges incident to stripped off-grid nodes', () => {
+    const out = sanitizeTopology({
+      class_nodes: evokerClass,
+      spec_nodes: [],
+      hero_trees: [],
+      edges: [
+        { from: 10, to: 11 },
+        { from: 14, to: 15 }, // to the outlier — must be dropped
+      ],
+    })
+    expect(out.edges).toEqual([{ from: 10, to: 11 }])
+  })
+})
+
 describe('resolveNodeSpellId', () => {
   it('prefers the picked spell id when present', () => {
     expect(resolveNodeSpellId(node({ id: 1 }), pick({ id: 1, spell_id: 9999 }))).toBe(9999)
