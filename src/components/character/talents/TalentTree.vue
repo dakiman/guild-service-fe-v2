@@ -142,6 +142,7 @@ import { computeTalentSummary } from '@/composables/useTalentSummary'
 import { useWowheadRefresh } from '@/composables/useWowhead'
 import { CLASS_COLORS } from '@/utils/wowConstants'
 import { sanitizeTopology } from '@/utils/talentTopology'
+import { copyText } from '@/utils/clipboard'
 import type { CharacterTalents } from '@/types/character'
 import type { TalentNode as TalentNodeT } from '@/types/talents'
 
@@ -255,7 +256,7 @@ useWowheadRefresh(() => [topology.value, summaryRefs.value])
 async function copyLoadout() {
   if (!props.loadoutCode) return
   try {
-    await navigator.clipboard.writeText(props.loadoutCode)
+    await copyText(props.loadoutCode)
     justCopied.value = true
     toast.success("Loadout code copied — paste it into WoW's Import Loadout box")
     setTimeout(() => (justCopied.value = false), 2000)

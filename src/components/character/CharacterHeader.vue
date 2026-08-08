@@ -94,6 +94,7 @@ import ExternalProfileLinks from '@/components/wow/ExternalProfileLinks.vue'
 import CharacterStatPills from '@/components/character/CharacterStatPills.vue'
 import { CLASSES, CLASS_COLORS, RACES } from '@/utils/wowConstants'
 import { displayGuildName, displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'
+import { copyText } from '@/utils/clipboard'
 import type { CharacterResource } from '@/types/character'
 
 const props = defineProps<{
@@ -134,7 +135,7 @@ const relativeTime = computed(() => {
 
 async function onShareLink() {
   try {
-    await navigator.clipboard.writeText(window.location.href)
+    await copyText(window.location.href)
     toast.success('Profile link copied')
   } catch {
     toast.error('Could not copy link')

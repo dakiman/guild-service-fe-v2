@@ -6,6 +6,7 @@ import { router } from './router'
 import { useAuthStore } from './stores/auth'
 import { configureClient } from './api/client'
 import './style.css'
+import 'vue-sonner/style.css'
 
 const app = createApp(App)
 const pinia = createPinia()
