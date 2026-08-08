@@ -1,0 +1,35 @@
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import MetaDungeonTable from '@/components/stats/MetaDungeonTable.vue'
+import { useMetaDungeons } from '@/composables/useMetaStats'
+import type { MetaPeriodParam, MetaRegion } from '@/types/meta'
+
+const props = defineProps<{ period: MetaPeriodParam; region: MetaRegion }>()
+
+const { data, isLoading, isError } = useMetaDungeons(toRef(props, 'period'), toRef(props, 'region'))
+
+const pick = computed(() =>
+  data.value?.dungeons.find((d) => d.dungeon_id === data.value?.dungeon_of_the_week) ?? null,
+)
+</script>
+
+<template>
+  <div class="wsa-card">
+    <h3 class="wsa-text-heading text-[15px] mb-4">Dungeon Report</h3>
+
+    <div v-if="isLoading" class="wsa-skeleton h-64" />
+    <div v-else-if="isError" class="text-xs text-wsa-disabled italic py-4 text-center">
+      Dungeon report isn't warmed yet — check back after the next crawl.
+    </div>
+    <template v-else-if="data">
+      <div v-if="pick" class="wsa-card-inner mb-4 flex items-baseline gap-3">
+        <span class="text-[10px] uppercase tracking-wide text-wsa-muted">Dungeon of the Week</span>
+        <span class="wsa-text-heading text-base">{{ pick.name }}</span>
+        <span class="text-xs text-wsa-muted">
+          {{ Math.round(pick.timed_rate * 100) }}% timed over {{ pick.runs.toLocaleString() }} runs
+        </span>
+      </div>
+      <MetaDungeonTable :dungeons="data.dungeons" :trends="data.trends" :highlight-id="data.dungeon_of_the_week" />
+    </template>
+  </div>
+</template>

@@ -90,6 +90,7 @@ const navLinks = [
   { name: 'guild-search', label: 'Guilds' },
   { name: 'character-search', label: 'Characters' },
   { name: 'mythic-plus', label: 'Mythic+' },
+  { name: 'meta', label: 'Meta' },
   { name: 'raids', label: 'Raids' },
 ]
 
