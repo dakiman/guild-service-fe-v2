@@ -5,7 +5,7 @@
       <router-view />
     </main>
     <AppFooter />
-    <Toaster rich-colors position="top-right" />
+    <Toaster position="top-right" />
   </div>
 </template>
 

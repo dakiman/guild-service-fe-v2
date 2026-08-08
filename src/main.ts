@@ -5,8 +5,8 @@ import App from './App.vue'
 import { router } from './router'
 import { useAuthStore } from './stores/auth'
 import { configureClient } from './api/client'
-import './style.css'
 import 'vue-sonner/style.css'
+import './style.css' // after vendor CSS so toast overrides win
 
 const app = createApp(App)
 const pinia = createPinia()

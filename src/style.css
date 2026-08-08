@@ -231,3 +231,27 @@
     border-left: 3px solid var(--stats-accent, rgb(var(--wsa-border)));
   }
 }
+
+/* ── Toasts (vue-sonner) ──────────────────────────────────────
+ * Outside @layer components — Tailwind purges non-class selectors
+ * inside layers. main.ts imports vue-sonner/style.css before this
+ * file, so these override its [data-sonner-toast][data-styled] rules. */
+[data-sonner-toaster] [data-sonner-toast] {
+  background: linear-gradient(135deg, rgb(var(--wsa-card-2)), rgb(var(--wsa-card)));
+  border: 2px solid rgb(var(--wsa-border));
+  border-radius: 0.5rem;
+  box-shadow:
+    inset 0 0 20px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+  color: rgb(var(--wsa-text));
+}
+[data-sonner-toaster] [data-sonner-toast] [data-title] {
+  color: rgb(var(--wsa-text));
+  font-weight: 600;
+}
+[data-sonner-toaster] [data-sonner-toast][data-type='success'] [data-icon] {
+  color: rgb(var(--stat-health));
+}
+[data-sonner-toaster] [data-sonner-toast][data-type='error'] [data-icon] {
+  color: rgb(255 68 68);
+}
