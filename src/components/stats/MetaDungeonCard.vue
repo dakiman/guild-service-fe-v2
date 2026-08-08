@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 import MetaDungeonTable from '@/components/stats/MetaDungeonTable.vue'
-import { useMetaDungeons } from '@/composables/useMetaStats'
+import { isNotWarmedError, useMetaDungeons } from '@/composables/useMetaStats'
 import type { MetaPeriodParam, MetaRegion } from '@/types/meta'
 
 const props = defineProps<{ period: MetaPeriodParam; region: MetaRegion }>()
 
-const { data, isLoading, isError } = useMetaDungeons(toRef(props, 'period'), toRef(props, 'region'))
+const { data, isLoading, isError, error } = useMetaDungeons(
+  toRef(props, 'period'),
+  toRef(props, 'region'),
+)
+
+const notWarmed = computed(() => isNotWarmedError(error.value))
 
 const pick = computed(() =>
   data.value?.dungeons.find((d) => d.dungeon_id === data.value?.dungeon_of_the_week) ?? null,
@@ -18,9 +24,15 @@ const pick = computed(() =>
     <h3 class="wsa-text-heading text-[15px] mb-4">Dungeon Report</h3>
 
     <div v-if="isLoading" class="wsa-skeleton h-64" />
-    <div v-else-if="isError" class="text-xs text-wsa-disabled italic py-4 text-center">
+    <div v-else-if="isError && notWarmed" class="text-xs text-wsa-disabled italic py-4 text-center">
       Dungeon report isn't warmed yet — check back after the next crawl.
     </div>
+    <ErrorState
+      v-else-if="isError"
+      hide-retry
+      title="Failed to load dungeon report"
+      message="The dungeon report couldn't be loaded right now. Try again in a moment."
+    />
     <template v-else-if="data">
       <div v-if="pick" class="wsa-card-inner mb-4 flex items-baseline gap-3">
         <span class="text-[10px] uppercase tracking-wide text-wsa-muted">Dungeon of the Week</span>

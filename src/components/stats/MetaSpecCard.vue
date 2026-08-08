@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, toRef } from 'vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 import MetaSpecList from '@/components/stats/MetaSpecList.vue'
-import { useMetaSpecs } from '@/composables/useMetaStats'
+import { isNotWarmedError, useMetaSpecs } from '@/composables/useMetaStats'
 import type { MetaPeriodParam, MetaRegion, SpecMetaEntry } from '@/types/meta'
 
 const props = withDefaults(defineProps<{
@@ -15,11 +16,19 @@ const props = withDefaults(defineProps<{
 const role = ref<'tank' | 'healer' | 'dps'>('dps')
 const bracket = ref('all')
 
-const { data, isLoading, isError } = useMetaSpecs(toRef(props, 'period'), toRef(props, 'region'))
+const { data, isLoading, isError, error } = useMetaSpecs(toRef(props, 'period'), toRef(props, 'region'))
 const prevPeriod = computed<MetaPeriodParam>(() => props.prevPeriodId ?? 'current')
 const { data: prevData } = useMetaSpecs(prevPeriod, toRef(props, 'region'))
 
-const bracketKeys = computed(() => Object.keys(data.value?.brackets ?? {}))
+const notWarmed = computed(() => isNotWarmedError(error.value))
+
+// JS orders integer-like object keys first, so a raw Object.keys() renders
+// "+7 / +12 / +17 / All keys" — force "All keys" (the default) to the front.
+const bracketKeys = computed(() => {
+  const keys = Object.keys(data.value?.brackets ?? {})
+  const numeric = keys.filter((k) => k !== 'all').sort((a, b) => Number(a) - Number(b))
+  return keys.includes('all') ? ['all', ...numeric] : numeric
+})
 const entries = computed<SpecMetaEntry[]>(
   () => data.value?.brackets[bracket.value]?.roles[role.value] ?? [],
 )
@@ -63,9 +72,15 @@ const roles = ['tank', 'healer', 'dps'] as const
     </div>
 
     <div v-if="isLoading" class="wsa-skeleton h-64" />
-    <div v-else-if="isError" class="text-xs text-wsa-disabled italic py-4 text-center">
+    <div v-else-if="isError && notWarmed" class="text-xs text-wsa-disabled italic py-4 text-center">
       Spec meta isn't warmed yet — check back after the next crawl.
     </div>
+    <ErrorState
+      v-else-if="isError"
+      hide-retry
+      title="Failed to load spec meta"
+      message="Spec meta couldn't be loaded right now. Try again in a moment."
+    />
     <template v-else>
       <MetaSpecList :entries="entries" :prev-shares="prevShares" />
       <p class="mt-3 text-[10px] text-wsa-disabled">{{ totalRuns.toLocaleString() }} runs in bracket</p>

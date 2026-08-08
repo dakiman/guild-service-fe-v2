@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/vue-query'
+import axios from 'axios'
 import type { Ref } from 'vue'
 import { fetchMetaComps, fetchMetaDungeons, fetchMetaPeriods, fetchMetaSpecs } from '@/api/meta'
 import type {
@@ -14,6 +15,15 @@ const FIVE_MINUTES_MS = 5 * 60 * 1000
 
 function concrete(period: MetaPeriodParam): number | undefined {
   return period === 'current' ? undefined : period
+}
+
+/**
+ * The meta endpoints answer 404 (`not_warmed`) when a scope has no snapshot yet.
+ * Anything else — 5xx, network down — is a real failure and must not be dressed
+ * up as "check back after the next crawl".
+ */
+export function isNotWarmedError(error: unknown): boolean {
+  return axios.isAxiosError(error) && error.response?.status === 404
 }
 
 export function useMetaPeriods() {
