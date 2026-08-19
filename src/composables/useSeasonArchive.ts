@@ -9,5 +9,10 @@ export function useSeasonArchive(slug: Ref<string>) {
     queryKey: ['stats', 'archive', slug],
     queryFn: ({ signal }) => fetchSeasonArchive(slug.value, { signal }),
     staleTime: Infinity,
+    retry: (failureCount, error: unknown) => {
+      const status = (error as { response?: { status?: number } } | null)?.response?.status
+      if (status === 404) return false
+      return failureCount < 3
+    },
   })
 }

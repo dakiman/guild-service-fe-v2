@@ -18,7 +18,11 @@ const bracket = ref('all')
 
 const { data, isLoading, isError, error } = useMetaSpecs(toRef(props, 'period'), toRef(props, 'region'))
 const prevPeriod = computed<MetaPeriodParam>(() => props.prevPeriodId ?? 'current')
-const { data: prevData } = useMetaSpecs(prevPeriod, toRef(props, 'region'))
+const { data: prevData } = useMetaSpecs(
+  prevPeriod,
+  toRef(props, 'region'),
+  computed(() => props.prevPeriodId !== null),
+)
 
 const notWarmed = computed(() => isNotWarmedError(error.value))
 

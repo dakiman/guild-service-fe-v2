@@ -73,11 +73,18 @@ describe('meta card error states', () => {
     ['MetaDungeonCard', MetaDungeonCard, fetchMetaDungeons],
     ['MetaCompsCard', MetaCompsCard, fetchMetaComps],
   ])('%s renders ErrorState on a real failure', async (_name, component, fetcher) => {
+    // A real (non-404) failure now retries up to 3x via retryUnlessNotWarmed,
+    // so fast-forward past the exponential backoff delays before asserting.
+    vi.useFakeTimers({ shouldAdvanceTime: true })
     vi.mocked(fetcher).mockRejectedValue(httpError(500))
 
     const wrapper = await mountCard(component)
+    await vi.advanceTimersByTimeAsync(10000)
+    await flushPromises()
 
     expect(wrapper.findComponent(ErrorState).exists()).toBe(true)
     expect(wrapper.text()).not.toContain("isn't warmed yet")
+
+    vi.useRealTimers()
   })
 })
