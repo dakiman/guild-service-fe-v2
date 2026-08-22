@@ -57,7 +57,7 @@ function movement(entry: SpecMetaEntry): '▲' | '▼' | null {
         />
       </span>
       <span class="w-14 text-right stats-value">{{ (entry.share * 100).toFixed(1) }}%</span>
-      <span class="w-16 text-right text-wsa-muted" :title="`${entry.count} appearances`">
+      <span class="w-16 text-right text-wsa-muted" :title="`${entry.count} appearances · timed rate within the selected bracket`">
         {{ Math.round(entry.timed_rate * 100) }}% timed
       </span>
       <span

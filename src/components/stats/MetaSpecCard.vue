@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue'
+import { computed, ref, toRef, watchEffect } from 'vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import MetaSpecList from '@/components/stats/MetaSpecList.vue'
 import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import { isNotWarmedError, useMetaSpecs } from '@/composables/useMetaStats'
+import { bracketLabel } from '@/utils/wowConstants'
 import type { MetaPeriodParam, MetaRegion, SpecMetaEntry } from '@/types/meta'
 
 const props = withDefaults(defineProps<{
@@ -15,7 +16,7 @@ const props = withDefaults(defineProps<{
 })
 
 const role = ref<'tank' | 'healer' | 'dps'>('dps')
-const bracket = ref('all')
+const bracket = ref('7')
 
 const { data, isLoading, isError, error } = useMetaSpecs(toRef(props, 'period'), toRef(props, 'region'))
 const prevPeriod = computed<MetaPeriodParam>(() => props.prevPeriodId ?? 'current')
@@ -27,12 +28,20 @@ const { data: prevData } = useMetaSpecs(
 
 const notWarmed = computed(() => isNotWarmedError(error.value))
 
-// JS orders integer-like object keys first, so a raw Object.keys() renders
-// "+7 / +12 / +17 / All keys" — force "All keys" (the default) to the front.
+// JS orders integer-like object keys first, so Object.keys() would already be
+// numeric-ascending — but make it explicit, and demote "All keys" to the end:
+// a blend across key levels is the least meaningful view of a censored sample.
 const bracketKeys = computed(() => {
   const keys = Object.keys(data.value?.brackets ?? {})
   const numeric = keys.filter((k) => k !== 'all').sort((a, b) => Number(a) - Number(b))
-  return keys.includes('all') ? ['all', ...numeric] : numeric
+  return keys.includes('all') ? [...numeric, 'all'] : numeric
+})
+
+// Old snapshots / custom BLIZZARD_LADDER_BRACKETS may lack '7' — fall back to
+// the first pill so the card never shows an empty bracket.
+watchEffect(() => {
+  const keys = bracketKeys.value
+  if (keys.length && !keys.includes(bracket.value)) bracket.value = keys[0]
 })
 const entries = computed<SpecMetaEntry[]>(
   () => data.value?.brackets[bracket.value]?.roles[role.value] ?? [],
@@ -72,7 +81,7 @@ const roles = ['tank', 'healer', 'dps'] as const
         :class="bracket === key ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15' : 'border-wsa-border text-wsa-disabled'"
         @click="bracket = key"
       >
-        {{ key === 'all' ? 'All keys' : `+${key} and up` }}
+        {{ bracketLabel(key) }}
       </button>
     </div>
 

@@ -240,3 +240,21 @@ export const SPEC_ROLES: Record<number, 'tank' | 'healer' | 'dps'> = {
   // Warrior
   71: 'dps', 72: 'dps', 73: 'tank',
 }
+
+/**
+ * M+ bracket labels keyed by the meta API's bracket floor (string keys — the
+ * payload's `brackets` object keys). Season-scoped: update at rollover together
+ * with BLIZZARD_LADDER_BRACKETS on the BE (season:rollover prints a reminder).
+ * Midnight: +5 Bargain, +7 Fort/Tyr, +10 both, +12 Guile.
+ */
+export const BRACKET_LABELS: Record<string, string> = {
+  all: 'All keys',
+  '5': '+5 Bargain',
+  '7': '+7 Fort/Tyr',
+  '10': '+10 Both',
+  '12': '+12 Guile',
+}
+
+export function bracketLabel(key: string): string {
+  return BRACKET_LABELS[key] ?? `+${key} and up`
+}

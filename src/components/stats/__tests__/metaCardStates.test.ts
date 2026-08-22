@@ -38,23 +38,60 @@ async function mountCard(component: Component) {
 }
 
 describe('MetaSpecCard bracket pills', () => {
-  it('renders "All keys" first, then ascending numeric brackets', async () => {
+  it('renders numeric brackets ascending, labeled by affix, with All keys last', async () => {
     // Object literal order mimics the JSON payload; JS hoists integer-like keys.
     vi.mocked(fetchMetaSpecs).mockResolvedValue({
       period_id: 1002,
       region: 'eu',
-      brackets: {
-        all: emptyRoles(),
-        7: emptyRoles(),
-        12: emptyRoles(),
-        17: emptyRoles(),
-      },
+      brackets: { all: emptyRoles(), 5: emptyRoles(), 7: emptyRoles(), 10: emptyRoles(), 12: emptyRoles() },
     } as never)
 
     const wrapper = await mountCard(MetaSpecCard)
     const pills = wrapper.findAll('.flex.gap-1.mb-3 button').map((b) => b.text())
 
-    expect(pills).toEqual(['All keys', '+7 and up', '+12 and up', '+17 and up'])
+    expect(pills).toEqual(['+5 Bargain', '+7 Fort/Tyr', '+10 Both', '+12 Guile', 'All keys'])
+  })
+
+  it('labels unknown floors as "+N and up"', async () => {
+    vi.mocked(fetchMetaSpecs).mockResolvedValue({
+      period_id: 1002,
+      region: 'eu',
+      brackets: { all: emptyRoles(), 7: emptyRoles(), 17: emptyRoles() },
+    } as never)
+
+    const wrapper = await mountCard(MetaSpecCard)
+    const pills = wrapper.findAll('.flex.gap-1.mb-3 button').map((b) => b.text())
+
+    expect(pills).toEqual(['+7 Fort/Tyr', '+17 and up', 'All keys'])
+  })
+
+  it('defaults to the +7 bracket', async () => {
+    vi.mocked(fetchMetaSpecs).mockResolvedValue({
+      period_id: 1002,
+      region: 'eu',
+      brackets: {
+        all: { ...emptyRoles(), total_runs: 111 },
+        7: { ...emptyRoles(), total_runs: 777 },
+        12: { ...emptyRoles(), total_runs: 999 },
+      },
+    } as never)
+
+    const wrapper = await mountCard(MetaSpecCard)
+    expect(wrapper.text()).toContain('777 runs in bracket')
+  })
+
+  it('falls back to the first numeric bracket when +7 is absent', async () => {
+    vi.mocked(fetchMetaSpecs).mockResolvedValue({
+      period_id: 1002,
+      region: 'eu',
+      brackets: {
+        all: { ...emptyRoles(), total_runs: 111 },
+        12: { ...emptyRoles(), total_runs: 999 },
+      },
+    } as never)
+
+    const wrapper = await mountCard(MetaSpecCard)
+    expect(wrapper.text()).toContain('999 runs in bracket')
   })
 })
 
