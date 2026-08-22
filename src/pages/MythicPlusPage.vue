@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import PageHeader from '@/components/layout/PageHeader.vue'
+import CurrentAffixStrip from '@/components/stats/CurrentAffixStrip.vue'
 import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
 import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
@@ -45,6 +46,8 @@ function openArchive(event: Event) {
         </select>
       </template>
     </PageHeader>
+
+    <CurrentAffixStrip />
 
     <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
       <TopRunsLeaderboard />

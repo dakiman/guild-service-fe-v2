@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { shallowMount, flushPromises } from '@vue/test-utils'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import MythicPlusPage from '@/pages/MythicPlusPage.vue'
+import CurrentAffixStrip from '@/components/stats/CurrentAffixStrip.vue'
 import TopRunsLeaderboard from '@/components/stats/TopRunsLeaderboard.vue'
 import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
@@ -43,6 +44,7 @@ describe('MythicPlusPage', () => {
     expect(performers.exists()).toBe(true)
     expect(performers.props('title')).toBe('Top M+ Rating')
     expect(wrapper.findComponent(PerformanceByClassCard).exists()).toBe(true)
+    expect(wrapper.findComponent(CurrentAffixStrip).exists()).toBe(true)
   })
 
   it('forwards the stamp props to the props-driven cards', async () => {

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { flushPromises, shallowMount } from '@vue/test-utils'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import MetaPage from '@/pages/MetaPage.vue'
+import CurrentAffixStrip from '@/components/stats/CurrentAffixStrip.vue'
 import MetaSpecCard from '@/components/stats/MetaSpecCard.vue'
 import MetaDungeonCard from '@/components/stats/MetaDungeonCard.vue'
 import MetaCompsCard from '@/components/stats/MetaCompsCard.vue'
@@ -41,5 +42,11 @@ describe('MetaPage', () => {
     await flushPromises()
 
     expect(wrapper.findComponent(MetaSpecCard).props('prevPeriodId')).toBe(1001)
+  })
+
+  it('mounts the affix strip bound to the selected region', async () => {
+    const wrapper = mountPage()
+    await flushPromises()
+    expect(wrapper.findComponent(CurrentAffixStrip).props('region')).toBe('all')
   })
 })

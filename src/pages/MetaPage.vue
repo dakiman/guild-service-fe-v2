@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import PageHeader from '@/components/layout/PageHeader.vue'
+import CurrentAffixStrip from '@/components/stats/CurrentAffixStrip.vue'
 import MetaSpecCard from '@/components/stats/MetaSpecCard.vue'
 import MetaDungeonCard from '@/components/stats/MetaDungeonCard.vue'
 import MetaCompsCard from '@/components/stats/MetaCompsCard.vue'
@@ -60,6 +61,8 @@ function periodLabel(startAt: string | null, isCurrent: boolean): string {
         </div>
       </template>
     </PageHeader>
+
+    <CurrentAffixStrip :region="region" />
 
     <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
       <div class="flex flex-col gap-4">

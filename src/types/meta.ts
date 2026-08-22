@@ -6,6 +6,8 @@ export interface MetaPeriod {
   start_at: string | null
   end_at: string | null
   is_current: boolean
+  /** Per-region affix ids for the week; a region is absent until its first crawl. */
+  affixes?: Record<string, number[]>
 }
 
 export interface SpecMetaEntry {
