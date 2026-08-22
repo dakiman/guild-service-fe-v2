@@ -2,6 +2,7 @@
 import { computed, toRef } from 'vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import MetaDungeonTable from '@/components/stats/MetaDungeonTable.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import { isNotWarmedError, useMetaDungeons } from '@/composables/useMetaStats'
 import type { MetaPeriodParam, MetaRegion } from '@/types/meta'
 
@@ -42,6 +43,7 @@ const pick = computed(() =>
         </span>
       </div>
       <MetaDungeonTable :dungeons="data.dungeons" :trends="data.trends" :highlight-id="data.dungeon_of_the_week" />
+      <CoverageStamp class="mt-3" variant="official" :timestamp="data.computed_at" />
     </template>
   </div>
 </template>

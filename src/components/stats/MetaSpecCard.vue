@@ -2,6 +2,7 @@
 import { computed, ref, toRef } from 'vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import MetaSpecList from '@/components/stats/MetaSpecList.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import { isNotWarmedError, useMetaSpecs } from '@/composables/useMetaStats'
 import type { MetaPeriodParam, MetaRegion, SpecMetaEntry } from '@/types/meta'
 
@@ -88,6 +89,7 @@ const roles = ['tank', 'healer', 'dps'] as const
     <template v-else>
       <MetaSpecList :entries="entries" :prev-shares="prevShares" />
       <p class="mt-3 text-[10px] text-wsa-disabled">{{ totalRuns.toLocaleString() }} runs in bracket</p>
+      <CoverageStamp class="mt-1" variant="official" :timestamp="data?.computed_at" />
     </template>
   </div>
 </template>

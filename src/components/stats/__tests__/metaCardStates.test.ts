@@ -88,3 +88,53 @@ describe('meta card error states', () => {
     vi.useRealTimers()
   })
 })
+
+describe('meta card coverage stamps', () => {
+  it('MetaSpecCard renders the official stamp under the runs line', async () => {
+    vi.mocked(fetchMetaSpecs).mockResolvedValue({
+      period_id: 1002,
+      region: 'eu',
+      // 42 on both keys so the assertion holds whatever the default bracket is
+      // ('all' today, '7' after Task 3).
+      brackets: { all: { ...emptyRoles(), total_runs: 42 }, 7: { ...emptyRoles(), total_runs: 42 } },
+      computed_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    } as never)
+    const wrapper = await mountCard(MetaSpecCard)
+    expect(wrapper.text()).toContain('42 runs in bracket')
+    expect(wrapper.text()).toContain('Updated 2h ago · top-500 per shard, official Blizzard leaderboards · EU+US')
+  })
+
+  it('MetaDungeonCard renders the official stamp', async () => {
+    vi.mocked(fetchMetaDungeons).mockResolvedValue({
+      period_id: 1002,
+      region: 'eu',
+      dungeons: [],
+      dungeon_of_the_week: null,
+      trends: {},
+      computed_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+    } as never)
+    const wrapper = await mountCard(MetaDungeonCard)
+    expect(wrapper.text()).toContain('Updated 1h ago · top-500 per shard')
+  })
+
+  it('MetaCompsCard renders the official stamp', async () => {
+    vi.mocked(fetchMetaComps).mockResolvedValue({
+      period_id: 1002,
+      region: 'eu',
+      comps: [],
+      pairings: [],
+      min_sample: 20,
+      computed_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+    } as never)
+    const wrapper = await mountCard(MetaCompsCard)
+    expect(wrapper.text()).toContain('Updated 1h ago · top-500 per shard')
+  })
+
+  it('renders no stamp when computed_at is absent', async () => {
+    vi.mocked(fetchMetaComps).mockResolvedValue({
+      period_id: 1002, region: 'eu', comps: [], pairings: [], min_sample: 20,
+    } as never)
+    const wrapper = await mountCard(MetaCompsCard)
+    expect(wrapper.text()).not.toContain('official Blizzard leaderboards')
+  })
+})

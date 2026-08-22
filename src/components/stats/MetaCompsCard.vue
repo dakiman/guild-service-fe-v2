@@ -2,6 +2,7 @@
 import { computed, toRef } from 'vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import MetaCompsList from '@/components/stats/MetaCompsList.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import { isNotWarmedError, useMetaComps } from '@/composables/useMetaStats'
 import type { MetaPeriodParam, MetaRegion } from '@/types/meta'
 
@@ -29,6 +30,9 @@ const notWarmed = computed(() => isNotWarmedError(error.value))
       title="Failed to load comps"
       message="Comp data couldn't be loaded right now. Try again in a moment."
     />
-    <MetaCompsList v-else-if="data" :comps="data.comps" :pairings="data.pairings" />
+    <template v-else-if="data">
+      <MetaCompsList :comps="data.comps" :pairings="data.pairings" />
+      <CoverageStamp class="mt-3" variant="official" :timestamp="data.computed_at" />
+    </template>
   </div>
 </template>
