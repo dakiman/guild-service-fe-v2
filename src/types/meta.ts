@@ -24,6 +24,8 @@ export interface MetaSpecsResponse {
   period_id: number
   region: string
   brackets: Record<string, SpecBracket>
+  /** ISO-8601; when the snapshot was computed by meta:warm. */
+  computed_at?: string | null
 }
 
 export interface DungeonReportEntry {
@@ -49,6 +51,8 @@ export interface MetaDungeonsResponse {
   dungeons: DungeonReportEntry[]
   dungeon_of_the_week: number | null
   trends: Record<string, DungeonTrendPoint[]>
+  /** ISO-8601; when the snapshot was computed by meta:warm. */
+  computed_at?: string | null
 }
 
 export interface CompEntry {
@@ -73,4 +77,6 @@ export interface MetaCompsResponse {
   comps: CompEntry[]
   pairings: PairingEntry[]
   min_sample: number
+  /** ISO-8601; when the snapshot was computed by meta:warm. */
+  computed_at?: string | null
 }

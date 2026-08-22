@@ -40,6 +40,8 @@ export interface CharacterStatsResponse {
   }
   avg_achievement_points: number
   most_popular_spec: { spec_id: number; class_id: number; count: number } | null
+  /** ISO-8601; when the hourly warm computed this payload. Null only for the empty fallback. */
+  generated_at?: string | null
 }
 
 export interface RaidBossKills {
@@ -58,6 +60,8 @@ export interface RaidKillStatsResponse {
   raids: RaidKillsData[]
   expansions: string[]
   current_expansion: string | null
+  /** ISO-8601; when the hourly warm computed this payload. Null only for the empty fallback. */
+  generated_at?: string | null
 }
 
 export interface TopKeyDungeon {
