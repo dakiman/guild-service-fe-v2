@@ -13,6 +13,7 @@ import {
 } from 'chart.js'
 import { CLASSES, CLASS_COLORS } from '@/utils/wowConstants'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import type { ClassDistribution } from '@/types/stats'
 
 ChartJS.register(ArcElement, Tooltip)
@@ -20,6 +21,7 @@ ChartJS.register(ArcElement, Tooltip)
 const props = defineProps<{
   distribution: ClassDistribution[]
   total: number
+  stampTimestamp?: string | null
 }>()
 
 const animateEntry = !rotatePlayed
@@ -123,6 +125,8 @@ const chartOptions = computed(() => ({
           </div>
         </div>
       </div>
+
+      <CoverageStamp class="mt-3" variant="crawled" :timestamp="stampTimestamp" :count="total" />
     </div>
   </div>
 </template>

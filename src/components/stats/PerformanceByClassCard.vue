@@ -7,10 +7,13 @@ let shimmerPlayed = false
 import { computed, ref } from 'vue'
 import { CLASSES, CLASS_COLORS, SPEC_ROLES, SPEC_TO_CLASS } from '@/utils/wowConstants'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import type { ClassDistribution } from '@/types/stats'
 
 const props = defineProps<{
   classes: ClassDistribution[]
+  stampTimestamp?: string | null
+  stampCount?: number | null
 }>()
 
 const showShimmer = !shimmerPlayed
@@ -122,6 +125,8 @@ function roleLabel(role: string): string {
         </span>
       </div>
     </div>
+
+    <CoverageStamp class="mt-3" variant="crawled" :timestamp="stampTimestamp" :count="stampCount" />
   </div>
 </template>
 

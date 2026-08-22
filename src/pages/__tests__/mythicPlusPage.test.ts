@@ -18,6 +18,7 @@ vi.mock('@/api/stats', () => ({
     top_performers: { mythic_plus: [], item_level: [], achievement_points: [] },
     avg_achievement_points: 0,
     most_popular_spec: null,
+    generated_at: '2026-08-22T09:00:00Z',
   }),
   fetchRaidKillStats: vi.fn().mockResolvedValue(null),
   fetchTopKeys: vi.fn().mockResolvedValue(null),
@@ -42,5 +43,13 @@ describe('MythicPlusPage', () => {
     expect(performers.exists()).toBe(true)
     expect(performers.props('title')).toBe('Top M+ Rating')
     expect(wrapper.findComponent(PerformanceByClassCard).exists()).toBe(true)
+  })
+
+  it('forwards the stamp props to the props-driven cards', async () => {
+    const wrapper = mountPage()
+    await flushPromises()
+    expect(wrapper.findComponent(TopPerformersCard).props('stampTimestamp')).toBe('2026-08-22T09:00:00Z')
+    expect(wrapper.findComponent(TopPerformersCard).props('stampCount')).toBe(1)
+    expect(wrapper.findComponent(PerformanceByClassCard).props('stampTimestamp')).toBe('2026-08-22T09:00:00Z')
   })
 })

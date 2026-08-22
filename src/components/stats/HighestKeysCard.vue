@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useTopKeys } from '@/composables/useCharacterStats'
+import { useCharacterStats, useTopKeys } from '@/composables/useCharacterStats'
 import { useMythicDungeons } from '@/composables/usePveGameData'
 import HighestKeysList from '@/components/stats/HighestKeysList.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 
 const { data, isLoading } = useTopKeys()
 const { data: dungeonData } = useMythicDungeons()
+const { data: siteStats } = useCharacterStats()
 
 const dungeons = computed(() => data.value?.dungeons ?? [])
 const gameDataDungeons = computed(() => dungeonData.value?.dungeons ?? [])
@@ -22,5 +24,12 @@ const gameDataDungeons = computed(() => dungeonData.value?.dungeons ?? [])
     <HighestKeysList v-else-if="dungeons.length" :dungeons="dungeons" :game-data-dungeons="gameDataDungeons" />
 
     <div v-else class="text-xs text-wsa-disabled italic">No key data yet</div>
+
+    <CoverageStamp
+      class="mt-3"
+      variant="crawled"
+      :timestamp="siteStats?.generated_at"
+      :count="siteStats?.total_characters"
+    />
   </div>
 </template>

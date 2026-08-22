@@ -4,6 +4,7 @@ import { useRaidKillStats } from '@/composables/useCharacterStats'
 import { useAllRaidInstances } from '@/composables/usePveGameData'
 import { CLASS_COLORS, CLASSES } from '@/utils/wowConstants'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 
 const CLASS_IDS = [6, 12, 11, 13, 3, 8, 10, 2, 5, 4, 7, 9, 1]
 
@@ -173,6 +174,8 @@ const raidMediaMap = computed(() => {
     </div>
 
     <div v-else class="text-xs text-wsa-disabled italic py-4 text-center">No raid data</div>
+
+    <CoverageStamp class="mt-3" variant="crawled" :timestamp="data?.generated_at" />
   </div>
 </template>
 

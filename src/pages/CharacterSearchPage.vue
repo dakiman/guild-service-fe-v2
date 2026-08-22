@@ -113,7 +113,11 @@ const mostPopularSpec = computed(() => {
     <template v-else-if="stats">
       <!-- Row 1: Hero + Faction -->
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-4 lg:items-start">
-        <StatsHeroCard :distribution="stats.class_distribution" :total="stats.total_characters" />
+        <StatsHeroCard
+          :distribution="stats.class_distribution"
+          :total="stats.total_characters"
+          :stamp-timestamp="stats.generated_at"
+        />
         <FactionSplitCard
           :horde="stats.faction_distribution.horde"
           :alliance="stats.faction_distribution.alliance"
@@ -168,12 +172,16 @@ const mostPopularSpec = computed(() => {
           :entries="stats.top_performers.item_level"
           value-label="iLvl"
           :format-value="(v: number) => v.toFixed(1)"
+          :stamp-timestamp="stats.generated_at"
+          :stamp-count="stats.total_characters"
         />
         <TopPerformersCard
           title="Top Achievement Points"
           :entries="stats.top_performers.achievement_points"
           value-label="Points"
           :format-value="(v: number) => v.toLocaleString()"
+          :stamp-timestamp="stats.generated_at"
+          :stamp-count="stats.total_characters"
         />
       </div>
 

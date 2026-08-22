@@ -66,8 +66,14 @@ function openArchive(event: Event) {
             :entries="stats.top_performers.mythic_plus"
             value-label="Rating"
             :format-value="(v: number) => v.toFixed(1)"
+            :stamp-timestamp="stats.generated_at"
+            :stamp-count="stats.total_characters"
           />
-          <PerformanceByClassCard :classes="stats.class_distribution" />
+          <PerformanceByClassCard
+            :classes="stats.class_distribution"
+            :stamp-timestamp="stats.generated_at"
+            :stamp-count="stats.total_characters"
+          />
         </template>
       </div>
     </div>

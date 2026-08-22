@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useTopRuns } from '@/composables/useCharacterStats'
+import { useCharacterStats, useTopRuns } from '@/composables/useCharacterStats'
 import { useMythicDungeons } from '@/composables/usePveGameData'
 import TopRunsTable from '@/components/stats/TopRunsTable.vue'
 import PaginationControls from '@/components/ui/PaginationControls.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 
 const page = ref(1)
 const { data, isLoading } = useTopRuns(page, 20)
 const { data: dungeonData } = useMythicDungeons()
+const { data: siteStats } = useCharacterStats()
 
 const runs = computed(() => data.value?.data ?? [])
 const lastPage = computed(() => data.value?.last_page ?? 1)
@@ -36,5 +38,12 @@ const rankOffset = computed(() => (page.value - 1) * 20)
     </div>
 
     <div v-else class="text-xs text-wsa-disabled italic py-4 text-center">No run data yet</div>
+
+    <CoverageStamp
+      class="mt-3"
+      variant="crawled"
+      :timestamp="siteStats?.generated_at"
+      :count="siteStats?.total_characters"
+    />
   </div>
 </template>

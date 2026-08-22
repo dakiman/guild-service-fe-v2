@@ -4,7 +4,17 @@ import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import HighestKeysCard from '@/components/stats/HighestKeysCard.vue'
 
 vi.mock('@/api/stats', () => ({
-  fetchCharacterStats: vi.fn(),
+  fetchCharacterStats: vi.fn().mockResolvedValue({
+    total_characters: 123,
+    class_distribution: [],
+    spec_distribution: [],
+    faction_distribution: { horde: 0, alliance: 0 },
+    race_distribution: [],
+    top_performers: { mythic_plus: [], item_level: [], achievement_points: [] },
+    avg_achievement_points: 0,
+    most_popular_spec: null,
+    generated_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+  }),
   fetchRaidKillStats: vi.fn(),
   fetchTopRuns: vi.fn(),
   fetchTopKeys: vi.fn().mockResolvedValue({
@@ -59,5 +69,17 @@ describe('HighestKeysCard', () => {
     expect(img.attributes('src')).toBe('https://example/arak.jpg')
 
     expect(wrapper.text()).toContain('+18✦✦✦')
+  })
+
+  it('renders the crawled-subset coverage stamp', async () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const wrapper = mount(HighestKeysCard, {
+      global: {
+        plugins: [[VueQueryPlugin, { queryClient }]],
+        stubs: { RouterLink: { template: '<a><slot /></a>' } },
+      },
+    })
+    await flushPromises()
+    expect(wrapper.text()).toContain('Among 123 characters tracked by Peon · updated 1h ago')
   })
 })

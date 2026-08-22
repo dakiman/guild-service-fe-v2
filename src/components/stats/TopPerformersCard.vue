@@ -3,6 +3,7 @@ import { RouterLink } from 'vue-router'
 import { CLASS_COLORS } from '@/utils/wowConstants'
 import { capitalizeName } from '@/utils/display'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
+import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import type { TopPerformer } from '@/types/stats'
 
 defineProps<{
@@ -10,6 +11,8 @@ defineProps<{
   entries: TopPerformer[]
   valueLabel: string
   formatValue?: (v: number) => string
+  stampTimestamp?: string | null
+  stampCount?: number | null
 }>()
 
 function defaultFormat(v: number): string {
@@ -67,6 +70,8 @@ function defaultFormat(v: number): string {
           No data yet
         </p>
       </div>
+
+      <CoverageStamp class="mt-3" variant="crawled" :timestamp="stampTimestamp" :count="stampCount" />
     </div>
   </div>
 </template>
