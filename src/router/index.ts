@@ -158,6 +158,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/MetaPage.vue'),
   },
   {
+    path: '/about',
+    name: 'about',
+    component: () => import('@/pages/AboutPage.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('@/pages/NotFoundPage.vue'),
