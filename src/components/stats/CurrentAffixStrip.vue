@@ -4,17 +4,31 @@ import AffixIcon from '@/components/character/pve/AffixIcon.vue'
 import { useMetaPeriods } from '@/composables/useMetaStats'
 import { useMythicDungeons } from '@/composables/usePveGameData'
 import { useWowheadRefresh } from '@/composables/useWowhead'
-import type { MetaRegion } from '@/types/meta'
+import { periodLabel } from '@/utils/periodLabel'
+import type { MetaPeriodParam, MetaRegion } from '@/types/meta'
 
-const props = withDefaults(defineProps<{ region?: MetaRegion }>(), { region: 'all' })
+const props = withDefaults(defineProps<{ region?: MetaRegion; period?: MetaPeriodParam }>(), {
+  region: 'all',
+  period: 'current',
+})
 
 const { data: periods } = useMetaPeriods()
 const { data: dungeonData } = useMythicDungeons()
 
-const current = computed(() => periods.value?.find((p) => p.is_current) ?? null)
+const current = computed(() => {
+  const list = periods.value ?? []
+  if (props.period === 'current') return list.find((p) => p.is_current) ?? null
+  return list.find((p) => p.period_id === props.period) ?? null
+})
+
+// Label for the single/agreed row — follows whichever week `current` resolved
+// to (the page's week picker), not always "This week".
+const weekLabel = computed(() =>
+  periodLabel(current.value?.start_at ?? null, current.value?.is_current ?? false),
+)
 
 interface AffixRow {
-  /** '' = single agreed row (rendered as "This week"); otherwise 'EU' / 'US'. */
+  /** '' = single agreed row (rendered with weekLabel); otherwise 'EU' / 'US'. */
   label: string
   ids: number[]
 }
@@ -29,9 +43,10 @@ const rows = computed<AffixRow[]>(() => {
   }
 
   // "All regions": one row while EU/US agree, per-region rows during the
-  // ~13h reset-offset window when they don't.
+  // ~13h reset-offset window when they don't (or while only one region has
+  // crawled affixes yet — that's not "agreement", it's missing data).
   const signatures = new Set(entries.map(([, ids]) => [...ids].sort((a, b) => a - b).join(',')))
-  if (signatures.size === 1) return [{ label: '', ids: entries[0][1] }]
+  if (entries.length > 1 && signatures.size === 1) return [{ label: '', ids: entries[0][1] }]
   return entries.map(([r, ids]) => ({ label: r.toUpperCase(), ids }))
 })
 
@@ -49,8 +64,11 @@ useWowheadRefresh(rows)
       :key="row.label"
       class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-wsa-muted"
     >
-      <span class="text-[10px] uppercase tracking-wide text-wsa-disabled">{{ row.label || 'This week' }}</span>
-      <span v-for="id in row.ids" :key="id" class="inline-flex items-center gap-1">
+      <span class="text-[10px] uppercase tracking-wide text-wsa-disabled">{{ row.label || weekLabel }}</span> <span
+        v-for="id in row.ids"
+        :key="id"
+        class="inline-flex items-center gap-1"
+      >
         <AffixIcon :affix-id="id" />
         <span>{{ affixName(id) }}</span>
       </span>

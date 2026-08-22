@@ -6,6 +6,7 @@ import MetaSpecCard from '@/components/stats/MetaSpecCard.vue'
 import MetaDungeonCard from '@/components/stats/MetaDungeonCard.vue'
 import MetaCompsCard from '@/components/stats/MetaCompsCard.vue'
 import { useMetaPeriods } from '@/composables/useMetaStats'
+import { periodLabel } from '@/utils/periodLabel'
 import type { MetaPeriodParam, MetaRegion } from '@/types/meta'
 
 const period = ref<MetaPeriodParam>('current')
@@ -22,12 +23,6 @@ const prevPeriodId = computed(() => {
   const idx = selectedIndex.value
   return idx >= 0 && idx + 1 < list.length ? list[idx + 1].period_id : null
 })
-
-function periodLabel(startAt: string | null, isCurrent: boolean): string {
-  if (isCurrent) return 'This week'
-  if (!startAt) return 'Earlier week'
-  return `Week of ${new Date(startAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`
-}
 </script>
 
 <template>
@@ -62,7 +57,7 @@ function periodLabel(startAt: string | null, isCurrent: boolean): string {
       </template>
     </PageHeader>
 
-    <CurrentAffixStrip :region="region" />
+    <CurrentAffixStrip :region="region" :period="period" />
 
     <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
       <div class="flex flex-col gap-4">

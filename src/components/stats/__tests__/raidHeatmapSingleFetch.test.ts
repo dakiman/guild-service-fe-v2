@@ -19,6 +19,7 @@ function stats() {
     current_expansion: 'The War Within',
     expansions: ['The War Within', 'Dragonflight'],
     raids: [],
+    generated_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
   }
 }
 
@@ -69,5 +70,14 @@ describe('RaidHeatmapCard single fetch (F2)', () => {
     await wrapper.find('select').setValue('The War Within')
     await flushPromises()
     expect(fetchRaidKillStats).toHaveBeenCalledTimes(2)
+  })
+
+  it('renders the count-less crawled wording with the coverage stamp age', async () => {
+    const wrapper = mountCard()
+    await flushPromises()
+
+    expect(wrapper.text()).toContain(
+      'Crawled by Peon — coverage is our tracked subset, not all of WoW · updated 1h ago',
+    )
   })
 })

@@ -44,9 +44,10 @@ describe('MetaPage', () => {
     expect(wrapper.findComponent(MetaSpecCard).props('prevPeriodId')).toBe(1001)
   })
 
-  it('mounts the affix strip bound to the selected region', async () => {
+  it('mounts the affix strip bound to the selected region and period', async () => {
     const wrapper = mountPage()
     await flushPromises()
     expect(wrapper.findComponent(CurrentAffixStrip).props('region')).toBe('all')
+    expect(wrapper.findComponent(CurrentAffixStrip).props('period')).toBe('current')
   })
 })

@@ -3,7 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import CurrentAffixStrip from '@/components/stats/CurrentAffixStrip.vue'
 import { fetchMetaPeriods } from '@/api/meta'
-import type { MetaPeriod, MetaRegion } from '@/types/meta'
+import type { MetaPeriod, MetaPeriodParam, MetaRegion } from '@/types/meta'
 
 // useMetaStats imports all four meta fetchers — the mock must export them all.
 vi.mock('@/api/meta', () => ({
@@ -33,14 +33,24 @@ function period(affixes: MetaPeriod['affixes']): MetaPeriod {
   return { period_id: 1002, start_at: null, end_at: null, is_current: true, affixes }
 }
 
-async function mountStrip(region: MetaRegion, affixes: MetaPeriod['affixes']) {
+async function mountStrip(
+  region: MetaRegion,
+  affixes: MetaPeriod['affixes'],
+  periodParam?: MetaPeriodParam,
+) {
   vi.mocked(fetchMetaPeriods).mockResolvedValue([
     period(affixes),
-    { period_id: 1001, start_at: null, end_at: null, is_current: false, affixes: { eu: [123] } },
+    {
+      period_id: 1001,
+      start_at: '2026-08-04T00:00:00Z',
+      end_at: null,
+      is_current: false,
+      affixes: { eu: [123] },
+    },
   ])
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   const wrapper = mount(CurrentAffixStrip, {
-    props: { region },
+    props: periodParam === undefined ? { region } : { region, period: periodParam },
     global: { plugins: [[VueQueryPlugin, { queryClient }]] },
   })
   await flushPromises()
@@ -90,5 +100,24 @@ describe('CurrentAffixStrip', () => {
     const wrapper = await mountStrip('eu', { eu: [9, 10] })
     const anchors = wrapper.findAll('a[data-wowhead]')
     expect(anchors.map((a) => a.attributes('data-wowhead'))).toEqual(['affix=9', 'affix=10'])
+  })
+
+  it('collapses to a labeled per-region row (not "This week") when only one region has crawled affixes yet', async () => {
+    const wrapper = await mountStrip('all', { eu: [9] })
+    expect(wrapper.text()).toMatch(/\bEU\b/)
+    expect(wrapper.text()).toContain('Tyrannical')
+    expect(wrapper.text()).not.toContain('This week')
+  })
+
+  it('follows a past period selection: shows that week\'s affixes labeled "Week of …", not "This week"', async () => {
+    const wrapper = await mountStrip('eu', {}, 1001)
+    expect(wrapper.text()).toContain('Affix 123')
+    expect(wrapper.text()).toMatch(/Week of/)
+    expect(wrapper.text()).not.toContain('This week')
+  })
+
+  it('hides when the selected period id does not match any known period', async () => {
+    const wrapper = await mountStrip('eu', { eu: [9] }, 4242)
+    expect(wrapper.text()).toBe('')
   })
 })
