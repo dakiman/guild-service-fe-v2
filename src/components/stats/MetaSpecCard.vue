@@ -11,9 +11,18 @@ const props = withDefaults(defineProps<{
   period: MetaPeriodParam
   region: MetaRegion
   prevPeriodId?: number | null
+  /** Active Top Comps spec filter (v-model:spec-filter from MetaPage). */
+  specFilter?: number | null
 }>(), {
   prevPeriodId: null,
+  specFilter: null,
 })
+
+const emit = defineEmits<{ 'update:specFilter': [specId: number | null] }>()
+
+function onSelectSpec(specId: number): void {
+  emit('update:specFilter', props.specFilter === specId ? null : specId)
+}
 
 const role = ref<'tank' | 'healer' | 'dps'>('dps')
 const bracket = ref('7')
@@ -73,11 +82,11 @@ const roles = ['tank', 'healer', 'dps'] as const
         </button>
       </div>
     </div>
-    <div class="flex gap-1 mb-3">
+    <div class="flex flex-wrap gap-1 mb-3">
       <button
         v-for="key in bracketKeys"
         :key="key"
-        class="text-[10px] px-2 py-0.5 rounded border"
+        class="text-[10px] px-2 py-0.5 rounded border whitespace-nowrap"
         :class="bracket === key ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15' : 'border-wsa-border text-wsa-disabled'"
         @click="bracket = key"
       >
@@ -96,7 +105,12 @@ const roles = ['tank', 'healer', 'dps'] as const
       message="Spec meta couldn't be loaded right now. Try again in a moment."
     />
     <template v-else>
-      <MetaSpecList :entries="entries" :prev-shares="prevShares" />
+      <MetaSpecList
+        :entries="entries"
+        :prev-shares="prevShares"
+        :active-spec-id="specFilter"
+        @select-spec="onSelectSpec"
+      />
       <p class="mt-3 text-[10px] text-wsa-disabled">{{ totalRuns.toLocaleString() }} runs in bracket</p>
       <CoverageStamp class="mt-1" variant="official" :timestamp="data?.computed_at" />
     </template>
