@@ -35,9 +35,11 @@ const pick = computed(() =>
       message="The dungeon report couldn't be loaded right now. Try again in a moment."
     />
     <template v-else-if="data">
-      <div v-if="pick" class="wsa-card-inner mb-4 flex items-baseline gap-3">
-        <span class="text-[10px] uppercase tracking-wide text-wsa-muted">Dungeon of the Week</span>
-        <span class="wsa-text-heading text-base">{{ pick.name }}</span>
+      <div v-if="pick" class="wsa-card-inner mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span class="text-[10px] uppercase tracking-wide text-wsa-muted whitespace-nowrap">
+          Dungeon of the Week
+        </span>
+        <span class="wsa-text-heading text-base whitespace-nowrap">{{ pick.name }}</span>
         <span class="text-xs text-wsa-muted">
           {{ Math.round(pick.timed_rate * 100) }}% timed over {{ pick.runs.toLocaleString() }} runs
         </span>

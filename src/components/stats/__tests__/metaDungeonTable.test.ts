@@ -50,4 +50,12 @@ describe('MetaDungeonTable', () => {
 
     expect(wrapper.findAll('tbody tr')[0].text()).toContain('Skyreach')
   })
+
+  it('shows a mobile-only scroll hint above the table', () => {
+    const wrapper = mount(MetaDungeonTable, { props: { dungeons: [], trends: {} } })
+    const hint = wrapper.find('[data-testid="scroll-hint"]')
+
+    expect(hint.text()).toBe('Scroll sideways for more →')
+    expect(hint.classes()).toContain('sm:hidden')
+  })
 })
