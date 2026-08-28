@@ -78,8 +78,24 @@ describe('MetaCompsList collapse/expand', () => {
   })
 
   it('hides the toggle when there are 10 or fewer comps', () => {
-    const wrapper = mount(MetaCompsList, { props: { comps: comps.slice(0, 10), pairings } })
+    const wrapper = mount(MetaCompsList, {
+      props: { comps: comps.slice(0, 10), pairings: pairings.slice(0, 8) },
+    })
     expect(wrapper.find('[data-testid="comps-toggle"]').exists()).toBe(false)
+  })
+
+  it('shows the toggle when only pairings overflow', async () => {
+    const wrapper = mount(MetaCompsList, { props: { comps: comps.slice(0, 10), pairings } })
+
+    const toggle = wrapper.find('[data-testid="comps-toggle"]')
+    expect(toggle.exists()).toBe(true)
+    expect(toggle.text()).toBe('Show all 10')
+    expect(wrapper.findAll('[data-testid="pairing-row"]')).toHaveLength(8)
+
+    await toggle.trigger('click')
+
+    expect(wrapper.findAll('[data-testid="pairing-row"]')).toHaveLength(9)
+    expect(wrapper.find('[data-testid="comps-toggle"]').text()).toBe('Show top 10')
   })
 })
 

@@ -57,7 +57,11 @@ const visiblePairings = computed(() =>
 const topCompCount = computed(() => Math.max(1, ...props.comps.map((c) => c.count)))
 const topPairingCount = computed(() => Math.max(1, ...props.pairings.map((p) => p.count)))
 
-const hasMore = computed(() => filteredComps.value.length > COMPS_COLLAPSED)
+const hasMore = computed(
+  () =>
+    filteredComps.value.length > COMPS_COLLAPSED ||
+    filteredPairings.value.length > PAIRINGS_COLLAPSED,
+)
 const filterName = computed(() =>
   props.specFilter === null ? null : specFullName(props.specFilter),
 )
@@ -176,7 +180,7 @@ function pct(count: number, max: number): string {
       class="self-start text-xs text-wsa-gold hover:underline"
       @click="expanded = !expanded"
     >
-      {{ expanded ? 'Show top 10' : `Show all ${filteredComps.length}` }}
+      {{ expanded ? `Show top ${COMPS_COLLAPSED}` : `Show all ${filteredComps.length}` }}
     </button>
   </div>
 </template>
