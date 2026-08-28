@@ -11,6 +11,8 @@ import type { MetaPeriodParam, MetaRegion } from '@/types/meta'
 
 const period = ref<MetaPeriodParam>('current')
 const region = ref<MetaRegion>('all')
+/** Spec used to narrow Top Comps; set from the comps select or by clicking a Spec Meta row. */
+const specFilter = ref<number | null>(null)
 
 const { data: periods } = useMetaPeriods()
 
@@ -62,9 +64,14 @@ const prevPeriodId = computed(() => {
     <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
       <div class="flex flex-col gap-4">
         <MetaDungeonCard :period="period" :region="region" />
-        <MetaCompsCard :period="period" :region="region" />
+        <MetaCompsCard v-model:spec-filter="specFilter" :period="period" :region="region" />
       </div>
-      <MetaSpecCard :period="period" :region="region" :prev-period-id="prevPeriodId" />
+      <MetaSpecCard
+        v-model:spec-filter="specFilter"
+        :period="period"
+        :region="region"
+        :prev-period-id="prevPeriodId"
+      />
     </div>
   </div>
 </template>

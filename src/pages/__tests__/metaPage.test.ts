@@ -50,4 +50,20 @@ describe('MetaPage', () => {
     expect(wrapper.findComponent(CurrentAffixStrip).props('region')).toBe('all')
     expect(wrapper.findComponent(CurrentAffixStrip).props('period')).toBe('current')
   })
+
+  it('routes the spec filter from the spec card to the comps card and back', async () => {
+    const wrapper = mountPage()
+    await flushPromises()
+
+    expect(wrapper.findComponent(MetaCompsCard).props('specFilter')).toBeNull()
+
+    wrapper.findComponent(MetaSpecCard).vm.$emit('update:specFilter', 250)
+    await flushPromises()
+    expect(wrapper.findComponent(MetaCompsCard).props('specFilter')).toBe(250)
+    expect(wrapper.findComponent(MetaSpecCard).props('specFilter')).toBe(250)
+
+    wrapper.findComponent(MetaCompsCard).vm.$emit('update:specFilter', null)
+    await flushPromises()
+    expect(wrapper.findComponent(MetaSpecCard).props('specFilter')).toBeNull()
+  })
 })
