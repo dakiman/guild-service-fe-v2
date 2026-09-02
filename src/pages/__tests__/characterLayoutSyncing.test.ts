@@ -41,6 +41,7 @@ function makeCharacter(overrides: Partial<CharacterResource> = {}): CharacterRes
     talent_loadout_code: null,
     mythic_plus_rating: null,
     rank: null,
+    previous_rank: null,
     media: null,
     talents: { class: [], spec: [], hero: [], pvp: [] },
     equipment: [],

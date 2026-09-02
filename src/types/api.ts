@@ -1,3 +1,5 @@
+import type { RatingChipData } from './character'
+
 export type Region = 'eu' | 'us' | 'kr' | 'tw'
 
 // Server-issued cooldown state for the manual Refresh button (Task 6/7).
@@ -73,7 +75,7 @@ export interface CharacterSuggestion {
   class_id: number
   level: number
   faction: string | null
-  mythic_plus_rating: { rating: number; color: string | null } | null
+  mythic_plus_rating: RatingChipData | null
   region_rank: number | null
 }
 

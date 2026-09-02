@@ -1,5 +1,6 @@
 import type { Region, RefreshInfo } from './api'
 import type { Faction } from './wow'
+import type { RatingChipData } from './character'
 
 export interface GuildSummary {
   id: number
@@ -47,7 +48,7 @@ export interface GuildMember {
   rank: number
   faction: 'Alliance' | 'Horde' | null
   equipped_item_level: number | null
-  mythic_plus_rating: { rating: number; color: string | null } | null
+  mythic_plus_rating: RatingChipData | null
   region_rank: number | null
   active_specialization_id: number | null
   synced_at: string | null

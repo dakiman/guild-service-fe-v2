@@ -96,19 +96,30 @@ export interface CharacterTalents {
   pvp: PvpTalentEntry[]
 }
 
-export interface MythicPlusRating {
+/** Which season a stored Blizzard rating belongs to (BE `ratingSeasonBlock`). */
+export interface RatingSeason {
+  season_id: number | null
+  season_slug: string | null
+  season_name: string | null
+  is_current: boolean
+}
+
+export interface MythicPlusRating extends RatingSeason {
   rating: number
   color: string | null
   per_spec: Record<string, number>
 }
 
-export interface RatingChipData {
+export interface RatingChipData extends RatingSeason {
   rating: number
   color: string | null
 }
 
 export interface CharacterRank {
   season_id: number
+  season_slug: string | null
+  season_name: string | null
+  is_current: boolean
   rating: number
   world: number
   region: number
@@ -278,6 +289,7 @@ export interface CharacterResource {
   talent_loadout_code: string | null
   mythic_plus_rating: MythicPlusRating | null
   rank: CharacterRank | null
+  previous_rank: CharacterRank | null
   media: { avatar: string; inset: string; main: string } | null
   talents: CharacterTalents
   equipment: EquipmentItem[]
