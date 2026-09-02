@@ -67,6 +67,16 @@ describe('LeaderboardsPage', () => {
     expect(w.text()).toContain('No runs recorded yet this week')
   })
 
+  it('switching region on a realm ladder drops the realm pick', async () => {
+    fetchCharacterLeaderboard.mockResolvedValue(emptyResponse('realm'))
+    fetchRealmRuns.mockResolvedValue({ data: [], meta: { period_id: 1078, region: 'eu', realm: 'draenor', connected_realm_id: 1403, computed_at: null } })
+    const { w, router } = await mountAt('/leaderboards/eu/realm/draenor')
+    await w.find('[aria-label="Region"]').setValue('us')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('leaderboards-region')
+    expect(router.currentRoute.value.params.region).toBe('us')
+  })
+
   it('unknown slug shows the not-found state and does not fetch', async () => {
     const { w } = await mountAt('/leaderboards/eu/class/bard')
     expect(fetchCharacterLeaderboard).not.toHaveBeenCalled()

@@ -13,6 +13,7 @@ import { CLASSES, SPEC_TO_CLASS } from '@/utils/wowConstants'
 import { SPEC_NAMES } from '@/utils/wowIcons'
 import { classIdFromSlug, classSlug, specIdFromSlug, specSlug } from '@/utils/leaderboardSlugs'
 import { displayRealm } from '@/utils/display'
+import { relativeTime } from '@/utils/relativeTime'
 import type { LeaderboardQuery, LeaderboardScope } from '@/types/leaderboards'
 import type { Region } from '@/types/api'
 
@@ -86,7 +87,11 @@ function go(next: { scope?: LeaderboardScope; region?: Region; realm?: string | 
   const r = next.region ?? region.value
   const c = next.classId === undefined ? classId.value : next.classId
   const sp = next.specId === undefined ? specId.value : next.specId
-  const rl = next.realm === undefined ? realm.value : next.realm
+  // A region switch on a realm ladder can't carry the realm slug across —
+  // it belongs to the old region and 404s in the new one. Treat a region
+  // change as clearing the realm pick.
+  const regionChanged = next.region !== undefined && next.region !== region.value
+  const rl = next.realm === undefined ? (regionChanged && s === 'realm' ? null : realm.value) : next.realm
   switch (s) {
     case 'world': return router.push({ name: 'leaderboards-world' })
     case 'realm': return rl
@@ -128,6 +133,7 @@ const title = computed(() => {
   }
 })
 const realmTitle = computed(() => (realm.value ? displayRealm(realm.value, null) : ''))
+const realmRunsAge = computed(() => relativeTime(realmRuns.data.value?.meta.computed_at))
 </script>
 
 <template>
@@ -204,7 +210,9 @@ const realmTitle = computed(() => (realm.value ? displayRealm(realm.value, null)
       <div v-if="realmRuns.isPending.value" class="h-24 animate-pulse rounded bg-wsa-border/20" />
       <TopRunsTable v-else-if="realmRuns.data.value?.data.length" :runs="realmRuns.data.value.data" :rank-offset="0" :dungeons="dungeons" />
       <p v-else class="py-4 text-center text-sm text-wsa-disabled">No runs recorded yet this week.</p>
-      <CoverageStamp variant="official" :timestamp="realmRuns.data.value?.meta.computed_at" />
+      <p v-if="realmRunsAge" class="text-[10px] text-wsa-disabled">
+        From Blizzard's official M+ leaderboard for this realm · updated {{ realmRunsAge }}
+      </p>
     </section>
   </div>
 </template>
