@@ -79,6 +79,8 @@
 
         <CharacterStatPills :character="character" :achievements-enabled="achievementsEnabled" class="mt-1" />
       </div>
+
+      <ScoreHeader :character="character" class="sm:pl-4" />
     </div>
   </div>
 </template>
@@ -92,6 +94,7 @@ import FactionBadge from '@/components/wow/FactionBadge.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
 import ExternalProfileLinks from '@/components/wow/ExternalProfileLinks.vue'
 import CharacterStatPills from '@/components/character/CharacterStatPills.vue'
+import ScoreHeader from '@/components/character/ScoreHeader.vue'
 import { CLASSES, CLASS_COLORS, RACES } from '@/utils/wowConstants'
 import { displayGuildName, displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'
 import { copyText } from '@/utils/clipboard'
