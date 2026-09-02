@@ -5,6 +5,7 @@ import { suggestCharacters } from '@/api/characters'
 import { suggestGuilds } from '@/api/guilds'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import FactionBadge from '@/components/wow/FactionBadge.vue'
+import RatingChip from '@/components/wow/RatingChip.vue'
 import { displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'
 import type { CharacterSuggestion, GuildSuggestion, Region } from '@/types/api'
 
@@ -181,6 +182,12 @@ const showEmpty = computed(
             >
               · L{{ s.level }}</template>
           </span>
+          <RatingChip
+            v-if="s._kind === 'character'"
+            :rating="s.mythic_plus_rating"
+            :region-rank="s.region_rank"
+            class="ml-auto"
+          />
         </li>
       </ul>
 

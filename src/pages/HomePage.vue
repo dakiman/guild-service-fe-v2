@@ -72,6 +72,7 @@
                 <span class="text-wsa-muted text-sm">
                   · {{ displayRealm(c.realm, c.display_realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
                 </span>
+                <RatingChip :rating="c.mythic_plus_rating" :region-rank="c.region_rank" class="ml-auto" />
               </router-link>
             </li>
           </ul>
@@ -97,6 +98,7 @@ import { ArrowRight } from 'lucide-vue-next'
 import { fetchPopularGuilds } from '@/api/guilds'
 import { fetchPopularCharacters } from '@/api/characters'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
+import RatingChip from '@/components/wow/RatingChip.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 import LookupForm from '@/components/form/LookupForm.vue'
 import GuildSummaryCard from '@/components/guild/GuildSummaryCard.vue'

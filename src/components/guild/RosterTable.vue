@@ -4,6 +4,7 @@ import ClassIcon from '@/components/wow/ClassIcon.vue'
 import RaceIcon from '@/components/wow/RaceIcon.vue'
 import SpecIcon from '@/components/wow/SpecIcon.vue'
 import FactionBadge from '@/components/wow/FactionBadge.vue'
+import RatingChip from '@/components/wow/RatingChip.vue'
 import { CLASS_COLORS, STALE_DATA_DAYS } from '@/utils/wowConstants'
 import { displayName } from '@/utils/display'
 import { useTableSort } from '@/composables/useTableSort'
@@ -170,12 +171,7 @@ function sortGlyph(key: SortKey): string {
               class="text-right tabular-nums py-1.5 px-2 hidden sm:table-cell"
               :class="{ 'italic opacity-70': isStaleSync(m.synced_at) }"
             >
-              <span
-                v-if="m.mythic_plus_rating"
-                :style="{ color: m.mythic_plus_rating.color ?? undefined }"
-              >
-                {{ m.mythic_plus_rating.rating }}
-              </span>
+              <RatingChip v-if="m.mythic_plus_rating" :rating="m.mythic_plus_rating" :region-rank="m.region_rank" />
               <span v-else class="text-wsa-disabled">—</span>
             </td>
             <td class="text-right tabular-nums text-wsa-text py-1.5 px-2">{{ m.rank }}</td>
