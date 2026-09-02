@@ -17,6 +17,8 @@ export interface CharacterSummary {
   faction: Faction
   active_specialization: string | null
   media: string | null
+  mythic_plus_rating: RatingChipData | null
+  region_rank: number | null
 }
 
 export interface EquipmentStat {
@@ -98,6 +100,31 @@ export interface MythicPlusRating {
   rating: number
   color: string | null
   per_spec: Record<string, number>
+}
+
+export interface RatingChipData {
+  rating: number
+  color: string | null
+}
+
+export interface CharacterRank {
+  season_id: number
+  rating: number
+  world: number
+  region: number
+  realm: number | null
+  class: number
+  spec: number | null
+  population: {
+    world: number
+    region: number
+    realm: number | null
+    class: number
+    spec: number | null
+  }
+  percentile: number | null
+  connected_realm_id: number | null
+  computed_at: string | null
 }
 
 export interface PvpMatchStatistics {
@@ -250,6 +277,7 @@ export interface CharacterResource {
   talent_tree_id: number | null
   talent_loadout_code: string | null
   mythic_plus_rating: MythicPlusRating | null
+  rank: CharacterRank | null
   media: { avatar: string; inset: string; main: string } | null
   talents: CharacterTalents
   equipment: EquipmentItem[]

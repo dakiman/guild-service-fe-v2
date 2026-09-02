@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { relativeTime } from '@/utils/relativeTime'
 
 const props = defineProps<{
   /** 'official' = Blizzard-ladder wording; 'crawled' = Peon tracked-subset wording. */
@@ -10,17 +11,7 @@ const props = defineProps<{
   count?: number | null
 }>()
 
-const age = computed<string | null>(() => {
-  if (!props.timestamp) return null
-  const ms = Date.now() - new Date(props.timestamp).getTime()
-  if (Number.isNaN(ms)) return null
-  const minutes = Math.floor(ms / 60_000)
-  if (minutes < 1) return 'just now'
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 48) return `${hours}h ago`
-  return `${Math.floor(hours / 24)}d ago`
-})
+const age = computed<string | null>(() => relativeTime(props.timestamp))
 </script>
 
 <template>

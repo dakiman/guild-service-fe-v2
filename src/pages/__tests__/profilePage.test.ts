@@ -96,6 +96,8 @@ export function makeCharacter(overrides: Partial<CharacterSummary> = {}): Charac
     faction: 'Horde',
     active_specialization: 'Frost',
     media: 'https://render.example/melaniya.jpg',
+    mythic_plus_rating: null,
+    region_rank: null,
     ...overrides,
   }
 }

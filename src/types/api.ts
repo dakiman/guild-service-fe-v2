@@ -73,6 +73,8 @@ export interface CharacterSuggestion {
   class_id: number
   level: number
   faction: string | null
+  mythic_plus_rating: { rating: number; color: string | null } | null
+  region_rank: number | null
 }
 
 export interface GuildSuggestion {

@@ -48,6 +48,7 @@ export interface GuildMember {
   faction: 'Alliance' | 'Horde' | null
   equipped_item_level: number | null
   mythic_plus_rating: { rating: number; color: string | null } | null
+  region_rank: number | null
   active_specialization_id: number | null
   synced_at: string | null
 }
