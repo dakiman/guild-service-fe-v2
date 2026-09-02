@@ -49,6 +49,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/RaidsPage.vue'),
   },
   {
+    path: '/leaderboards',
+    name: 'leaderboards',
+    redirect: { name: 'leaderboards-region', params: { region: 'eu' } },
+  },
+  { path: '/leaderboards/world', name: 'leaderboards-world', component: () => import('@/pages/LeaderboardsPage.vue') },
+  { path: '/leaderboards/:region(eu|us)', name: 'leaderboards-region', component: () => import('@/pages/LeaderboardsPage.vue') },
+  { path: '/leaderboards/:region(eu|us)/realm/:realm', name: 'leaderboards-realm', component: () => import('@/pages/LeaderboardsPage.vue') },
+  { path: '/leaderboards/:region(eu|us)/class/:classSlug', name: 'leaderboards-class', component: () => import('@/pages/LeaderboardsPage.vue') },
+  { path: '/leaderboards/:region(eu|us)/spec/:specSlug', name: 'leaderboards-spec', component: () => import('@/pages/LeaderboardsPage.vue') },
+  {
     path: '/characters/:region/:realm/:name',
     name: 'character-detail',
     component: () => import('@/pages/CharacterDetailLayout.vue'),

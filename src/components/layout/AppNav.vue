@@ -90,11 +90,13 @@ const navLinks = [
   { name: 'guild-search', label: 'Guilds' },
   { name: 'character-search', label: 'Characters' },
   { name: 'mythic-plus', label: 'Mythic+' },
+  { name: 'leaderboards', label: 'Leaderboards' },
   { name: 'meta', label: 'Meta' },
   { name: 'raids', label: 'Raids' },
 ]
 
 function isActive(name: string) {
+  if (name === 'leaderboards') return String(route.name ?? '').startsWith('leaderboards')
   return route.name === name
 }
 
