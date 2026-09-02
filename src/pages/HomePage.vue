@@ -72,7 +72,7 @@
                 <span class="text-wsa-muted text-sm">
                   · {{ displayRealm(c.realm, c.display_realm) }} ({{ c.region.toUpperCase() }}) · L{{ c.level }}
                 </span>
-                <RatingChip :rating="c.mythic_plus_rating" :region-rank="c.region_rank" class="ml-auto" />
+                <RatingChip :rating="c.mythic_plus_rating" :region-rank="c.region_rank" :is-current="c.mythic_plus_rating?.is_current ?? true" :season-name="c.mythic_plus_rating?.season_name" class="ml-auto" />
               </router-link>
             </li>
           </ul>

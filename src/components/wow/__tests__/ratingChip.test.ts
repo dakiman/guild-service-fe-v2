@@ -20,4 +20,15 @@ describe('RatingChip', () => {
     expect(w.text()).toContain('1,500')
     expect(w.text()).not.toContain('#')
   })
+
+  it('greys out a rating from an earlier season and drops the rank', () => {
+    const w = mount(RatingChip, {
+      props: { rating: { rating: 2723, color: '#a335ee' }, regionRank: 12, isCurrent: false, seasonName: 'Midnight Season 1' },
+    })
+    expect(w.text()).toContain('2,723')
+    expect(w.text()).not.toContain('#')
+    expect(w.find('[data-testid="rating-chip-value"]').attributes('style') ?? '').not.toContain('rgb(163, 53, 238)')
+    expect(w.find('[data-testid="rating-chip-value"]').classes()).toContain('text-wsa-disabled')
+    expect(w.attributes('title')).toBe('M+ rating from Midnight Season 1 — not yet rated this season')
+  })
 })

@@ -186,6 +186,8 @@ const showEmpty = computed(
             v-if="s._kind === 'character'"
             :rating="s.mythic_plus_rating"
             :region-rank="s.region_rank"
+            :is-current="s.mythic_plus_rating?.is_current ?? true"
+            :season-name="s.mythic_plus_rating?.season_name"
             class="ml-auto"
           />
         </li>

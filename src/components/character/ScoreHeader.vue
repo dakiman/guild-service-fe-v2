@@ -6,6 +6,7 @@ import { SPEC_NAMES } from '@/utils/wowIcons'
 import { classSlug, specSlug } from '@/utils/leaderboardSlugs'
 import { displayRealm as fmtRealm } from '@/utils/display'
 import { relativeTime } from '@/utils/relativeTime'
+import { seasonSegment } from '@/utils/seasonSlugs'
 import type { CharacterResource } from '@/types/character'
 
 const props = defineProps<{ character: CharacterResource }>()
@@ -26,6 +27,8 @@ const sSlug = computed(() =>
   props.character.active_specialization_id ? specSlug(props.character.active_specialization_id) : null,
 )
 const stamp = computed(() => relativeTime(rank.value?.computed_at))
+const previous = computed(() => props.character.previous_rank)
+const previousSeg = computed(() => (previous.value?.season_slug ? seasonSegment(previous.value.season_slug) : null))
 </script>
 
 <template>
@@ -37,6 +40,10 @@ const stamp = computed(() => relativeTime(rank.value?.computed_at))
       data-testid="score-value"
     >
       {{ n(rating.rating) }}
+    </div>
+
+    <div v-if="!rating.is_current" class="text-xs text-wsa-muted" data-testid="score-season">
+      {{ rating.season_name ?? 'Earlier season' }} rating · not yet rated this season
     </div>
 
     <template v-if="rank">
@@ -70,6 +77,26 @@ const stamp = computed(() => relativeTime(rank.value?.computed_at))
       </div>
       <div v-if="stamp" class="text-[10px] text-wsa-disabled">ranks computed nightly · {{ stamp }}</div>
     </template>
-    <div v-else class="text-xs text-wsa-disabled">not yet ranked this season</div>
+    <div v-else-if="rating.is_current" class="text-xs text-wsa-disabled">not yet ranked this season</div>
+
+    <div
+      v-if="previous && previousSeg"
+      class="flex flex-wrap sm:justify-end gap-x-2 text-xs text-wsa-muted"
+      data-testid="score-previous"
+    >
+      <span>{{ previous.season_name ?? 'Last season' }}</span>
+      <span aria-hidden="true">·</span>
+      <RouterLink
+        :to="{ name: 'leaderboards-season-region', params: { season: previousSeg, region: character.region } }"
+        class="hover:text-wsa-gold hover:underline"
+      >#{{ n(previous.region) }} {{ regionUpper }}</RouterLink>
+      <template v-if="previous.realm != null">
+        <span aria-hidden="true">·</span>
+        <RouterLink
+          :to="{ name: 'leaderboards-season-realm', params: { season: previousSeg, region: character.region, realm: character.realm } }"
+          class="hover:text-wsa-gold hover:underline"
+        >#{{ n(previous.realm) }} on {{ realmName }}</RouterLink>
+      </template>
+    </div>
   </div>
 </template>

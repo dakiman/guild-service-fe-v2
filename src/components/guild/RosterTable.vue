@@ -171,7 +171,7 @@ function sortGlyph(key: SortKey): string {
               class="text-right tabular-nums py-1.5 px-2 hidden sm:table-cell"
               :class="{ 'italic opacity-70': isStaleSync(m.synced_at) }"
             >
-              <RatingChip v-if="m.mythic_plus_rating" :rating="m.mythic_plus_rating" :region-rank="m.region_rank" />
+              <RatingChip v-if="m.mythic_plus_rating" :rating="m.mythic_plus_rating" :region-rank="m.region_rank" :is-current="m.mythic_plus_rating.is_current" :season-name="m.mythic_plus_rating.season_name" />
               <span v-else class="text-wsa-disabled">—</span>
             </td>
             <td class="text-right tabular-nums text-wsa-text py-1.5 px-2">{{ m.rank }}</td>
