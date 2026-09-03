@@ -74,6 +74,9 @@ const board = useQuery({
   enabled: computed(() => query.value !== null),
   staleTime: 300_000,
   refetchOnWindowFocus: false,
+  // A 404 is deterministic (unknown season/realm) — retrying it just delays
+  // the not-found state by three round trips for no benefit.
+  retry: (count, err) => !(isAxiosError(err) && err.response?.status === 404) && count < 3,
 })
 
 /** Season-less URL, or the URL names the registry's current season, or the BE says so. */
@@ -82,7 +85,7 @@ const isCurrentSeason = computed(
 )
 const unknownSeason = computed(() => {
   const e = board.error.value
-  return seasonSlug.value !== null && isAxiosError(e) && e.response?.status === 404
+  return seasonSlug.value !== null && isAxiosError(e) && e.response?.status === 404 && e.response.data?.message === 'Unknown season'
 })
 const frozenDate = computed(() => {
   const iso = board.data.value?.meta.computed_at

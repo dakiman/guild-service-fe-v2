@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-6">
     <DungeonsHeadline
       :runs="character.dungeon_runs ?? []"
-      :rating="isCurrentSelected ? character.mythic_plus_rating : null"
+      :rating="isCurrentSelected && character.mythic_plus_rating?.is_current ? character.mythic_plus_rating : null"
       :current-season="selectedSeason"
       :season-name="selectedSeasonName"
     />

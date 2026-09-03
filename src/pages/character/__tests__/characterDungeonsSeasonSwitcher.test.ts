@@ -33,9 +33,9 @@ const character = {
   ],
 }
 
-function mountTab() {
+function mountTab(char: unknown = character) {
   const ctx = {
-    character: computed(() => character as never),
+    character: computed(() => char as never),
   } as unknown as CharacterContext
 
   return mount(CharacterDungeonsTab, {
@@ -75,5 +75,22 @@ describe('CharacterDungeonsTab season switcher', () => {
     expect(headline.props('currentSeason')).toBe(17)
     expect(headline.props('rating')).toBeNull()
     expect(headline.props('seasonName')).toBe('Midnight Season 1')
+  })
+
+  it('suppresses the rating on the current season when it is not itself current (F1)', async () => {
+    // Rating stored is from an earlier season (untagged / stale) even though
+    // the current season (18) is selected — is_current: false means the BE
+    // did not see this character rated this season.
+    const staleRatedCharacter = {
+      ...character,
+      mythic_plus_rating: { rating: 2800, color: '#ff8000', is_current: false },
+    }
+
+    const wrapper = mountTab(staleRatedCharacter)
+    await flushPromises()
+
+    const headline = wrapper.findComponent({ name: 'DungeonsHeadline' })
+    expect(headline.props('currentSeason')).toBe(18)
+    expect(headline.props('rating')).toBeNull()
   })
 })

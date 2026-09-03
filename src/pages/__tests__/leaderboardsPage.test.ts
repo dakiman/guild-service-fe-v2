@@ -153,8 +153,15 @@ describe('LeaderboardsPage', () => {
   })
 
   it('an unknown season shows the not-found state', async () => {
-    fetchCharacterLeaderboard.mockRejectedValue(Object.assign(new Error('404'), { isAxiosError: true, response: { status: 404 } }))
+    fetchCharacterLeaderboard.mockRejectedValue(Object.assign(new Error('404'), { isAxiosError: true, response: { status: 404, data: { message: 'Unknown season' } } }))
     const { w } = await mountAt('/leaderboards/xx-9/eu')
     expect(w.text()).toContain('No such season')
+  })
+
+  it('an unknown realm on a season URL is not misattributed to the season', async () => {
+    fetchCharacterLeaderboard.mockRejectedValue(Object.assign(new Error('404'), { isAxiosError: true, response: { status: 404, data: { message: 'Unknown realm' } } }))
+    const { w } = await mountAt('/leaderboards/mn-1/eu/realm/not-a-realm')
+    expect(w.text()).not.toContain('No such season')
+    expect(w.text()).toContain("Couldn't load this leaderboard.")
   })
 })
