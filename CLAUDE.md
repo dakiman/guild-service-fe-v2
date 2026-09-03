@@ -74,6 +74,8 @@ Affixes ride along on the dungeons response keyed by id (`Record<number, Keyston
 
 **Identity casing.** `character.name` and `character.realm` from BE are canonical lowercased/slug forms (`melaniya`, `the-maelstrom`); they round-trip into URLs and lookups, so do **not** mutate them. Display formatting is the component's job: `CharacterHeader.vue` exposes `displayName` (title-case first letter) and `displayRealm` (split on `-`, title-case each word, join with spaces). New components should follow the same pattern, not `.toUpperCase()` on raw fields.
 
+**Leaderboards.** `/leaderboards[/world|/:region[/realm/:realm|/class/:classSlug|/spec/:specSlug]]` (route names `leaderboards-*`) are the *current* season; the same shapes under `/leaderboards/:season/…` (`leaderboards-season-*`, `:season` = registry slug minus `season-`, see `utils/seasonSlugs.ts`) are frozen past seasons — `LeaderboardsPage` sends `season=<full slug>` to the BE and hides the weekly realm-runs card there. `ScoreHeader` links to the plain names; `previous_rank` links to the season names.
+
 ### Wowhead tooltips
 
 `index.html` loads `https://wow.zamimg.com/widgets/power.js` (correct CDN is **`zamimg.com`**, not `zamzig.com` — a stale build once had this wrong and silently broke all tooltips). Components render anchors with `:data-wowhead="item=123"` / `spell=123`.
