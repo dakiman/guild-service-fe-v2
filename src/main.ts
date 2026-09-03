@@ -5,6 +5,13 @@ import App from './App.vue'
 import { router } from './router'
 import { useAuthStore } from './stores/auth'
 import { configureClient } from './api/client'
+// Self-hosted fonts (latin subset, woff2). Display = Cinzel, body = Alegreya Sans.
+import '@fontsource/cinzel/latin-600.css'
+import '@fontsource/cinzel/latin-700.css'
+import '@fontsource/alegreya-sans/latin-400.css'
+import '@fontsource/alegreya-sans/latin-400-italic.css'
+import '@fontsource/alegreya-sans/latin-500.css'
+import '@fontsource/alegreya-sans/latin-700.css'
 import 'vue-sonner/style.css'
 import './style.css' // after vendor CSS so toast overrides win
 

@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto flex w-full max-w-2xl flex-col gap-4">
-    <h1 class="text-3xl font-bold text-wsa-heading">About Peon</h1>
+    <h1 class="font-display text-3xl font-bold text-wsa-heading">About Peon</h1>
 
     <div class="wsa-card flex flex-col gap-3 text-sm leading-relaxed text-wsa-text">
       <p>

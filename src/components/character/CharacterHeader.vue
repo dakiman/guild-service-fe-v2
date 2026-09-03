@@ -31,7 +31,7 @@
 
       <div class="flex flex-col gap-2 flex-1 min-w-0">
         <div class="flex flex-wrap items-center gap-3">
-          <h1 class="text-3xl font-bold text-wsa-text drop-shadow-md">{{ displayName }}</h1>
+          <h1 class="font-display text-3xl font-bold text-wsa-text drop-shadow-md">{{ displayName }}</h1>
           <FactionBadge :faction="character.faction" />
           <button
             type="button"

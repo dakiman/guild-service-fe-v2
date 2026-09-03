@@ -29,6 +29,12 @@
 }
 
 @layer base {
+  /* Alegreya Sans has proportional figures by default; ranks, scores and ilvls
+   * live in tables, so line the digits up there. */
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+
   :focus-visible {
     outline: 2px solid rgb(var(--wsa-gold) / 0.7);
     outline-offset: 2px;
@@ -121,7 +127,7 @@
   /* ── Heading ────────────────────────────────────────────────── */
   .wsa-text-heading {
     color: rgb(var(--wsa-heading));
-    font-family: 'Cinzel', 'Raleway', system-ui, sans-serif;
+    font-family: theme('fontFamily.display');
     font-weight: 600;
     letter-spacing: 0.02em;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
@@ -134,7 +140,7 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    font-family: 'Cinzel', 'Raleway', system-ui, sans-serif;
+    font-family: theme('fontFamily.display');
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;

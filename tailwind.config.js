@@ -10,6 +10,12 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        // Body/UI: warm humanist sans. Loaded in main.ts via @fontsource.
+        sans: ['"Alegreya Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Display: engraved serif for the wordmark, page titles, section headings.
+        display: ['Cinzel', 'Georgia', 'serif'],
+      },
       colors: {
         wsa: {
           bg: 'rgb(var(--wsa-bg) / <alpha-value>)',

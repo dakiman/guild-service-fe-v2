@@ -9,7 +9,7 @@
         class="flex items-center gap-2 text-lg font-bold text-wsa-heading hover:brightness-110 transition-all"
       >
         <img src="/favicon.svg" alt="" aria-hidden="true" class="h-6 w-6" />
-        <span class="tracking-[0.18em]">PEON</span>
+        <span class="font-display tracking-[0.18em]">PEON</span>
       </router-link>
       <div class="ml-4 hidden gap-1 md:flex">
         <router-link

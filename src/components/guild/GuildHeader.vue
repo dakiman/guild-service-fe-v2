@@ -33,7 +33,7 @@ const realmDisplay = computed(() =>
     <div class="flex flex-col gap-4">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div class="flex flex-col gap-1">
-          <h1 class="text-3xl font-bold leading-tight text-wsa-heading">{{ guildDisplay }}</h1>
+          <h1 class="font-display text-3xl font-bold leading-tight text-wsa-heading">{{ guildDisplay }}</h1>
           <p class="text-wsa-muted">{{ realmDisplay }}</p>
         </div>
         <div class="flex items-center gap-1">
