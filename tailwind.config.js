@@ -12,7 +12,7 @@ export default {
     extend: {
       fontFamily: {
         // Body/UI: warm humanist sans. Loaded in main.ts via @fontsource.
-        sans: ['"Alegreya Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['"Merriweather Sans Variable"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         // Display: engraved serif for the wordmark, page titles, section headings.
         display: ['Cinzel', 'Georgia', 'serif'],
       },
