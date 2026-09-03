@@ -58,6 +58,12 @@ const routes: RouteRecordRaw[] = [
   { path: '/leaderboards/:region(eu|us)/realm/:realm', name: 'leaderboards-realm', component: () => import('@/pages/LeaderboardsPage.vue') },
   { path: '/leaderboards/:region(eu|us)/class/:classSlug', name: 'leaderboards-class', component: () => import('@/pages/LeaderboardsPage.vue') },
   { path: '/leaderboards/:region(eu|us)/spec/:specSlug', name: 'leaderboards-spec', component: () => import('@/pages/LeaderboardsPage.vue') },
+  // Season-prefixed ladders (frozen standings; the season-less routes above are the current season).
+  { path: '/leaderboards/:season([a-z]+-\\d+)/world', name: 'leaderboards-season-world', component: () => import('@/pages/LeaderboardsPage.vue') },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/:region(eu|us)', name: 'leaderboards-season-region', component: () => import('@/pages/LeaderboardsPage.vue') },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/:region(eu|us)/realm/:realm', name: 'leaderboards-season-realm', component: () => import('@/pages/LeaderboardsPage.vue') },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/:region(eu|us)/class/:classSlug', name: 'leaderboards-season-class', component: () => import('@/pages/LeaderboardsPage.vue') },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/:region(eu|us)/spec/:specSlug', name: 'leaderboards-season-spec', component: () => import('@/pages/LeaderboardsPage.vue') },
   {
     path: '/characters/:region/:realm/:name',
     name: 'character-detail',

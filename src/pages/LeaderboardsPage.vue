@@ -8,7 +8,9 @@ import TopRunsTable from '@/components/stats/TopRunsTable.vue'
 import RealmCombobox, { type RealmPick } from '@/components/form/RealmCombobox.vue'
 import LeaderboardTable from '@/components/leaderboards/LeaderboardTable.vue'
 import { fetchCharacterLeaderboard, fetchRealmRuns } from '@/api/leaderboards'
-import { useMythicDungeons } from '@/composables/usePveGameData'
+import { useMythicDungeons, useSeasons } from '@/composables/usePveGameData'
+import { isAxiosError } from 'axios'
+import { seasonSegment, seasonSlugFromSegment } from '@/utils/seasonSlugs'
 import { CLASSES, SPEC_TO_CLASS } from '@/utils/wowConstants'
 import { SPEC_NAMES } from '@/utils/wowIcons'
 import { classIdFromSlug, classSlug, specIdFromSlug, specSlug } from '@/utils/leaderboardSlugs'
@@ -29,15 +31,19 @@ const SCOPES: Array<{ key: LeaderboardScope; label: string }> = [
   { key: 'world', label: 'World' },
 ]
 
-const scope = computed<LeaderboardScope>(() => {
-  switch (route.name) {
-    case 'leaderboards-world': return 'world'
-    case 'leaderboards-realm': return 'realm'
-    case 'leaderboards-class': return 'class'
-    case 'leaderboards-spec': return 'spec'
-    default: return 'region'
-  }
-})
+const SCOPE_BY_ROUTE: Record<string, LeaderboardScope> = {
+  'leaderboards-world': 'world', 'leaderboards-season-world': 'world',
+  'leaderboards-realm': 'realm', 'leaderboards-season-realm': 'realm',
+  'leaderboards-class': 'class', 'leaderboards-season-class': 'class',
+  'leaderboards-spec': 'spec', 'leaderboards-season-spec': 'spec',
+}
+const scope = computed<LeaderboardScope>(() => SCOPE_BY_ROUTE[String(route.name ?? '')] ?? 'region')
+/** Registry slug from the URL segment; null = current season (plain routes). */
+const seasonSlug = computed(() => (route.params.season ? seasonSlugFromSegment(route.params.season as string) : null))
+
+const { data: seasonData } = useSeasons()
+const seasons = computed(() => seasonData.value?.seasons ?? [])
+const currentSeasonSlug = computed(() => seasons.value.find((s) => s.is_current)?.slug ?? null)
 const region = computed<Region>(() => (scope.value === 'world' ? 'eu' : ((route.params.region as Region) ?? 'eu')))
 const realm = computed(() => (route.params.realm as string | undefined) ?? null)
 const classId = computed(() => (route.params.classSlug ? classIdFromSlug(route.params.classSlug as string) : null))
@@ -50,13 +56,16 @@ const unknownSlug = computed(
 
 const query = computed<LeaderboardQuery | null>(() => {
   if (unknownSlug.value) return null
+  let q: LeaderboardQuery | null
   switch (scope.value) {
-    case 'world': return { scope: 'world' }
-    case 'realm': return realm.value ? { scope: 'realm', region: region.value, realm: realm.value } : null
-    case 'class': return { scope: 'class', region: region.value, class_id: classId.value! }
-    case 'spec': return { scope: 'spec', region: region.value, spec_id: specId.value! }
-    default: return { scope: 'region', region: region.value }
+    case 'world': q = { scope: 'world' }; break
+    case 'realm': q = realm.value ? { scope: 'realm', region: region.value, realm: realm.value } : null; break
+    case 'class': q = { scope: 'class', region: region.value, class_id: classId.value! }; break
+    case 'spec': q = { scope: 'spec', region: region.value, spec_id: specId.value! }; break
+    default: q = { scope: 'region', region: region.value }
   }
+  // Season only on season URLs so current-season query keys are unchanged.
+  return q && seasonSlug.value ? { ...q, season: seasonSlug.value } : q
 })
 
 const board = useQuery({
@@ -67,10 +76,23 @@ const board = useQuery({
   refetchOnWindowFocus: false,
 })
 
+/** Season-less URL, or the URL names the registry's current season, or the BE says so. */
+const isCurrentSeason = computed(
+  () => !seasonSlug.value || seasonSlug.value === currentSeasonSlug.value || board.data.value?.meta.season?.is_current === true,
+)
+const unknownSeason = computed(() => {
+  const e = board.error.value
+  return seasonSlug.value !== null && isAxiosError(e) && e.response?.status === 404
+})
+const frozenDate = computed(() => {
+  const iso = board.data.value?.meta.computed_at
+  return iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null
+})
+
 const realmRuns = useQuery({
   queryKey: computed(() => ['leaderboards', 'realm-runs', region.value, realm.value] as const),
   queryFn: ({ signal }) => fetchRealmRuns(region.value, realm.value!, { signal }),
-  enabled: computed(() => scope.value === 'realm' && realm.value !== null),
+  enabled: computed(() => scope.value === 'realm' && realm.value !== null && isCurrentSeason.value),
   staleTime: 300_000,
   refetchOnWindowFocus: false,
 })
@@ -82,7 +104,12 @@ const rows = computed(() => board.data.value?.data ?? [])
 const meta = computed(() => board.data.value?.meta ?? null)
 
 // ── filter bar → routes ─────────────────────────────────────────────
-function go(next: { scope?: LeaderboardScope; region?: Region; realm?: string | null; classId?: number | null; specId?: number | null }) {
+function go(next: {
+  scope?: LeaderboardScope; region?: Region; realm?: string | null
+  classId?: number | null; specId?: number | null
+  /** Registry slug; the current season (or null) goes back to the plain routes. */
+  season?: string | null
+}) {
   const s = next.scope ?? scope.value
   const r = next.region ?? region.value
   const c = next.classId === undefined ? classId.value : next.classId
@@ -92,17 +119,21 @@ function go(next: { scope?: LeaderboardScope; region?: Region; realm?: string | 
   // change as clearing the realm pick.
   const regionChanged = next.region !== undefined && next.region !== region.value
   const rl = next.realm === undefined ? (regionChanged && s === 'realm' ? null : realm.value) : next.realm
+  const targetSeason = next.season === undefined ? seasonSlug.value : next.season
+  const seg = targetSeason && targetSeason !== currentSeasonSlug.value ? seasonSegment(targetSeason) : null
+  const name = (base: string) => (seg ? `leaderboards-season-${base}` : `leaderboards-${base}`)
+  const params = (p: Record<string, string>) => (seg ? { season: seg, ...p } : p)
   switch (s) {
-    case 'world': return router.push({ name: 'leaderboards-world' })
+    case 'world': return router.push({ name: name('world'), params: params({}) })
     case 'realm': return rl
-      ? router.push({ name: 'leaderboards-realm', params: { region: r, realm: rl } })
-      : router.push({ name: 'leaderboards-region', params: { region: r } })
-    case 'class': return router.push({ name: 'leaderboards-class', params: { region: r, classSlug: classSlug(c ?? 9)! } })
+      ? router.push({ name: name('realm'), params: params({ region: r, realm: rl }) })
+      : router.push({ name: name('region'), params: params({ region: r }) })
+    case 'class': return router.push({ name: name('class'), params: params({ region: r, classSlug: classSlug(c ?? 9)! }) })
     case 'spec': {
       const id = sp ?? Object.keys(SPEC_TO_CLASS).map(Number).find((k) => SPEC_TO_CLASS[k] === (c ?? 9))!
-      return router.push({ name: 'leaderboards-spec', params: { region: r, specSlug: specSlug(id)! } })
+      return router.push({ name: name('spec'), params: params({ region: r, specSlug: specSlug(id)! }) })
     }
-    default: return router.push({ name: 'leaderboards-region', params: { region: r } })
+    default: return router.push({ name: name('region'), params: params({ region: r }) })
   }
 }
 
@@ -141,6 +172,15 @@ const realmRunsAge = computed(() => relativeTime(realmRuns.data.value?.meta.comp
     <PageHeader icon="/brand/icon-mythicplus.jpg" title="Leaderboards">
       <template #right>
         <div class="flex flex-wrap items-center gap-2">
+          <select
+            v-if="seasons.length"
+            :value="seasonSlug ?? currentSeasonSlug ?? ''"
+            class="text-xs bg-transparent border border-wsa-border rounded px-2 py-1 text-wsa-muted"
+            aria-label="Season"
+            @change="go({ season: ($event.target as HTMLSelectElement).value })"
+          >
+            <option v-for="s in seasons" :key="s.slug" :value="s.slug">{{ s.name }}</option>
+          </select>
           <select
             v-if="scope !== 'world'"
             :value="region"
@@ -190,22 +230,35 @@ const realmRunsAge = computed(() => relativeTime(realmRuns.data.value?.meta.comp
       </select>
     </div>
 
-    <section v-if="unknownSlug" class="wsa-card p-6 text-center text-wsa-muted">
-      <p class="font-semibold text-wsa-heading">No such leaderboard</p>
-      <p class="text-sm">That class or spec isn't one we rank.</p>
+    <section v-if="unknownSlug || unknownSeason" class="wsa-card p-6 text-center text-wsa-muted">
+      <p class="font-semibold text-wsa-heading">{{ unknownSeason ? 'No such season' : 'No such leaderboard' }}</p>
+      <p class="text-sm">{{ unknownSeason ? "That season isn't in our registry." : "That class or spec isn't one we rank." }}</p>
     </section>
 
     <section v-else class="wsa-card p-4 space-y-3">
-      <h2 class="text-lg font-bold text-wsa-heading">{{ title }}</h2>
+      <h2 class="text-lg font-bold text-wsa-heading">
+        {{ title }}
+        <span v-if="!isCurrentSeason && meta?.season" class="ml-2 text-sm font-normal text-wsa-muted">{{ meta.season.name }}</span>
+      </h2>
       <p v-if="scope === 'realm' && !realm" class="text-sm text-wsa-muted">Pick a realm to see its ladder.</p>
       <div v-else-if="board.isPending.value" class="h-40 animate-pulse rounded bg-wsa-border/20" />
       <p v-else-if="board.isError.value" class="text-sm text-red-300">Couldn't load this leaderboard.</p>
-      <LeaderboardTable v-else :rows="rows" />
-      <CoverageStamp variant="crawled" :timestamp="meta?.computed_at" :count="meta?.population" />
-      <p v-if="meta?.computed_at" class="text-[10px] text-wsa-disabled">Ranks computed nightly from Blizzard's own M+ rating · top 100 shown</p>
+      <LeaderboardTable
+        v-else
+        :rows="rows"
+        :empty-text="isCurrentSeason ? undefined : 'No standings were recorded for this season.'"
+      />
+      <template v-if="isCurrentSeason">
+        <CoverageStamp variant="crawled" :timestamp="meta?.computed_at" :count="meta?.population" />
+        <p v-if="meta?.computed_at" class="text-[10px] text-wsa-disabled">Ranks computed nightly from Blizzard's own M+ rating · top 100 shown</p>
+      </template>
+      <p v-else-if="meta" class="text-[10px] text-wsa-disabled" data-testid="frozen-stamp">
+        {{ meta.season?.name ?? 'This season' }} · final standings as of the last nightly<template v-if="frozenDate"> ({{ frozenDate }})</template>
+        · among {{ (meta.population ?? 0).toLocaleString() }} characters tracked by Peon · top 100 shown
+      </p>
     </section>
 
-    <section v-if="scope === 'realm' && realm" class="wsa-card p-4 space-y-3">
+    <section v-if="scope === 'realm' && realm && isCurrentSeason" class="wsa-card p-4 space-y-3">
       <h2 class="text-lg font-bold text-wsa-heading">Top runs this week on {{ realmTitle }}</h2>
       <div v-if="realmRuns.isPending.value" class="h-24 animate-pulse rounded bg-wsa-border/20" />
       <TopRunsTable v-else-if="realmRuns.data.value?.data.length" :runs="realmRuns.data.value.data" :rank-offset="0" :dungeons="dungeons" />

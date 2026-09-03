@@ -6,7 +6,9 @@ import { displayName, displayRealm } from '@/utils/display'
 import { SPEC_NAMES } from '@/utils/wowIcons'
 import type { LeaderboardRow } from '@/types/leaderboards'
 
-defineProps<{ rows: LeaderboardRow[] }>()
+withDefaults(defineProps<{ rows: LeaderboardRow[]; emptyText?: string }>(), {
+  emptyText: 'No ranked characters yet this season.',
+})
 const n = (v: number) => v.toLocaleString('en-US')
 // 0-based podium convention shared with TopRunsTable: index < 3 = top three.
 function podiumClass(index: number): string {
@@ -53,5 +55,5 @@ function podiumClass(index: number): string {
       </tbody>
     </table>
   </div>
-  <p v-else class="py-6 text-center text-sm text-wsa-disabled">No ranked characters yet this season.</p>
+  <p v-else class="py-6 text-center text-sm text-wsa-disabled">{{ emptyText }}</p>
 </template>

@@ -12,14 +12,30 @@ vi.mock('@/api/leaderboards', () => ({
 }))
 vi.mock('@/composables/usePveGameData', () => ({
   useMythicDungeons: () => ({ data: { value: { dungeons: [] } } }),
+  useSeasons: () => ({
+    data: {
+      value: {
+        seasons: [
+          { id: 18, slug: 'season-mn-2', name: 'Midnight Season 2', is_current: true, has_archive: false, started_at: '2026-08-22T00:00:00+00:00', ended_at: null },
+          { id: 17, slug: 'season-mn-1', name: 'Midnight Season 1', is_current: false, has_archive: true, started_at: '2026-03-18T00:00:00+00:00', ended_at: '2026-08-22T00:00:00+00:00' },
+        ],
+      },
+    },
+  }),
 }))
 
+const page = LeaderboardsPage
 const routes = [
-  { path: '/leaderboards/world', name: 'leaderboards-world', component: LeaderboardsPage },
-  { path: '/leaderboards/:region', name: 'leaderboards-region', component: LeaderboardsPage },
-  { path: '/leaderboards/:region/realm/:realm', name: 'leaderboards-realm', component: LeaderboardsPage },
-  { path: '/leaderboards/:region/class/:classSlug', name: 'leaderboards-class', component: LeaderboardsPage },
-  { path: '/leaderboards/:region/spec/:specSlug', name: 'leaderboards-spec', component: LeaderboardsPage },
+  { path: '/leaderboards/world', name: 'leaderboards-world', component: page },
+  { path: '/leaderboards/:region(eu|us)', name: 'leaderboards-region', component: page },
+  { path: '/leaderboards/:region(eu|us)/realm/:realm', name: 'leaderboards-realm', component: page },
+  { path: '/leaderboards/:region(eu|us)/class/:classSlug', name: 'leaderboards-class', component: page },
+  { path: '/leaderboards/:region(eu|us)/spec/:specSlug', name: 'leaderboards-spec', component: page },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/world', name: 'leaderboards-season-world', component: page },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/:region(eu|us)', name: 'leaderboards-season-region', component: page },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/:region(eu|us)/realm/:realm', name: 'leaderboards-season-realm', component: page },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/:region(eu|us)/class/:classSlug', name: 'leaderboards-season-class', component: page },
+  { path: '/leaderboards/:season([a-z]+-\\d+)/:region(eu|us)/spec/:specSlug', name: 'leaderboards-season-spec', component: page },
   { path: '/characters/:region/:realm/:name', name: 'character-detail', component: { template: '<div />' } },
 ]
 
@@ -37,9 +53,14 @@ async function mountAt(path: string) {
   return { w, router }
 }
 
-const emptyResponse = (scope: string) => ({
+const currentSeason = { id: 18, slug: 'season-mn-2', name: 'Midnight Season 2', is_current: true }
+const lastSeason = { id: 17, slug: 'season-mn-1', name: 'Midnight Season 1', is_current: false }
+const emptyResponse = (scope: string, season = currentSeason, extra: Record<string, unknown> = {}) => ({
   data: [],
-  meta: { scope, region: 'eu', realm: null, connected_realm_id: null, class_id: null, spec_id: null, season_id: 18, population: 0, computed_at: '2026-09-01T04:00:00Z' },
+  meta: {
+    scope, region: 'eu', realm: null, connected_realm_id: null, class_id: null, spec_id: null,
+    season, season_id: season.id, population: 0, computed_at: '2026-09-01T04:00:00Z', ...extra,
+  },
 })
 
 beforeEach(() => {
@@ -89,5 +110,51 @@ describe('LeaderboardsPage', () => {
     await w.find('[data-testid="scope-world"]').trigger('click')
     await flushPromises()
     expect(router.currentRoute.value.name).toBe('leaderboards-world')
+  })
+
+  it('a season URL sends the registry slug and shows the frozen-season copy', async () => {
+    fetchCharacterLeaderboard.mockResolvedValue(emptyResponse('region', lastSeason, { population: 5, computed_at: '2026-08-21T04:00:00Z' }))
+    const { w } = await mountAt('/leaderboards/mn-1/eu')
+    expect(fetchCharacterLeaderboard).toHaveBeenCalledWith({ scope: 'region', region: 'eu', season: 'season-mn-1' }, expect.anything())
+    const stamp = w.find('[data-testid="frozen-stamp"]')
+    expect(stamp.text()).toContain('Midnight Season 1')
+    expect(stamp.text()).toContain('final standings as of the last nightly')
+    expect(w.text()).not.toContain('Ranks computed nightly')
+  })
+
+  it('hides the weekly realm-runs card on a frozen season', async () => {
+    fetchCharacterLeaderboard.mockResolvedValue(emptyResponse('realm', lastSeason))
+    const { w } = await mountAt('/leaderboards/mn-1/eu/realm/draenor')
+    expect(fetchRealmRuns).not.toHaveBeenCalled()
+    expect(w.text()).not.toContain('Top runs this week')
+  })
+
+  it('the season select pushes season routes and back to the plain current-season routes', async () => {
+    fetchCharacterLeaderboard.mockResolvedValue(emptyResponse('region'))
+    const { w, router } = await mountAt('/leaderboards/eu')
+    await w.find('[aria-label="Season"]').setValue('season-mn-1')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('leaderboards-season-region')
+    expect(router.currentRoute.value.params).toEqual({ season: 'mn-1', region: 'eu' })
+
+    await w.find('[aria-label="Season"]').setValue('season-mn-2')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('leaderboards-region')
+    expect(router.currentRoute.value.params).toEqual({ region: 'eu' })
+  })
+
+  it('keeps the season when switching scope', async () => {
+    fetchCharacterLeaderboard.mockResolvedValue(emptyResponse('region', lastSeason))
+    const { w, router } = await mountAt('/leaderboards/mn-1/eu')
+    await w.find('[data-testid="scope-world"]').trigger('click')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('leaderboards-season-world')
+    expect(router.currentRoute.value.params.season).toBe('mn-1')
+  })
+
+  it('an unknown season shows the not-found state', async () => {
+    fetchCharacterLeaderboard.mockRejectedValue(Object.assign(new Error('404'), { isAxiosError: true, response: { status: 404 } }))
+    const { w } = await mountAt('/leaderboards/xx-9/eu')
+    expect(w.text()).toContain('No such season')
   })
 })
