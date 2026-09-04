@@ -9,7 +9,13 @@
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <div class="wsa-card">
         <h2 class="wsa-text-heading text-[15px] mb-3">Find a character</h2>
-        <LookupForm kind="character" @submit="onCharacterSubmit" @pick="onCharacterSubmit" />
+        <LookupForm
+          ref="characterForm"
+          kind="character"
+          :initial-name="initialCharacterName || undefined"
+          @submit="onCharacterSubmit"
+          @pick="onCharacterSubmit"
+        />
       </div>
       <div class="wsa-card">
         <h2 class="wsa-text-heading text-[15px] mb-3">Find a guild</h2>
@@ -92,8 +98,9 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, nextTick } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ArrowRight } from 'lucide-vue-next'
 import { fetchPopularGuilds } from '@/api/guilds'
 import { fetchPopularCharacters } from '@/api/characters'
@@ -106,6 +113,19 @@ import { displayName, displayRealm } from '@/utils/display'
 import type { Region } from '@/types/api'
 
 const router = useRouter()
+const route = useRoute()
+
+// Nav quick-search hand-off: `/?q=<name>` seeds the character form once, then the
+// param is stripped so a refresh doesn't re-apply it.
+const initialCharacterName = typeof route.query.q === 'string' ? route.query.q.trim() : ''
+const characterForm = ref<{ focusRealm: () => void } | null>(null)
+
+onMounted(async () => {
+  if (!initialCharacterName) return
+  await router.replace({ name: 'home' })
+  await nextTick()
+  characterForm.value?.focusRealm()
+})
 
 function onCharacterSubmit(payload: { region: Region; realm: string; name: string }) {
   router.push({
