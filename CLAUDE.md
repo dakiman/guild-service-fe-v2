@@ -68,6 +68,10 @@ Affixes ride along on the dungeons response keyed by id (`Record<number, Keyston
 
 `src/stores/auth.ts` persists the token via `useStorage('auth.token', ...)`. `main.ts` calls `auth.fetchMe()` before mounting so the app boots with resolved auth state.
 
+### Nav
+
+`components/layout/AppNav.vue` collapses at **`lg` (1024px)**. Links come from `components/layout/navLinks.ts` (`NAV_LINKS` + `isNavActive`, prefix-based — Characters owns every `character-*` route, Leaderboards every `leaderboards*` route). No Home link; the wordmark is home. `NavSearch.vue` wraps `NameAutocomplete` (characters only): a pick routes to `character-detail`; Enter with no match routes to `/?q=<name>`, which `HomePage.vue` consumes once (prefills the character `LookupForm`, focuses the realm picker, strips the param). `/` focuses the search via `composables/useSlashShortcut.ts` (opens the mobile menu first below `lg`).
+
 ### Routing
 
 `src/router/index.ts` — all pages lazy-loaded. Guards in `router/guards.ts`: `meta.requiresAuth` → `/login?next=...`; `meta.guestOnly` redirects authed users to `/`. Dynamic params `:region/:realm/:name` use `props: true`.
