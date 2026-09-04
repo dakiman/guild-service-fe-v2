@@ -129,6 +129,12 @@ function pick(realm: RealmGameData) {
   open.value = false
   inputEl.value?.blur()
 }
+
+function focus() {
+  inputEl.value?.focus()
+}
+
+defineExpose({ focus })
 </script>
 
 <template>
