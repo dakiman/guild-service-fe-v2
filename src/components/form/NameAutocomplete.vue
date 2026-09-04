@@ -16,11 +16,19 @@ type Suggestion =
 const props = defineProps<{
   kind: 'character' | 'guild'
   modelValue: string
+  /** Overrides the per-kind default placeholder (also used as aria-label). */
+  placeholder?: string
+  /** Extra classes on the <input> (e.g. padding for an icon). */
+  inputClass?: string
+  /** Positioning classes for the dropdown; default anchors it to both edges of the wrapper. */
+  dropdownClass?: string
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
   pick: [payload: { region: Region; realm: string; name: string }]
+  /** Enter pressed with no highlighted suggestion. Value is trimmed; never fired when empty. */
+  submit: [value: string]
 }>()
 
 const open = ref(false)
@@ -104,9 +112,15 @@ function onKeydown(e: KeyboardEvent) {
     if (open.value && suggestions.value[highlightIndex.value]) {
       e.preventDefault()
       pick(suggestions.value[highlightIndex.value])
+    } else {
+      const value = props.modelValue.trim()
+      if (value) emit('submit', value)
+      // No preventDefault: inside LookupForm the native form submit still runs.
     }
   } else if (e.key === 'Escape') {
-    open.value = false
+    // First Escape closes the dropdown; a second one (dropdown already closed) leaves the field.
+    if (open.value) open.value = false
+    else inputEl.value?.blur()
   }
 }
 
@@ -116,9 +130,15 @@ function pick(s: Suggestion) {
   inputEl.value?.blur()
 }
 
-const placeholder = computed(() =>
-  props.kind === 'guild' ? 'Guild name' : 'Character name',
+const placeholder = computed(
+  () => props.placeholder ?? (props.kind === 'guild' ? 'Guild name' : 'Character name'),
 )
+
+function focus() {
+  inputEl.value?.focus()
+}
+
+defineExpose({ focus })
 
 const showLoading = computed(() => enabled.value && query.isFetching.value && suggestions.value.length === 0)
 const showEmpty = computed(
@@ -132,6 +152,7 @@ const showEmpty = computed(
       ref="inputEl"
       type="text"
       class="wsa-input !py-1.5 text-sm"
+      :class="inputClass"
       :value="modelValue"
       :placeholder="placeholder"
       :aria-label="placeholder"
@@ -147,7 +168,8 @@ const showEmpty = computed(
 
     <div
       v-if="open"
-      class="absolute left-0 right-0 mt-1 z-20 rounded-md border-2 border-wsa-border shadow-lg max-h-72 overflow-auto"
+      class="absolute mt-1 z-20 rounded-md border-2 border-wsa-border shadow-lg max-h-72 overflow-auto"
+      :class="dropdownClass ?? 'left-0 right-0'"
       style="background: rgb(var(--wsa-bg))"
       role="listbox"
     >
