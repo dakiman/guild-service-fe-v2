@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { defineComponent, h, nextTick } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
@@ -63,6 +63,8 @@ function activeLabels(w: ReturnType<typeof mount>) {
   return desktopLinks(w).filter((a) => a.attributes('aria-current') === 'page').map((a) => a.text())
 }
 
+const originalMatchMedia = window.matchMedia
+
 function setDesktop(matches: boolean) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -74,6 +76,14 @@ function setDesktop(matches: boolean) {
 describe('AppNav', () => {
   beforeEach(() => {
     focusSpy.mockClear()
+  })
+
+  afterEach(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: originalMatchMedia,
+    })
   })
 
   it('renders six links with no Home entry', async () => {

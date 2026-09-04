@@ -11,6 +11,7 @@
         <h2 class="wsa-text-heading text-[15px] mb-3">Find a character</h2>
         <LookupForm
           ref="characterForm"
+          :key="formKey"
           kind="character"
           :initial-name="initialCharacterName || undefined"
           @submit="onCharacterSubmit"
@@ -100,7 +101,7 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { ArrowRight } from 'lucide-vue-next'
 import { fetchPopularGuilds } from '@/api/guilds'
 import { fetchPopularCharacters } from '@/api/characters'
@@ -115,16 +116,30 @@ import type { Region } from '@/types/api'
 const router = useRouter()
 const route = useRoute()
 
-// Nav quick-search hand-off: `/?q=<name>` seeds the character form once, then the
-// param is stripped so a refresh doesn't re-apply it.
-const initialCharacterName = typeof route.query.q === 'string' ? route.query.q.trim() : ''
+// Nav quick-search hand-off: `/?q=<name>` seeds the character form once (on mount AND on
+// an in-place route update, since HomePage is reused when already on `/`), then the param
+// is stripped so a refresh doesn't re-apply it.
+const initialCharacterName = ref('')
+const formKey = ref(0)
 const characterForm = ref<{ focusRealm: () => void } | null>(null)
 
-onMounted(async () => {
-  if (!initialCharacterName) return
+async function consumeQ(query: typeof route.query) {
+  if (!('q' in query)) return
+  const q = typeof query.q === 'string' ? query.q.trim() : ''
+  if (q) {
+    initialCharacterName.value = q
+    formKey.value++
+  }
   await router.replace({ name: 'home' })
   await nextTick()
-  characterForm.value?.focusRealm()
+  if (q) characterForm.value?.focusRealm()
+}
+
+onMounted(() => consumeQ(route.query))
+// `onBeforeRouteUpdate` fires *before* `route` itself updates, so read the incoming
+// query off `to` directly rather than the (still-stale) reactive `route.query`.
+onBeforeRouteUpdate((to) => {
+  if ('q' in to.query) consumeQ(to.query)
 })
 
 function onCharacterSubmit(payload: { region: Region; realm: string; name: string }) {

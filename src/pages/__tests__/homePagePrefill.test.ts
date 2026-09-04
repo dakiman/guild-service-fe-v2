@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'
-import { createRouter, createMemoryHistory } from 'vue-router'
+import { createRouter, createMemoryHistory, RouterView } from 'vue-router'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 
 vi.mock('@/api/guilds', () => ({
@@ -39,7 +39,10 @@ async function mountAt(path: string) {
   await router.push(path)
   await router.isReady()
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  const w = mount(HomePage, {
+  // Mount through a real <router-view> (not HomePage directly) so onBeforeRouteUpdate
+  // guards registered inside HomePage are associated with the matched route record —
+  // an in-place `/` -> `/?q=...` navigation reuses the component instance, matching prod.
+  const w = mount(RouterView, {
     global: {
       plugins: [router, [VueQueryPlugin, { queryClient }]],
       stubs: { LookupForm: LookupFormStub, ClassIcon: true, RatingChip: true, GuildSummaryCard: true, ErrorState: true },
@@ -65,5 +68,27 @@ describe('HomePage ?q= prefill', () => {
     const { w } = await mountAt('/')
     expect(w.get('[data-testid="lookup-character"]').attributes('data-initial')).toBe('')
     expect(focusRealm).not.toHaveBeenCalled()
+  })
+
+  it('prefills when the ?q= hand-off arrives via an in-place route update (already on /)', async () => {
+    focusRealm.mockClear()
+    const { w, router } = await mountAt('/')
+    expect(w.get('[data-testid="lookup-character"]').attributes('data-initial')).toBe('')
+
+    await router.push('/?q=arthas')
+    await flushPromises()
+
+    expect(w.get('[data-testid="lookup-character"]').attributes('data-initial')).toBe('arthas')
+    expect(focusRealm).toHaveBeenCalledTimes(1)
+    expect(router.currentRoute.value.query.q).toBeUndefined()
+    expect(router.currentRoute.value.name).toBe('home')
+  })
+
+  it('strips a whitespace-only q without prefilling or focusing', async () => {
+    focusRealm.mockClear()
+    const { w, router } = await mountAt('/?q=%20%20')
+    expect(w.get('[data-testid="lookup-character"]').attributes('data-initial')).toBe('')
+    expect(focusRealm).not.toHaveBeenCalled()
+    expect(router.currentRoute.value.query.q).toBeUndefined()
   })
 })
