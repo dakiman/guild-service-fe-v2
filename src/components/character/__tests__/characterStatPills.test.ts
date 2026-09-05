@@ -20,6 +20,6 @@ describe('CharacterStatPills', () => {
     expect(w.text()).toContain('276')
     expect(w.text()).toContain('8,415')
     expect(w.text()).not.toContain('2,723')
-    expect(w.text()).not.toMatch(/\bM\+\b/)
+    expect(w.text()).not.toMatch(/M\+/)
   })
 })

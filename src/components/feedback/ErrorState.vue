@@ -17,7 +17,7 @@
       </h3>
       <p
         v-if="resolvedMessage"
-        :class="[isThrottled ? 'text-wsa-muted' : 'text-wsa-error/80', compact ? 'text-xs mt-0.5' : 'text-xs mt-1']"
+        :class="[isThrottled ? 'text-wsa-muted' : 'text-wsa-error', compact ? 'text-xs mt-0.5' : 'text-xs mt-1']"
       >
         {{ resolvedMessage }}
       </p>

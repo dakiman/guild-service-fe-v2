@@ -151,8 +151,8 @@ defineExpose({ focus })
       role="combobox"
       :aria-expanded="open"
       aria-autocomplete="list"
-      :aria-controls="open ? listId : undefined"
-      :aria-activedescendant="open && highlightIndex >= 0 ? `${listId}-opt-${highlightIndex}` : undefined"
+      :aria-controls="open && suggestions.length > 0 ? listId : undefined"
+      :aria-activedescendant="open && suggestions.length > 0 && highlightIndex >= 0 ? `${listId}-opt-${highlightIndex}` : undefined"
       @input="onInput"
       @focus="onFocus"
       @blur="onBlur"
@@ -175,8 +175,8 @@ defineExpose({ focus })
       <ul v-else-if="suggestions.length" :id="listId" role="listbox" class="py-1">
         <li
           v-for="(r, i) in suggestions"
-          :key="`${r.region}:${r.slug}`"
           :id="`${listId}-opt-${i}`"
+          :key="`${r.region}:${r.slug}`"
           role="option"
           :aria-selected="i === highlightIndex"
           class="flex items-center justify-between px-3 py-1.5 cursor-pointer text-sm"

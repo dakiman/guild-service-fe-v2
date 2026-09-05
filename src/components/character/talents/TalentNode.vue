@@ -13,7 +13,7 @@
     :style="nodeStyle"
   >
     <span class="talent-node__icon" />
-    <span v-if="rankLabel" class="talent-node__rank">{{ rankLabel }}</span>
+    <span v-if="rankLabel" class="talent-node__rank" aria-hidden="true">{{ rankLabel }}</span>
     <span class="sr-only">{{ accessibleName }}</span>
   </a>
 </template>

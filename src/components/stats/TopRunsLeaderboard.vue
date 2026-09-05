@@ -9,7 +9,7 @@ import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 
 const page = useQueryParam<number>('page', { default: 1, parse: intParam })
-const { data, isLoading, isError, refetch } = useTopRuns(page, 20)
+const { data, isLoading, isError, error, refetch } = useTopRuns(page, 20)
 const { data: dungeonData } = useMythicDungeons()
 const { data: siteStats } = useCharacterStats()
 
@@ -27,7 +27,7 @@ const rankOffset = computed(() => (page.value - 1) * 20)
       <div v-for="i in 10" :key="i" class="wsa-skeleton h-8" />
     </div>
 
-    <ErrorState v-else-if="isError" compact title="Couldn't load top runs" @retry="refetch()" />
+    <ErrorState v-else-if="isError" compact title="Couldn't load top runs" :error="error" @retry="refetch()" />
 
     <div v-else-if="runs.length">
       <TopRunsTable :runs="runs" :rank-offset="rankOffset" :dungeons="dungeons" />

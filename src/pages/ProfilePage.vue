@@ -153,7 +153,11 @@
           <button
             type="button"
             class="wsa-btn flex-none text-xs"
-            :class="character.recruitment ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400' : ''"
+            :class="
+              character.recruitment && !recruitmentBusy[character.id]
+                ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400'
+                : ''
+            "
             :disabled="recruitmentBusy[character.id]"
             @click="onToggleRecruitment(character.id)"
           >
@@ -167,12 +171,18 @@
       </ul>
     </section>
     </template>
-    <div v-else-if="!authReady" class="flex justify-center py-16" aria-busy="true"><div class="wsa-spinner" /></div>
-    <ErrorState v-else title="You're signed out" message="Sign in to see your profile." hide-art hide-retry>
-      <template #actions>
-        <RouterLink :to="{ name: 'login', query: { next: '/profile' } }" class="wsa-btn">Sign in</RouterLink>
-      </template>
-    </ErrorState>
+    <template v-else-if="!authReady">
+      <h1 class="sr-only">Profile</h1>
+      <div class="flex justify-center py-16" aria-busy="true"><div class="wsa-spinner" /></div>
+    </template>
+    <template v-else>
+      <h1 class="sr-only">Profile</h1>
+      <ErrorState title="You're signed out" message="Sign in to see your profile." hide-art hide-retry>
+        <template #actions>
+          <RouterLink :to="{ name: 'login', query: { next: '/profile' } }" class="wsa-btn">Sign in</RouterLink>
+        </template>
+      </ErrorState>
+    </template>
   </div>
 </template>
 

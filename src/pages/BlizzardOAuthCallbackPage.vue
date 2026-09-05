@@ -7,7 +7,7 @@
       subtext="Hang tight — we're starting your character sync."
     />
 
-    <div v-else-if="status === 'error'" role="alert" class="wsa-card !border-red-800/50">
+    <div v-else-if="status === 'error'" role="alert" class="wsa-card !border-wsa-error/40">
       <div>
         <h3 class="font-semibold text-wsa-error">Battle.net sync failed</h3>
         <p class="text-sm text-wsa-muted mt-1">{{ message }}</p>

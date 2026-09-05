@@ -82,6 +82,8 @@ Routes carry either a static `meta.title` (formatted as `"{title} · Peon"` by `
 
 **Leaderboards.** `/leaderboards[/world|/:region[/realm/:realm|/class/:classSlug|/spec/:specSlug]]` (route names `leaderboards-*`) are the *current* season; the same shapes under `/leaderboards/:season/…` (`leaderboards-season-*`, `:season` = registry slug minus `season-`, see `utils/seasonSlugs.ts`) are frozen past seasons — `LeaderboardsPage` sends `season=<full slug>` to the BE and hides the weekly realm-runs card there. `ScoreHeader` links to the plain names; `previous_rank` links to the season names.
 
+`router/scrollBehavior.ts` restores saved positions, honours hashes, scrolls to top on path changes and returns `false` for query-only writes (so `useQueryParam` never scrolls).
+
 ### Wowhead tooltips
 
 `index.html` loads `https://wow.zamimg.com/widgets/power.js` (correct CDN is **`zamimg.com`**, not `zamzig.com` — a stale build once had this wrong and silently broke all tooltips). Components render anchors with `:data-wowhead="item=123"` / `spell=123`.
@@ -110,6 +112,8 @@ power.js injects a **fixed-size** icon (`span` > `ins` icon + `del` frame overla
 - `src/types/` — TS types mirroring BE Resources; **keep in sync** with `../backend`.
 
 Tailwind + DaisyUI (`dark-leather` theme, `<html data-theme="dark-leather">`). **Do NOT use DaisyUI component classes** (`btn`, `card`, `badge`, `alert`, `table`, `navbar`, `skeleton`, `loading`, `join`, `form-control`). Use the custom `wsa-*` component classes defined in `src/style.css` instead: `wsa-card`, `wsa-btn`, `wsa-input`, `wsa-badge`, `wsa-spinner`, `wsa-tab`, `wsa-hero-banner`, `wsa-stat-pill`. For text colors use Tailwind utilities: `text-wsa-text`, `text-wsa-muted`, `text-wsa-disabled`, `text-wsa-heading`/`text-wsa-gold`. DaisyUI base tokens (`bg-base-100`, `text-base-content`) are fine for page-level backgrounds. Full reference: `docs/design-guide.md`.
+
+`App.vue` renders a `sr-only focus:not-sr-only` skip link targeting `<main id="main" tabindex="-1">`.
 
 ### Deployment
 

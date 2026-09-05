@@ -47,13 +47,17 @@ const frozenAt = computed(() => {
     </div>
 
     <div v-if="isLoading" class="flex flex-col gap-4">
+      <h1 class="sr-only">Mythic+ archive</h1>
       <div class="wsa-skeleton h-10" />
       <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
         <div class="wsa-skeleton h-96" />
         <div class="wsa-skeleton h-96" />
       </div>
     </div>
-    <ErrorState v-else-if="isError" hide-retry title="No archive found" message="This season has no archived data." />
+    <template v-else-if="isError">
+      <h1 class="sr-only">Mythic+ archive</h1>
+      <ErrorState hide-retry title="No archive found" message="This season has no archived data." />
+    </template>
 
     <div v-else-if="data" class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1fr_350px]">
       <!-- Frozen Top 100 (client-side pagination over the blob) -->

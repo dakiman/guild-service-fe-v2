@@ -65,6 +65,7 @@ function specTitle(spec: SpecDistribution): string {
         <button
           v-for="role in roles"
           :key="role"
+          type="button"
           class="text-[10px] px-2 py-1 min-h-6 rounded border"
           :class="
             activeRole === role

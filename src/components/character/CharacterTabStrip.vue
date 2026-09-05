@@ -1,9 +1,17 @@
 <template>
-  <nav ref="navEl" aria-label="Character sections"
-       class="flex flex-nowrap sm:flex-wrap gap-1 overflow-x-auto sm:overflow-visible snap-x -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
+  <nav
+    ref="navEl"
+    aria-label="Character sections"
+    class="flex flex-nowrap sm:flex-wrap gap-1 overflow-x-auto sm:overflow-visible snap-x -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none"
+  >
     <router-link v-for="tab in tabs" :key="tab.label" v-slot="{ isActive, navigate, href }" :to="tab.to" custom>
-      <a :href="href" :aria-current="isTabActive(tab, isActive) ? 'page' : undefined"
-         class="wsa-tab shrink-0 snap-start whitespace-nowrap" :class="{ 'wsa-tab--active': isTabActive(tab, isActive) }" @click="navigate">
+      <a
+        :href="href"
+        :aria-current="isTabActive(tab, isActive) ? 'page' : undefined"
+        class="wsa-tab shrink-0 snap-start whitespace-nowrap"
+        :class="{ 'wsa-tab--active': isTabActive(tab, isActive) }"
+        @click="navigate"
+      >
         <component :is="tab.icon" class="w-4 h-4" />
         <span>{{ tab.label }}</span>
       </a>

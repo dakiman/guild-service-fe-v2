@@ -65,6 +65,7 @@ function roleLabel(role: string): string {
         <button
           v-for="role in roles"
           :key="role"
+          type="button"
           class="text-[10px] px-2 py-1 min-h-6 rounded border"
           :class="
             activeRole === role
@@ -78,7 +79,7 @@ function roleLabel(role: string): string {
       </div>
     </div>
 
-    <div class="flex items-center gap-2.5 pb-1 text-[10px] uppercase tracking-wider text-wsa-muted" aria-hidden="true">
+    <div class="flex items-center gap-2.5 pb-1 text-[10px] uppercase tracking-wider text-wsa-muted">
       <span class="w-6" /><span class="w-7" /><span class="w-24">Class</span>
       <span class="flex-1">Avg M+ rating</span>
       <span class="w-10 text-right">Rating</span>

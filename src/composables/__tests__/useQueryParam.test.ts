@@ -1,3 +1,4 @@
+/* eslint-disable vue/one-component-per-file */
 import { describe, it, expect } from 'vitest'
 import { defineComponent, h, type WritableComputedRef } from 'vue'
 import { mount, flushPromises } from '@vue/test-utils'

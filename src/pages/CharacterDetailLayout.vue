@@ -36,7 +36,7 @@
           v-if="canToggleRecruitment"
           type="button"
           class="wsa-btn"
-          :class="character.recruitment ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400' : ''"
+          :class="character.recruitment && !isToggling ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400' : ''"
           :disabled="isToggling"
           @click="onToggleRecruitment"
         >

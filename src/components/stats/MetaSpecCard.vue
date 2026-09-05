@@ -74,6 +74,7 @@ const roles = ['tank', 'healer', 'dps'] as const
         <button
           v-for="r in roles"
           :key="r"
+          type="button"
           class="text-[10px] px-2 py-1 min-h-6 rounded border capitalize"
           :class="role === r ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15' : 'border-wsa-border text-wsa-disabled'"
           @click="role = r"
@@ -86,6 +87,7 @@ const roles = ['tank', 'healer', 'dps'] as const
       <button
         v-for="key in bracketKeys"
         :key="key"
+        type="button"
         class="text-[10px] px-2 py-1 min-h-6 rounded border whitespace-nowrap"
         :class="bracket === key ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15' : 'border-wsa-border text-wsa-disabled'"
         @click="bracket = key"

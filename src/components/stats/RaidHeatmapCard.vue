@@ -35,7 +35,7 @@ const difficulty = ref('heroic')
 // resolves the concrete current-expansion name — avoids a duplicate cache
 // entry (and a second fetch) for identical data. (F2)
 const expansion = ref('current')
-const { data, isLoading, isFetching, isError, refetch } = useRaidKillStats(difficulty, expansion)
+const { data, isLoading, isFetching, isError, error, refetch } = useRaidKillStats(difficulty, expansion)
 const { data: raidGameData } = useAllRaidInstances()
 
 const resolvedCurrent = computed(() => data.value?.current_expansion ?? null)
@@ -82,6 +82,7 @@ const raidMediaMap = computed(() => {
           <button
             v-for="diff in ['normal', 'heroic', 'mythic']"
             :key="diff"
+            type="button"
             class="text-[10px] px-2 py-1 min-h-6 rounded border capitalize"
             :class="
               difficulty === diff
@@ -106,7 +107,7 @@ const raidMediaMap = computed(() => {
 
     <div v-if="isLoading" class="wsa-skeleton h-64" />
 
-    <ErrorState v-else-if="isError" compact title="Couldn't load raid kills" @retry="refetch()" />
+    <ErrorState v-else-if="isError" compact title="Couldn't load raid kills" :error="error" @retry="refetch()" />
 
     <div
       v-else-if="data?.raids.length"
@@ -150,6 +151,12 @@ const raidMediaMap = computed(() => {
               :key="classId"
               class="relative flex items-center justify-center group focus:outline-none focus-visible:ring-1 focus-visible:ring-wsa-gold/70 rounded"
               :tabindex="(boss.kills_by_class[String(classId)] ?? 0) > 0 ? 0 : undefined"
+              :role="(boss.kills_by_class[String(classId)] ?? 0) > 0 ? 'img' : undefined"
+              :aria-label="
+                (boss.kills_by_class[String(classId)] ?? 0) > 0
+                  ? `${CLASSES[classId]} — ${boss.kills_by_class[String(classId)]} kills`
+                  : undefined
+              "
             >
               <div
                 v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"

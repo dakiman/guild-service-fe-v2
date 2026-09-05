@@ -4,7 +4,7 @@
     <h1 class="wsa-text-heading text-[15px] text-lg mb-4">Reset password</h1>
 
     <div v-if="!hasValidLink" class="flex flex-col gap-3">
-      <div class="wsa-card !border-red-800/50 !p-3">
+      <div class="wsa-card !border-wsa-error/40 !p-3">
         <p class="text-sm text-wsa-error">Invalid or expired reset link</p>
       </div>
       <router-link :to="{ name: 'forgot-password' }" class="text-wsa-muted hover:text-wsa-heading transition-colors text-sm">
@@ -37,7 +37,7 @@
         />
       </label>
 
-      <div v-if="errorMessage" class="wsa-card !border-red-800/50 !p-3 mt-1">
+      <div v-if="errorMessage" class="wsa-card !border-wsa-error/40 !p-3 mt-1">
         <p class="text-sm text-wsa-error">{{ errorMessage }}</p>
       </div>
 

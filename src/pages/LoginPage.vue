@@ -25,7 +25,7 @@
         />
       </label>
 
-      <div v-if="errorMessage" class="wsa-card !border-red-800/50 !p-3 mt-1">
+      <div v-if="errorMessage" class="wsa-card !border-wsa-error/40 !p-3 mt-1">
         <p class="text-sm text-wsa-error">{{ errorMessage }}</p>
       </div>
 

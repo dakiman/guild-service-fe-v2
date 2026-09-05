@@ -16,6 +16,7 @@
       class="block w-full h-full"
       target="_blank"
       rel="noopener"
+      @click.stop
     />
     <span
       v-if="item"

@@ -80,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { ChevronDown, ChevronUp } from 'lucide-vue-next'
 import BossRow from './BossRow.vue'
 import type { RaidInstanceGameData } from '@/types/gameData'
@@ -93,6 +93,13 @@ const props = defineProps<{
 }>()
 
 const expanded = ref(!props.collapsed)
+
+watch(
+  () => props.collapsed,
+  (v) => {
+    expanded.value = !v
+  },
+)
 
 interface DifficultyDescriptor {
   key: 'lfr' | 'normal' | 'heroic' | 'mythic'

@@ -5,8 +5,8 @@ import { useDocumentTitle } from '../useDocumentTitle'
 describe('useDocumentTitle', () => {
   it('writes the formatted title when the source resolves and tracks changes', async () => {
     const name = ref<string | null>(null)
-    mount(defineComponent({ setup() { useDocumentTitle(() => name.value); return () => h('div') } }))
     document.title = 'x'
+    mount(defineComponent({ setup() { useDocumentTitle(() => name.value); return () => h('div') } }))
     expect(document.title).toBe('x')
     name.value = 'Melaniya – The Maelstrom'
     await nextTick()
