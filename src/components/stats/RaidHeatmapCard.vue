@@ -5,6 +5,7 @@ import { useAllRaidInstances } from '@/composables/usePveGameData'
 import { CLASS_COLORS, CLASSES } from '@/utils/wowConstants'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
 import CoverageStamp from '@/components/stats/CoverageStamp.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 
 const CLASS_IDS = [6, 12, 11, 13, 3, 8, 10, 2, 5, 4, 7, 9, 1]
 
@@ -34,7 +35,7 @@ const difficulty = ref('heroic')
 // resolves the concrete current-expansion name — avoids a duplicate cache
 // entry (and a second fetch) for identical data. (F2)
 const expansion = ref('current')
-const { data, isLoading, isFetching } = useRaidKillStats(difficulty, expansion)
+const { data, isLoading, isFetching, isError, refetch } = useRaidKillStats(difficulty, expansion)
 const { data: raidGameData } = useAllRaidInstances()
 
 const resolvedCurrent = computed(() => data.value?.current_expansion ?? null)
@@ -104,6 +105,8 @@ const raidMediaMap = computed(() => {
     </p>
 
     <div v-if="isLoading" class="wsa-skeleton h-64" />
+
+    <ErrorState v-else-if="isError" compact title="Couldn't load raid kills" @retry="refetch()" />
 
     <div
       v-else-if="data?.raids.length"

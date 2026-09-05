@@ -5,9 +5,10 @@ import { useMythicDungeons } from '@/composables/usePveGameData'
 import TopRunsTable from '@/components/stats/TopRunsTable.vue'
 import PaginationControls from '@/components/ui/PaginationControls.vue'
 import CoverageStamp from '@/components/stats/CoverageStamp.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 
 const page = ref(1)
-const { data, isLoading } = useTopRuns(page, 20)
+const { data, isLoading, isError, refetch } = useTopRuns(page, 20)
 const { data: dungeonData } = useMythicDungeons()
 const { data: siteStats } = useCharacterStats()
 
@@ -24,6 +25,8 @@ const rankOffset = computed(() => (page.value - 1) * 20)
     <div v-if="isLoading" class="flex flex-col gap-2">
       <div v-for="i in 10" :key="i" class="wsa-skeleton h-8" />
     </div>
+
+    <ErrorState v-else-if="isError" compact title="Couldn't load top runs" @retry="refetch()" />
 
     <div v-else-if="runs.length">
       <TopRunsTable :runs="runs" :rank-offset="rankOffset" :dungeons="dungeons" />

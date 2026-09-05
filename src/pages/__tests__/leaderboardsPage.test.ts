@@ -162,6 +162,14 @@ describe('LeaderboardsPage', () => {
     fetchCharacterLeaderboard.mockRejectedValue(Object.assign(new Error('404'), { isAxiosError: true, response: { status: 404, data: { message: 'Unknown realm' } } }))
     const { w } = await mountAt('/leaderboards/mn-1/eu/realm/not-a-realm')
     expect(w.text()).not.toContain('No such season')
-    expect(w.text()).toContain("Couldn't load this leaderboard.")
+    expect(w.text()).toContain("Couldn't load this leaderboard")
+  })
+
+  it('a leaderboard fetch failure shows an error state with retry', async () => {
+    fetchCharacterLeaderboard.mockRejectedValue(Object.assign(new Error('boom'), { isAxiosError: true, response: { status: 404 } }))
+    const { w } = await mountAt('/leaderboards/eu')
+    const err = w.findComponent({ name: 'ErrorState' })
+    expect(err.exists()).toBe(true)
+    expect(w.text()).not.toContain("Couldn't load this leaderboard.")
   })
 })

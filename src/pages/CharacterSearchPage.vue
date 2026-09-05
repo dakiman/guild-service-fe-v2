@@ -20,7 +20,7 @@ import type { Region } from '@/types/api'
 const router = useRouter()
 const searchOpen = ref(true)
 
-const { data: stats, isLoading, isError } = useCharacterStats()
+const { data: stats, isLoading, isError, error, refetch } = useCharacterStats()
 
 function onSubmit(payload: { region: Region; realm: string; name: string }) {
   router.push({
@@ -104,9 +104,10 @@ const mostPopularSpec = computed(() => {
     <!-- Error state -->
     <ErrorState
       v-else-if="isError"
-      hide-retry
+      :error="error"
       title="Failed to load stats"
       message="Character statistics couldn't be loaded. They refresh hourly — check back shortly."
+      @retry="refetch()"
     />
 
     <!-- Dashboard content -->

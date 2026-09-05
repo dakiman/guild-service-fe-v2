@@ -12,7 +12,7 @@ import { useCharacterStats } from '@/composables/useCharacterStats'
 import { useSeasons } from '@/composables/usePveGameData'
 
 const router = useRouter()
-const { data: stats, isLoading, isError } = useCharacterStats()
+const { data: stats, isLoading, isError, error, refetch } = useCharacterStats()
 const { data: seasonData } = useSeasons()
 
 const currentSeason = computed(
@@ -59,9 +59,10 @@ function openArchive(event: Event) {
         </div>
         <ErrorState
           v-else-if="isError"
-          hide-retry
+          :error="error"
           title="Failed to load stats"
           message="Mythic+ statistics couldn't be loaded. They refresh hourly — check back shortly."
+          @retry="refetch()"
         />
         <template v-else-if="stats">
           <TopPerformersCard

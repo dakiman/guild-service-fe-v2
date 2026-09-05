@@ -7,6 +7,7 @@ import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import TopRunsTable from '@/components/stats/TopRunsTable.vue'
 import RealmCombobox, { type RealmPick } from '@/components/form/RealmCombobox.vue'
 import LeaderboardTable from '@/components/leaderboards/LeaderboardTable.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 import { fetchCharacterLeaderboard, fetchRealmRuns } from '@/api/leaderboards'
 import { useMythicDungeons, useSeasons } from '@/composables/usePveGameData'
 import { isAxiosError } from 'axios'
@@ -245,7 +246,13 @@ const realmRunsAge = computed(() => relativeTime(realmRuns.data.value?.meta.comp
       </h2>
       <p v-if="scope === 'realm' && !realm" class="text-sm text-wsa-muted">Pick a realm to see its ladder.</p>
       <div v-else-if="board.isPending.value" class="h-40 animate-pulse rounded bg-wsa-border/20" />
-      <p v-else-if="board.isError.value" class="text-sm text-red-300">Couldn't load this leaderboard.</p>
+      <ErrorState
+        v-else-if="board.isError.value"
+        compact
+        title="Couldn't load this leaderboard"
+        :error="board.error.value"
+        @retry="board.refetch()"
+      />
       <LeaderboardTable
         v-else
         :rows="rows"

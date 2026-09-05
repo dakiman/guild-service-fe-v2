@@ -4,8 +4,9 @@ import { useCharacterStats, useTopKeys } from '@/composables/useCharacterStats'
 import { useMythicDungeons } from '@/composables/usePveGameData'
 import HighestKeysList from '@/components/stats/HighestKeysList.vue'
 import CoverageStamp from '@/components/stats/CoverageStamp.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 
-const { data, isLoading } = useTopKeys()
+const { data, isLoading, isError, refetch } = useTopKeys()
 const { data: dungeonData } = useMythicDungeons()
 const { data: siteStats } = useCharacterStats()
 
@@ -20,6 +21,8 @@ const gameDataDungeons = computed(() => dungeonData.value?.dungeons ?? [])
     <div v-if="isLoading" class="flex flex-col gap-2 py-1">
       <div v-for="i in 8" :key="i" class="wsa-skeleton h-5" />
     </div>
+
+    <ErrorState v-else-if="isError" compact title="Couldn't load highest keys" @retry="refetch()" />
 
     <HighestKeysList v-else-if="dungeons.length" :dungeons="dungeons" :game-data-dungeons="gameDataDungeons" />
 
