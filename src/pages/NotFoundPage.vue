@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-2xl mx-auto mt-10">
+    <h1 class="sr-only">Page not found</h1>
     <ErrorState
       :error="notFoundError"
       title="Page not found"

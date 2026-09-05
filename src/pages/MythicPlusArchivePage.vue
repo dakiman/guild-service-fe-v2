@@ -35,7 +35,7 @@ const frozenAt = computed(() => {
     <!-- Frozen-season banner -->
     <div v-if="data" class="wsa-card !p-4 flex flex-wrap items-center justify-between gap-2">
       <div>
-        <h2 class="text-lg font-bold text-wsa-text">{{ data.meta.name }}</h2>
+        <h1 class="text-lg font-bold text-wsa-text">{{ data.meta.name }}</h1>
         <p class="text-xs text-wsa-muted">
           Frozen at season end<span v-if="frozenAt"> — {{ frozenAt }}</span> ·
           {{ data.meta.total_runs.toLocaleString() }} runs recorded

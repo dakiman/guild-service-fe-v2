@@ -1,7 +1,12 @@
 <template>
   <div class="min-h-screen flex flex-col bg-base-100 text-base-content">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 wsa-btn wsa-btn--primary"
+      >Skip to content</a
+    >
     <AppNav />
-    <main class="container mx-auto p-4 flex-1">
+    <main id="main" tabindex="-1" class="container mx-auto p-4 flex-1 outline-none">
       <router-view />
     </main>
     <AppFooter />

@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-md mx-auto p-4">
+    <h1 class="sr-only">Battle.net sync</h1>
     <PollingState
       v-if="status === 'processing'"
       message="Authorizing with Battle.net…"
@@ -11,7 +12,7 @@
         <h3 class="font-semibold text-wsa-error">Battle.net sync failed</h3>
         <p class="text-sm text-wsa-muted mt-1">{{ message }}</p>
       </div>
-      <router-link :to="{ name: 'profile' }" class="wsa-btn text-sm mt-3 inline-block">
+      <router-link :to="{ name: 'profile' }" class="wsa-btn text-sm mt-3">
         Back to profile
       </router-link>
     </div>

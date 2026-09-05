@@ -1,5 +1,6 @@
 <template>
   <div class="max-w-6xl mx-auto">
+    <h1 class="sr-only">Peon — WoW character and guild lookup</h1>
     <img
       src="/brand/hero-banner.jpg"
       alt=""
