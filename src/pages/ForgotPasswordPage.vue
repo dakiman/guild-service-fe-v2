@@ -23,7 +23,7 @@
         />
       </label>
 
-      <p v-if="errorMessage" role="alert" class="text-sm text-red-300">{{ errorMessage }}</p>
+      <p v-if="errorMessage" role="alert" class="text-sm text-wsa-error">{{ errorMessage }}</p>
 
       <button type="submit" class="wsa-btn wsa-btn--primary mt-2 py-2 text-sm" :disabled="isSubmitting">
         <span v-if="isSubmitting" class="wsa-spinner !w-4 !h-4 inline-block mr-2 align-middle"></span>

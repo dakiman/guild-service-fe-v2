@@ -6,7 +6,7 @@
       title="Equipment & gear"
     >
       <Shield class="w-4 h-4 text-wsa-gold" />
-      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">iLvl</span>
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted">iLvl</span>
       <span class="font-bold text-wsa-gold tabular-nums">{{ character.equipped_item_level }}</span>
     </RouterLink>
     <RouterLink
@@ -16,7 +16,7 @@
       :title="bestRaidProgression?.instanceName ?? undefined"
     >
       <Skull class="w-4 h-4 text-wsa-gold" />
-      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Raid</span>
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted">Raid</span>
       <span class="font-bold text-wsa-gold tabular-nums">{{ raidProgressionLabel }}</span>
     </RouterLink>
     <component
@@ -27,7 +27,7 @@
       title="Achievements"
     >
       <Trophy class="w-4 h-4 text-wsa-gold" />
-      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Achievements</span>
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted">Achievements</span>
       <span class="font-bold text-wsa-gold tabular-nums">{{ formatNumber(character.achievement_points) }}</span>
     </component>
   </div>

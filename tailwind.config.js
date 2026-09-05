@@ -25,6 +25,7 @@ export default {
           text: 'rgb(var(--wsa-text) / <alpha-value>)',
           muted: 'rgb(var(--wsa-text-muted) / <alpha-value>)',
           disabled: 'rgb(var(--wsa-text-disabled) / <alpha-value>)',
+          error: 'rgb(var(--wsa-error) / <alpha-value>)',
           heading: 'rgb(var(--wsa-heading) / <alpha-value>)',
           gold: 'rgb(var(--wsa-gold) / <alpha-value>)',
           accent: 'rgb(var(--wsa-accent) / <alpha-value>)',

@@ -1,15 +1,22 @@
 <template>
-  <button
-    type="button"
-    class="wsa-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap min-w-28"
-    data-testid="refresh-button"
-    :disabled="disabled"
-    :title="onCooldown ? cooldownTitle : undefined"
-    @click="$emit('refresh')"
-  >
-    <RefreshCw class="w-3.5 h-3.5" />
-    {{ label }}
-  </button>
+  <span class="inline-flex items-center gap-2">
+    <button
+      type="button"
+      class="wsa-btn inline-flex items-center justify-center gap-1.5 whitespace-nowrap min-w-28"
+      data-testid="refresh-button"
+      :disabled="disabled"
+      :title="onCooldown ? cooldownTitle : undefined"
+      @click="$emit('refresh')"
+    >
+      <RefreshCw class="w-3.5 h-3.5" /> Refresh
+    </button>
+    <span
+      v-if="onCooldown"
+      data-testid="refresh-cooldown"
+      class="text-xs text-wsa-muted whitespace-nowrap"
+      >Refresh in {{ remainingMinutes }}m</span
+    >
+  </span>
 </template>
 
 <script setup lang="ts">
@@ -36,10 +43,6 @@ const onCooldown = computed(() => props.refresh?.available === false)
 const disabled = computed(() => props.syncing || onCooldown.value)
 
 const remainingMinutes = computed(() => Math.max(1, Math.ceil(remainingMs.value / 60_000)))
-
-const label = computed(() =>
-  onCooldown.value ? `Refresh in ${remainingMinutes.value}m` : 'Refresh',
-)
 
 const cooldownTitle = computed(
   () => `Refreshed recently — try again in ${remainingMinutes.value}m`,

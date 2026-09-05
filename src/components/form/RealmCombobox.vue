@@ -166,7 +166,7 @@ defineExpose({ focus })
         Loading realms…
       </div>
 
-      <div v-else-if="realmsQuery.isError.value" class="p-3 text-sm text-[#ff4444]">
+      <div v-else-if="realmsQuery.isError.value" class="p-3 text-sm text-wsa-error">
         Couldn't load realms.
       </div>
 

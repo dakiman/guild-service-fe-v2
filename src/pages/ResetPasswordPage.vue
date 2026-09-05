@@ -5,7 +5,7 @@
 
     <div v-if="!hasValidLink" class="flex flex-col gap-3">
       <div class="wsa-card !border-red-800/50 !p-3">
-        <p class="text-sm text-[#ff4444]">Invalid or expired reset link</p>
+        <p class="text-sm text-wsa-error">Invalid or expired reset link</p>
       </div>
       <router-link :to="{ name: 'forgot-password' }" class="text-wsa-muted hover:text-wsa-heading transition-colors text-sm">
         Request a new reset link
@@ -38,7 +38,7 @@
       </label>
 
       <div v-if="errorMessage" class="wsa-card !border-red-800/50 !p-3 mt-1">
-        <p class="text-sm text-[#ff4444]">{{ errorMessage }}</p>
+        <p class="text-sm text-wsa-error">{{ errorMessage }}</p>
       </div>
 
       <button type="submit" class="wsa-btn wsa-btn--primary mt-2 py-2 text-sm" :disabled="isSubmitting">

@@ -15,7 +15,7 @@
       >
         <Hammer v-if="group.isPrimary" class="w-3.5 h-3.5 text-wsa-gold" />
         <Wrench v-else class="w-3.5 h-3.5 text-wsa-muted/70" />
-        <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">
+        <span class="text-[10px] uppercase tracking-wider text-wsa-muted">
           {{ group.professionName }}
         </span>
         <span class="font-bold text-wsa-gold tabular-nums">

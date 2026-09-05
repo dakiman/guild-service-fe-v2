@@ -9,14 +9,14 @@
         <input
           v-model="includeFeats"
           type="checkbox"
-          class="checkbox checkbox-xs"
+          class="h-3.5 w-3.5 accent-[rgb(var(--wsa-gold))] cursor-pointer"
         />
         <span>Include Feats of Strength</span>
       </label>
     </div>
 
     <div v-if="isError" class="wsa-card p-4 text-sm text-red-300">
-      Couldn't load achievements. <button class="link" @click="() => refetch()">Retry</button>
+      Couldn't load achievements. <button type="button" class="underline hover:text-wsa-gold" @click="() => refetch()">Retry</button>
     </div>
 
     <div v-else-if="!isLoading && rows.length === 0" class="text-wsa-muted/70 text-sm">
@@ -56,7 +56,7 @@
             </a>
             <span
               v-if="rows[virtualRow.index].category_name"
-              class="text-[10px] text-wsa-muted/50 truncate"
+              class="text-[10px] text-wsa-muted truncate"
             >
               {{ rows[virtualRow.index].category_name }}
             </span>

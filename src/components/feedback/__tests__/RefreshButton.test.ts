@@ -30,6 +30,8 @@ describe('RefreshButton', () => {
     const btn = w.find('button')
     expect(btn.attributes('disabled')).toBeDefined()
     expect(w.text()).toContain('Refresh in 3m')
+    expect(w.get('button').text()).toBe('Refresh')
+    expect(w.get('[data-testid="refresh-cooldown"]').text()).toBe('Refresh in 3m')
   })
 
   it('does not emit refresh when clicked while on cooldown', async () => {

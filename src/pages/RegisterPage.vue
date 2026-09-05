@@ -40,7 +40,7 @@
       </label>
 
       <div v-if="errorMessage" class="wsa-card !border-red-800/50 !p-3 mt-1">
-        <p class="text-sm text-[#ff4444]">{{ errorMessage }}</p>
+        <p class="text-sm text-wsa-error">{{ errorMessage }}</p>
       </div>
 
       <button type="submit" class="wsa-btn wsa-btn--primary mt-2 py-2 text-sm" :disabled="isSubmitting">

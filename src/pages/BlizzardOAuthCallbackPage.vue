@@ -8,7 +8,7 @@
 
     <div v-else-if="status === 'error'" role="alert" class="wsa-card !border-red-800/50">
       <div>
-        <h3 class="font-semibold text-[#ff4444]">Battle.net sync failed</h3>
+        <h3 class="font-semibold text-wsa-error">Battle.net sync failed</h3>
         <p class="text-sm text-wsa-muted mt-1">{{ message }}</p>
       </div>
       <router-link :to="{ name: 'profile' }" class="wsa-btn text-sm mt-3 inline-block">

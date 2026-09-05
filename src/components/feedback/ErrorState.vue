@@ -2,7 +2,7 @@
   <div
     role="alert"
     class="wsa-card flex justify-between gap-3"
-    :class="[isThrottled ? '!border-amber-700/50' : '!border-red-800/50', compact ? '!p-3 items-center' : '!p-4 items-start']"
+    :class="[isThrottled ? '!border-amber-700/50' : '!border-wsa-error/40', compact ? '!p-3 items-center' : '!p-4 items-start']"
   >
     <img
       v-if="!hideArt && !compact"
@@ -12,12 +12,12 @@
       class="h-16 w-16 flex-none rounded-full border border-wsa-border/50 object-cover"
     />
     <div class="flex-1 min-w-0">
-      <h3 class="text-sm font-semibold" :class="isThrottled ? 'text-wsa-gold' : 'text-red-400'">
+      <h3 class="text-sm font-semibold" :class="isThrottled ? 'text-wsa-gold' : 'text-wsa-error'">
         {{ resolvedTitle }}
       </h3>
       <p
         v-if="resolvedMessage"
-        :class="[isThrottled ? 'text-wsa-muted' : 'text-red-300/80', compact ? 'text-xs mt-0.5' : 'text-xs mt-1']"
+        :class="[isThrottled ? 'text-wsa-muted' : 'text-wsa-error/80', compact ? 'text-xs mt-0.5' : 'text-xs mt-1']"
       >
         {{ resolvedMessage }}
       </p>

@@ -6,7 +6,7 @@
       message="This page doesn't exist — the URL may be mistyped or out of date."
     >
       <template #actions>
-        <router-link :to="{ name: 'home' }" class="wsa-btn inline-block">Back to the mines</router-link>
+        <router-link :to="{ name: 'home' }" class="wsa-btn">Back to the mines</router-link>
       </template>
     </ErrorState>
   </div>
