@@ -30,4 +30,12 @@ describe('PaginationControls', () => {
     })
     expect(w.text()).toContain('967 members')
   })
+
+  it('labels page buttons and marks the current page', () => {
+    const w = mount(PaginationControls, { props: { page: 2, lastPage: 3, windowSize: 5 } })
+    const two = w.findAll('button').find((b) => b.text() === '2')!
+    expect(two.attributes('aria-label')).toBe('Page 2')
+    expect(two.attributes('aria-current')).toBe('page')
+    expect(w.findAll('button').find((b) => b.text() === '3')!.attributes('aria-current')).toBeUndefined()
+  })
 })

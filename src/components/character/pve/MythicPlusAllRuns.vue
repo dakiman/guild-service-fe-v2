@@ -46,6 +46,7 @@
             class="inline-flex items-center gap-px px-0.5 rounded-full border border-wsa-border/30 bg-wsa-card/40 text-[9px] leading-tight text-wsa-muted/80"
             :title="`${displayName(member.character_name)} • ${formatRealm(member.character_realm, member.character_realm_display)}`"
           >
+            <span class="sr-only">{{ displayName(member.character_name) }}</span>
             <SpecIcon
               :spec-id="member.spec_id"
               :fallback-class-id="member.spec_id != null ? SPEC_TO_CLASS[member.spec_id] ?? null : null"
@@ -60,6 +61,7 @@
     <dialog
       ref="dialogRef"
       class="backdrop:bg-black/60 bg-transparent p-0 m-auto max-w-lg w-full"
+      aria-labelledby="run-dialog-title"
       @click="onBackdropClick"
     >
       <div v-if="selectedRun" class="wsa-card p-5 flex flex-col gap-4">
@@ -70,7 +72,7 @@
             :alt="selectedRun.dungeon_name"
             class="w-7 h-7 rounded shrink-0"
           />
-          <span class="font-semibold text-lg text-wsa-text flex-1">{{ selectedRun.dungeon_name }}</span>
+          <span id="run-dialog-title" class="font-semibold text-lg text-wsa-text flex-1">{{ selectedRun.dungeon_name }}</span>
           <button
             type="button"
             class="text-wsa-muted/70 hover:text-wsa-text transition-colors p-1"

@@ -89,6 +89,7 @@ function pct(count: number, max: number): string {
         data-testid="comp-row"
         class="flex items-center gap-2 text-xs"
         :title="compTitle(comp)"
+        :aria-label="compTitle(comp)"
       >
         <span class="w-6 shrink-0 text-right tabular-nums text-wsa-disabled">
           #{{ compRank.get(comp.signature) }}
@@ -142,6 +143,7 @@ function pct(count: number, max: number): string {
           data-testid="pairing-row"
           class="flex items-center gap-2 text-xs"
           :title="`${specFullName(pair.tank_spec_id)} · ${specFullName(pair.healer_spec_id)}`"
+          :aria-label="`${specFullName(pair.tank_spec_id)} · ${specFullName(pair.healer_spec_id)}`"
         >
           <span class="w-6 shrink-0 text-right tabular-nums text-wsa-disabled">
             #{{ pairingRank.get(pairingKey(pair)) }}

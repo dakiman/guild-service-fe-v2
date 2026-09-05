@@ -65,7 +65,7 @@ function roleLabel(role: string): string {
         <button
           v-for="role in roles"
           :key="role"
-          class="text-[10px] px-2 py-0.5 rounded border"
+          class="text-[10px] px-2 py-1 min-h-6 rounded border"
           :class="
             activeRole === role
               ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15'

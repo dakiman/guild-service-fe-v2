@@ -65,7 +65,7 @@ function specTitle(spec: SpecDistribution): string {
         <button
           v-for="role in roles"
           :key="role"
-          class="text-[10px] px-2 py-0.5 rounded border"
+          class="text-[10px] px-2 py-1 min-h-6 rounded border"
           :class="
             activeRole === role
               ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15'
@@ -90,6 +90,8 @@ function specTitle(spec: SpecDistribution): string {
           v-for="spec in sortedSpecs"
           :key="spec.spec_id"
           class="flex-1 min-w-[26px] flex flex-col items-center"
+          role="img"
+          :aria-label="specTitle(spec)"
           :title="specTitle(spec)"
         >
           <div class="w-full flex flex-col items-center justify-end gap-1" :style="{ height: `${BAR_MAX + 16}px` }">

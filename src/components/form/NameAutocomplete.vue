@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { useQuery, keepPreviousData } from '@tanstack/vue-query'
 import { suggestCharacters } from '@/api/characters'
 import { suggestGuilds } from '@/api/guilds'
@@ -31,6 +31,7 @@ const emit = defineEmits<{
   submit: [value: string]
 }>()
 
+const listId = useId()
 const open = ref(false)
 const highlightIndex = ref(0)
 const inputEl = ref<HTMLInputElement | null>(null)
@@ -160,6 +161,8 @@ const showEmpty = computed(
       role="combobox"
       :aria-expanded="open"
       aria-autocomplete="list"
+      :aria-controls="open ? listId : undefined"
+      :aria-activedescendant="open && highlightIndex >= 0 ? `${listId}-opt-${highlightIndex}` : undefined"
       @input="onInput"
       @focus="onFocus"
       @blur="onBlur"
@@ -171,7 +174,6 @@ const showEmpty = computed(
       class="absolute mt-1 z-20 rounded-md border-2 border-wsa-border shadow-lg max-h-72 overflow-auto"
       :class="dropdownClass ?? 'left-0 right-0'"
       style="background: rgb(var(--wsa-bg))"
-      role="listbox"
     >
       <div v-if="showLoading" class="p-3 space-y-2">
         <div class="h-5 w-full rounded bg-wsa-border/20 animate-pulse"></div>
@@ -179,10 +181,11 @@ const showEmpty = computed(
         <div class="h-5 w-full rounded bg-wsa-border/20 animate-pulse"></div>
       </div>
 
-      <ul v-else-if="suggestions.length" class="py-1">
+      <ul v-else-if="suggestions.length" :id="listId" role="listbox" class="py-1">
         <li
           v-for="(s, i) in suggestions"
           :key="`${s.region}:${s.realm}:${s.name}`"
+          :id="`${listId}-opt-${i}`"
           role="option"
           :aria-selected="i === highlightIndex"
           class="flex items-center gap-2 px-3 py-1.5 cursor-pointer text-sm"

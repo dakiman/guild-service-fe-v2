@@ -82,7 +82,7 @@ const raidMediaMap = computed(() => {
           <button
             v-for="diff in ['normal', 'heroic', 'mythic']"
             :key="diff"
-            class="text-[10px] px-2 py-0.5 rounded border capitalize"
+            class="text-[10px] px-2 py-1 min-h-6 rounded border capitalize"
             :class="
               difficulty === diff
                 ? 'border-wsa-muted text-wsa-gold bg-wsa-muted/15'
@@ -148,7 +148,8 @@ const raidMediaMap = computed(() => {
             <div
               v-for="classId in CLASS_IDS"
               :key="classId"
-              class="relative flex items-center justify-center group"
+              class="relative flex items-center justify-center group focus:outline-none focus-visible:ring-1 focus-visible:ring-wsa-gold/70 rounded"
+              :tabindex="(boss.kills_by_class[String(classId)] ?? 0) > 0 ? 0 : undefined"
             >
               <div
                 v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
@@ -165,7 +166,7 @@ const raidMediaMap = computed(() => {
               />
               <span
                 v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
-                class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1 z-10 hidden group-hover:block px-1.5 py-0.5 rounded bg-black/90 border border-wsa-border text-[10px] font-semibold tabular-nums whitespace-nowrap"
+                class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1 z-10 hidden group-hover:block group-focus-within:block px-1.5 py-0.5 rounded bg-black/90 border border-wsa-border text-[10px] font-semibold tabular-nums whitespace-nowrap"
                 :style="{ color: CLASS_COLORS[classId] ?? '#fff' }"
               >
                 {{ boss.kills_by_class[String(classId)] }}

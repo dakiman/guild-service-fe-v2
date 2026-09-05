@@ -1,9 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { mount, flushPromises } from '@vue/test-utils'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 
+const suggestCharacters = vi.fn().mockResolvedValue([])
 vi.mock('@/api/characters', () => ({
-  suggestCharacters: vi.fn().mockResolvedValue([]),
+  suggestCharacters: (...args: unknown[]) => suggestCharacters(...args),
 }))
 vi.mock('@/api/guilds', () => ({
   suggestGuilds: vi.fn().mockResolvedValue([]),
@@ -69,5 +70,44 @@ describe('NameAutocomplete submit / focus / styling', () => {
     await input.trigger('keydown', { key: 'Escape' })
     expect(document.activeElement).not.toBe(input.element)
     w.unmount()
+  })
+
+  describe('Enter with a pre-highlighted match (regression: R6)', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+      suggestCharacters.mockClear()
+      suggestCharacters.mockResolvedValue([
+        {
+          region: 'eu',
+          realm: 'the-maelstrom',
+          display_realm: null,
+          name: 'melaniya',
+          display_name: null,
+          class_id: 1,
+          level: 80,
+          faction: 'Alliance',
+          mythic_plus_rating: null,
+          region_rank: null,
+        },
+      ])
+    })
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('emits pick (not submit) on Enter with no arrow key pressed', async () => {
+      const w = mountIt({ modelValue: '' })
+      const input = w.get('input')
+      await w.setProps({ modelValue: 'mel' })
+      await input.trigger('focus')
+      vi.advanceTimersByTime(250)
+      await flushPromises()
+
+      await input.trigger('keydown', { key: 'Enter' })
+
+      expect(w.emitted('pick')).toEqual([[{ region: 'eu', realm: 'the-maelstrom', name: 'melaniya' }]])
+      expect(w.emitted('submit')).toBeUndefined()
+      w.unmount()
+    })
   })
 })

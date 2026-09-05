@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, useId, watch } from 'vue'
 import { useRealmIndex } from '@/composables/usePveGameData'
 import type { RealmGameData } from '@/types/gameData'
 import type { Region } from '@/types/api'
@@ -21,6 +21,7 @@ const emit = defineEmits<{
 
 const realmsQuery = useRealmIndex()
 
+const listId = useId()
 const query = ref('')
 const open = ref(false)
 const highlightIndex = ref(0)
@@ -150,6 +151,8 @@ defineExpose({ focus })
       role="combobox"
       :aria-expanded="open"
       aria-autocomplete="list"
+      :aria-controls="open ? listId : undefined"
+      :aria-activedescendant="open && highlightIndex >= 0 ? `${listId}-opt-${highlightIndex}` : undefined"
       @input="onInput"
       @focus="onFocus"
       @blur="onBlur"
@@ -160,7 +163,6 @@ defineExpose({ focus })
       v-if="open"
       class="absolute left-0 right-0 mt-1 z-20 rounded-md border-2 border-wsa-border shadow-lg max-h-72 overflow-auto"
       style="background: rgb(var(--wsa-bg))"
-      role="listbox"
     >
       <div v-if="realmsQuery.isPending.value" class="p-3 text-sm text-wsa-disabled">
         Loading realms…
@@ -170,10 +172,11 @@ defineExpose({ focus })
         Couldn't load realms.
       </div>
 
-      <ul v-else-if="suggestions.length" class="py-1">
+      <ul v-else-if="suggestions.length" :id="listId" role="listbox" class="py-1">
         <li
           v-for="(r, i) in suggestions"
           :key="`${r.region}:${r.slug}`"
+          :id="`${listId}-opt-${i}`"
           role="option"
           :aria-selected="i === highlightIndex"
           class="flex items-center justify-between px-3 py-1.5 cursor-pointer text-sm"

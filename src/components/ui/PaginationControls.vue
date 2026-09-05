@@ -2,7 +2,13 @@
   <nav class="flex flex-wrap items-center gap-2" :class="summary ? 'justify-between' : 'justify-center'">
     <p v-if="summary" class="text-xs text-wsa-disabled">{{ summary }}</p>
     <div class="flex justify-center gap-2">
-      <button type="button" class="wsa-btn" :disabled="page <= 1" @click="go(page - 1)">
+      <button
+        type="button"
+        class="wsa-btn"
+        aria-label="Previous page"
+        :disabled="page <= 1"
+        @click="go(page - 1)"
+      >
         Prev
       </button>
       <template v-if="windowSize && windowSize > 0">
@@ -12,6 +18,8 @@
           type="button"
           class="wsa-btn"
           :class="{ 'wsa-btn--primary': p === page }"
+          :aria-label="`Page ${p}`"
+          :aria-current="p === page ? 'page' : undefined"
           @click="go(p)"
         >
           {{ p }}
@@ -20,7 +28,13 @@
       <span v-else class="text-xs text-wsa-disabled flex items-center tabular-nums">
         {{ page }} / {{ lastPage }}
       </span>
-      <button type="button" class="wsa-btn" :disabled="page >= lastPage" @click="go(page + 1)">
+      <button
+        type="button"
+        class="wsa-btn"
+        aria-label="Next page"
+        :disabled="page >= lastPage"
+        @click="go(page + 1)"
+      >
         Next
       </button>
     </div>
