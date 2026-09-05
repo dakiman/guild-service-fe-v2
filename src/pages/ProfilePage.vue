@@ -1,5 +1,6 @@
 <template>
-  <div v-if="user" class="max-w-3xl mx-auto p-4 flex flex-col gap-6">
+  <div class="max-w-3xl mx-auto p-4 flex flex-col gap-6">
+    <template v-if="user">
     <PageHeader icon="/brand/icon-profile.jpg" title="Profile" />
 
     <section class="wsa-card">
@@ -74,7 +75,15 @@
         />
       </div>
       <div
-        v-if="characters.length === 0"
+        v-if="characters.length === 0 && user.bnet_sync_status === 'syncing'"
+        class="flex items-center justify-center gap-2 py-8 text-sm text-wsa-muted"
+        role="status"
+        aria-live="polite"
+      >
+        <span class="wsa-spinner !w-4 !h-4 inline-block" /> Syncing your characters from Battle.net… Work, work…
+      </div>
+      <div
+        v-else-if="characters.length === 0"
         class="flex flex-col items-center gap-3 py-8 text-center"
       >
         <img
@@ -144,6 +153,7 @@
           <button
             type="button"
             class="wsa-btn flex-none text-xs"
+            :class="character.recruitment ? 'wsa-btn--primary !border-emerald-600/50 !text-emerald-400' : ''"
             :disabled="recruitmentBusy[character.id]"
             @click="onToggleRecruitment(character.id)"
           >
@@ -151,11 +161,18 @@
               v-if="recruitmentBusy[character.id]"
               class="wsa-spinner !w-3 !h-3 inline-block mr-1 align-middle"
             />
-            <span>Looking for guild</span>
+            <span>{{ character.recruitment ? 'Looking for guild' : 'Not looking for guild' }}</span>
           </button>
         </li>
       </ul>
     </section>
+    </template>
+    <div v-else-if="!authReady" class="flex justify-center py-16" aria-busy="true"><div class="wsa-spinner" /></div>
+    <ErrorState v-else title="You're signed out" message="Sign in to see your profile." hide-art hide-retry>
+      <template #actions>
+        <RouterLink :to="{ name: 'login', query: { next: '/profile' } }" class="wsa-btn">Sign in</RouterLink>
+      </template>
+    </ErrorState>
   </div>
 </template>
 
@@ -169,6 +186,7 @@ import { setOAuthPending } from '@/utils/oauthPending'
 import RegionSelect from '@/components/form/RegionSelect.vue'
 import PageHeader from '@/components/layout/PageHeader.vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
+import ErrorState from '@/components/feedback/ErrorState.vue'
 import { env } from '@/utils/env'
 import { displayName, displayRealm } from '@/utils/display'
 import { FACTION_COLORS, getClassColor } from '@/utils/wowConstants'
@@ -178,6 +196,11 @@ import { getErrorMessage } from '@/utils/errors'
 
 const auth = useAuthStore()
 const user = computed(() => auth.user)
+
+const authReady = ref(false)
+void Promise.resolve(auth.ready).then(() => {
+  authReady.value = true
+})
 
 // Default the OAuth region to whatever the user is already linked with, otherwise EU.
 const oauthRegion = ref<Region>(((user.value?.bnet_region as Region) ?? 'eu'))

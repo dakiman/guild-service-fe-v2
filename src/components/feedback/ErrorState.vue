@@ -23,7 +23,7 @@
       </p>
       <p v-if="quip && !hideArt && !compact" class="text-[11px] italic text-wsa-disabled mt-1">{{ quip }}</p>
     </div>
-    <div v-if="!hideRetry" class="flex-none">
+    <div v-if="!hideRetry || $slots.actions" class="flex-none">
       <slot name="actions">
         <RouterLink v-if="isNotFound" :to="{ name: 'home' }" class="wsa-btn">{{ notFoundLabel }}</RouterLink>
         <button

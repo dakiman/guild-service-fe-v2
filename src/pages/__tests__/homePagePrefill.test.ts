@@ -57,7 +57,7 @@ describe('HomePage ?q= prefill', () => {
     focusRealm.mockClear()
     const { w, router } = await mountAt('/?q=arthas')
     expect(w.get('[data-testid="lookup-character"]').attributes('data-initial')).toBe('arthas')
-    expect(w.get('[data-testid="lookup-guild"]').attributes('data-initial')).toBe('')
+    expect(w.get('[data-testid="lookup-guild"]').attributes('data-initial')).toBe('arthas')
     expect(focusRealm).toHaveBeenCalledTimes(1)
     expect(router.currentRoute.value.query.q).toBeUndefined()
     expect(router.currentRoute.value.name).toBe('home')
@@ -90,5 +90,11 @@ describe('HomePage ?q= prefill', () => {
     expect(w.get('[data-testid="lookup-character"]').attributes('data-initial')).toBe('')
     expect(focusRealm).not.toHaveBeenCalled()
     expect(router.currentRoute.value.query.q).toBeUndefined()
+  })
+
+  it('seeds the guild form too', async () => {
+    focusRealm.mockClear()
+    const { w } = await mountAt('/?q=balkanika')
+    expect(w.get('[data-testid="lookup-guild"]').attributes('data-initial')).toBe('balkanika')
   })
 })

@@ -85,7 +85,6 @@ async function onSubmit() {
   } catch (err) {
     const message = getErrorMessage(err, 'Unable to create account. Please try again.')
     errorMessage.value = message
-    toast.error(message)
   } finally {
     isSubmitting.value = false
   }

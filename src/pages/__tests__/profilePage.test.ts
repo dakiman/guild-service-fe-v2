@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest'
-import { mount, RouterLinkStub } from '@vue/test-utils'
+import { mount, flushPromises, RouterLinkStub } from '@vue/test-utils'
 import type { User } from '@/types/auth'
 
 const { authState } = vi.hoisted(() => ({
-  authState: { user: null as unknown },
+  authState: { user: null as unknown, ready: Promise.resolve() as Promise<void> },
 }))
 
 vi.mock('@/stores/auth', () => ({
-  useAuthStore: () => ({ user: authState.user, fetchMe: vi.fn() }),
+  useAuthStore: () => ({ user: authState.user, fetchMe: vi.fn(), ready: authState.ready }),
 }))
 vi.mock('@/utils/env', () => ({
   env: { blizzardClientId: 'test-client', blizzardRedirectUri: 'http://localhost/callback' },
@@ -36,7 +36,7 @@ export function makeUser(overrides: Partial<User> = {}): User {
   }
 }
 
-export function mountPage(user: User) {
+export function mountPage(user: User | null) {
   authState.user = user
   return mount(ProfilePage, {
     global: {
@@ -98,6 +98,7 @@ export function makeCharacter(overrides: Partial<CharacterSummary> = {}): Charac
     media: 'https://render.example/melaniya.jpg',
     mythic_plus_rating: null,
     region_rank: null,
+    recruitment: true,
     ...overrides,
   }
 }
@@ -214,5 +215,44 @@ describe('ProfilePage empty state', () => {
     expect(img.attributes('alt')).toBe('')
     expect(img.attributes('aria-hidden')).toBe('true')
     expect(w.text()).toContain('No characters yet')
+  })
+})
+
+describe('ProfilePage signed-out state', () => {
+  it('shows a spinner while auth is not yet ready', () => {
+    authState.ready = new Promise(() => {})
+    const w = mountPage(null)
+    expect(w.find('.wsa-spinner').exists()).toBe(true)
+    expect(w.text()).not.toContain('No characters yet')
+  })
+
+  it('shows a sign-in ErrorState once auth is ready and there is no user', async () => {
+    authState.ready = Promise.resolve()
+    const w = mountPage(null)
+    await flushPromises()
+    const link = w.findComponent(RouterLinkStub)
+    expect(link.exists()).toBe(true)
+    expect(link.props('to')).toEqual({ name: 'login', query: { next: '/profile' } })
+    expect(link.text()).toBe('Sign in')
+  })
+})
+
+describe('ProfilePage syncing state', () => {
+  it('shows a syncing message instead of the empty state while bnet_sync_status is syncing', () => {
+    const w = mountPage(makeUser({ bnet_sync_status: 'syncing', characters: [] }))
+    expect(w.text()).toContain('Syncing your characters from Battle.net')
+    expect(w.text()).not.toContain('No characters yet')
+  })
+})
+
+describe('ProfilePage recruitment button', () => {
+  it('labels a non-recruiting character as Not looking for guild', () => {
+    const w = mountPage(makeUser({ characters: [makeCharacter({ recruitment: false })] }))
+    expect(w.text()).toContain('Not looking for guild')
+  })
+
+  it('labels a recruiting character as Looking for guild', () => {
+    const w = mountPage(makeUser({ characters: [makeCharacter({ recruitment: true })] }))
+    expect(w.text()).toContain('Looking for guild')
   })
 })

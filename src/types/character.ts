@@ -19,6 +19,7 @@ export interface CharacterSummary {
   media: string | null
   mythic_plus_rating: RatingChipData | null
   region_rank: number | null
+  recruitment?: boolean
 }
 
 export interface EquipmentStat {

@@ -23,6 +23,8 @@
         />
       </label>
 
+      <p v-if="errorMessage" role="alert" class="text-sm text-red-300">{{ errorMessage }}</p>
+
       <button type="submit" class="wsa-btn wsa-btn--primary mt-2 py-2 text-sm" :disabled="isSubmitting">
         <span v-if="isSubmitting" class="wsa-spinner !w-4 !h-4 inline-block mr-2 align-middle"></span>
         <span>Send reset link</span>
@@ -46,18 +48,25 @@ import BrandLockup from '@/components/layout/BrandLockup.vue'
 const email = ref('')
 const isSubmitting = ref(false)
 const submitted = ref(false)
+const errorMessage = ref('')
 
 async function onSubmit() {
   if (isSubmitting.value) return
   isSubmitting.value = true
+  errorMessage.value = ''
   try {
     await forgotPassword(email.value)
-  } catch {
-    /* swallow — never reveal whether the email exists */
+    submitted.value = true
+  } catch (err) {
+    const status = (err as { response?: { status?: number } } | null)?.response?.status
+    if (status !== undefined && status < 500) {
+      submitted.value = true // enumeration-safe: 4xx reads exactly like success
+    } else {
+      errorMessage.value = "Couldn't reach the server. Check your connection and try again."
+    }
   } finally {
     isSubmitting.value = false
-    submitted.value = true
-    toast.success('If that email exists, a reset link has been sent.')
   }
+  if (submitted.value) toast.success('If that email exists, a reset link has been sent.')
 }
 </script>

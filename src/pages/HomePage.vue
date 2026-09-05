@@ -20,7 +20,13 @@
       </div>
       <div class="wsa-card">
         <h2 class="wsa-text-heading text-[15px] mb-3">Find a guild</h2>
-        <LookupForm kind="guild" @submit="onGuildSubmit" @pick="onGuildSubmit" />
+        <LookupForm
+          :key="formKey"
+          kind="guild"
+          :initial-name="initialGuildName || undefined"
+          @submit="onGuildSubmit"
+          @pick="onGuildSubmit"
+        />
       </div>
     </section>
 
@@ -120,6 +126,7 @@ const route = useRoute()
 // an in-place route update, since HomePage is reused when already on `/`), then the param
 // is stripped so a refresh doesn't re-apply it.
 const initialCharacterName = ref('')
+const initialGuildName = ref('')
 const formKey = ref(0)
 const characterForm = ref<{ focusRealm: () => void } | null>(null)
 
@@ -128,6 +135,7 @@ async function consumeQ(query: typeof route.query) {
   const q = typeof query.q === 'string' ? query.q.trim() : ''
   if (q) {
     initialCharacterName.value = q
+    initialGuildName.value = q
     formKey.value++
   }
   await router.replace({ name: 'home' })
