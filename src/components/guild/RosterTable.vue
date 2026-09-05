@@ -16,6 +16,7 @@ const props = defineProps<{
   members: Paginated<GuildMember>
   page: number
   region: Region
+  filterActive?: boolean
 }>()
 
 const emit = defineEmits<{ pageChange: [page: number] }>()
@@ -127,7 +128,7 @@ function sortGlyph(key: SortKey): string {
         </thead>
         <tbody>
           <tr v-if="sortedRows.length === 0">
-            <td colspan="9" class="text-center text-wsa-disabled py-4">No members match your filter.</td>
+            <td colspan="9" class="text-center text-wsa-disabled py-4">{{ filterActive ? 'No members match your filter.' : 'No members synced yet.' }}</td>
           </tr>
           <tr v-for="m in sortedRows" :key="m.id" class="border-b border-wsa-border/20 hover:bg-black/20 transition-colors">
             <td class="font-medium py-1.5 px-2">

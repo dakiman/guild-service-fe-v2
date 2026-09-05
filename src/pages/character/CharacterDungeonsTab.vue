@@ -56,8 +56,16 @@
         </select>
       </div>
 
+      <EmptyTab
+        v-if="seasonRuns.length === 0"
+        slice="mythic_plus"
+        :freshness="freshnessState"
+        title="No runs this season"
+        :message="emptyMessage"
+        :icon="Skull"
+      />
       <MythicPlusBestPerDungeon
-        v-if="activeView === 'best'"
+        v-else-if="activeView === 'best'"
         :runs="character.dungeon_runs ?? []"
         :dungeons="dungeons"
         :current-season="selectedSeason"
@@ -74,15 +82,17 @@
 
 <script setup lang="ts">
 import { computed, ref, watch, type Component } from 'vue'
-import { Trophy, ListOrdered } from 'lucide-vue-next'
+import { Trophy, ListOrdered, Skull } from 'lucide-vue-next'
 import { useCharacterContext } from '@/composables/useCharacterContext'
 import { useMythicDungeons, useSeasons } from '@/composables/usePveGameData'
 import DungeonsHeadline from '@/components/character/pve/DungeonsHeadline.vue'
 import MythicPlusBestPerDungeon from '@/components/character/pve/MythicPlusBestPerDungeon.vue'
 import MythicPlusAllRuns from '@/components/character/pve/MythicPlusAllRuns.vue'
+import EmptyTab from '@/components/character/EmptyTab.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 
-const { character } = useCharacterContext()
+const { character, freshness } = useCharacterContext()
+const freshnessState = computed(() => freshness?.value?.mythic_plus)
 
 interface ViewDescriptor {
   key: 'best' | 'all'
@@ -135,6 +145,15 @@ const selectedSeasonName = computed(() =>
     ? null
     : (seasonNameById.value.get(selectedSeason.value) ?? `Season ${selectedSeason.value}`),
 )
+
+const seasonRuns = computed(() => {
+  const runs = character.value.dungeon_runs ?? []
+  return selectedSeason.value == null ? runs : runs.filter((r) => r.season === selectedSeason.value)
+})
+const emptyMessage = computed(() => {
+  const base = `No ${selectedSeasonName.value ?? 'Mythic+'} runs recorded yet.`
+  return seasonOptions.value.length > 1 ? `${base} Pick an earlier season above to see past runs.` : base
+})
 
 function onSeasonChange(event: Event) {
   const value = (event.target as HTMLSelectElement).value

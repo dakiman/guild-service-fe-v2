@@ -112,6 +112,7 @@ const guildQueueDepth = computed(() => {
         :members="members"
         :page="page"
         :region="region"
+        :filter-active="debouncedFilter.trim().length > 0"
         @page-change="page = $event"
       />
     </template>
