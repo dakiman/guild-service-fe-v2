@@ -31,6 +31,11 @@ const showRank = computed(() => props.isCurrent && props.regionRank != null)
       :style="isCurrent ? { color: rating.color ?? 'rgb(var(--wsa-text))' } : undefined"
       data-testid="rating-chip-value"
     >{{ n(rating.rating) }}</span>
-    <span v-if="showRank" class="text-wsa-muted font-normal">#{{ n(regionRank!) }}</span>
+    <span
+      v-if="showRank"
+      class="text-wsa-muted font-normal"
+      :aria-label="`rank #${n(regionRank!)}`"
+      :title="`rank #${n(regionRank!)}`"
+    >#{{ n(regionRank!) }}</span>
   </span>
 </template>

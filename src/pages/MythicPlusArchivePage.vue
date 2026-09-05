@@ -78,7 +78,7 @@ const frozenAt = computed(() => {
           title="Top M+ Rating"
           :entries="data.top_performers.mythic_plus"
           value-label="Rating"
-          :format-value="(v: number) => v.toFixed(1)"
+          :format-value="(v: number) => Math.round(v).toLocaleString('en-US')"
         />
         <PerformanceByClassCard :classes="data.class_distribution" />
       </div>

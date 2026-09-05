@@ -76,7 +76,7 @@ export interface GuildStatsResponse {
   avg_mythic_plus_rating: number
   top_mythic_plus: {
     rating: number
-    character: { name: string; realm: string; region: string; class_id: number }
+    character: { name: string; realm: string; region: string; class_id: number; display_name?: string | null }
   } | null
   role_coverage: { tank: number; healer: number; dps: number }
   best_keys: {

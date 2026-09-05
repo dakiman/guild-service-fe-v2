@@ -17,8 +17,8 @@
         <span class="text-wsa-text">{{ formatBracket(bracket.bracket) }}</span>
         <div class="flex items-center gap-3">
           <span class="text-wsa-gold tabular-nums font-bold">{{ bracket.rating }}</span>
-          <span class="text-wsa-muted/70 tabular-nums text-xs">
-            {{ bracket.season.won }}–{{ bracket.season.lost }}
+          <span class="text-wsa-muted/70 tabular-nums text-xs" title="Wins · Losses">
+            {{ bracket.season.won }}W · {{ bracket.season.lost }}L
           </span>
         </div>
       </li>

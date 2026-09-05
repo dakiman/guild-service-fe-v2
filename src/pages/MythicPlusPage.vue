@@ -69,7 +69,7 @@ function openArchive(event: Event) {
             title="Top M+ Rating"
             :entries="stats.top_performers.mythic_plus"
             value-label="Rating"
-            :format-value="(v: number) => v.toFixed(1)"
+            :format-value="(v: number) => Math.round(v).toLocaleString('en-US')"
             :stamp-timestamp="stats.generated_at"
             :stamp-count="stats.total_characters"
           />

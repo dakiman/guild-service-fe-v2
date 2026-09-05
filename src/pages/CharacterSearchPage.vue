@@ -129,7 +129,7 @@ const mostPopularSpec = computed(() => {
       <!-- Row 2: KPI Mini Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         <StatMiniCard
-          label="Avg Item Level"
+          label="Avg iLvl"
           :value="avgIlvl"
           tooltip="Endgame-active characters only"
         />
@@ -169,7 +169,7 @@ const mostPopularSpec = computed(() => {
       <!-- Row 5: Top Performers -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <TopPerformersCard
-          title="Top Item Level"
+          title="Top iLvl"
           :entries="stats.top_performers.item_level"
           value-label="iLvl"
           :format-value="(v: number) => v.toFixed(1)"

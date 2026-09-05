@@ -78,6 +78,13 @@ function roleLabel(role: string): string {
       </div>
     </div>
 
+    <div class="flex items-center gap-2.5 pb-1 text-[10px] uppercase tracking-wider text-wsa-muted" aria-hidden="true">
+      <span class="w-6" /><span class="w-7" /><span class="w-24">Class</span>
+      <span class="flex-1">Avg M+ rating</span>
+      <span class="w-10 text-right">Rating</span>
+      <span class="w-10 text-right">iLvl</span>
+    </div>
+
     <div class="flex flex-col gap-0.5">
       <div
         v-for="(entry, index) in filteredClasses"
@@ -106,6 +113,8 @@ function roleLabel(role: string): string {
         <!-- Bar -->
         <div
           class="flex-1 h-[10px] rounded bg-black/30 border border-wsa-border/30 overflow-hidden flex items-center"
+          role="img"
+          :aria-label="`${CLASSES[entry.class_id]} average M+ rating ${Math.round(entry.avg_mythic_plus_rating).toLocaleString('en-US')}`"
         >
           <div
             class="perf-bar"

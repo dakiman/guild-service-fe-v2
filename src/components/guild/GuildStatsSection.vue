@@ -5,6 +5,7 @@ import ErrorState from '@/components/feedback/ErrorState.vue'
 import HighestKeysList from '@/components/stats/HighestKeysList.vue'
 import { useGuildStats } from '@/composables/useGuildStats'
 import { useMythicDungeons } from '@/composables/usePveGameData'
+import { displayName } from '@/utils/display'
 
 const props = defineProps<{
   region: string
@@ -46,7 +47,7 @@ const gameDataDungeons = computed(() => dungeonData.value?.dungeons ?? [])
         v-if="data.top_mythic_plus"
         label="Top M+"
         :value="data.top_mythic_plus.rating.toFixed(0)"
-        :subtitle="data.top_mythic_plus.character.name"
+        :subtitle="displayName(data.top_mythic_plus.character.name, data.top_mythic_plus.character.display_name)"
       />
       <StatMiniCard label="Tanks" :value="data.role_coverage.tank" />
       <StatMiniCard label="Healers" :value="data.role_coverage.healer" />

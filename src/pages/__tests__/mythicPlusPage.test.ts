@@ -43,6 +43,7 @@ describe('MythicPlusPage', () => {
     const performers = wrapper.findComponent(TopPerformersCard)
     expect(performers.exists()).toBe(true)
     expect(performers.props('title')).toBe('Top M+ Rating')
+    expect(performers.props('formatValue')?.(4260)).toBe('4,260')
     expect(wrapper.findComponent(PerformanceByClassCard).exists()).toBe(true)
     expect(wrapper.findComponent(CurrentAffixStrip).exists()).toBe(true)
   })

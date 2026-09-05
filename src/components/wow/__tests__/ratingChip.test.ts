@@ -15,6 +15,13 @@ describe('RatingChip', () => {
     expect(w.find('[data-testid="rating-chip-value"]').attributes('style')).toContain('rgb(255, 128, 0)')
   })
 
+  it('labels the rank suffix', () => {
+    const w = mount(RatingChip, { props: { rating: { rating: 2847, color: '#ff8000' }, regionRank: 6 } })
+    const rank = w.find('[aria-label="rank #6"]')
+    expect(rank.exists()).toBe(true)
+    expect(rank.attributes('title')).toBe('rank #6')
+  })
+
   it('omits the rank when null', () => {
     const w = mount(RatingChip, { props: { rating: { rating: 1500, color: null }, regionRank: null } })
     expect(w.text()).toContain('1,500')

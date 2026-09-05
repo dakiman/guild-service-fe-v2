@@ -116,7 +116,7 @@ const chartOptions = computed(() => ({
             </span>
             <div class="ml-auto flex items-center gap-3">
               <span class="text-xs tabular-nums text-wsa-muted">
-                {{ item.avg_ilvl.toFixed(0) }} ilvl
+                {{ item.avg_ilvl.toFixed(0) }} iLvl
               </span>
               <span class="text-xs tabular-nums text-wsa-muted">
                 {{ item.avg_mythic_plus_rating.toFixed(0) }} m+
