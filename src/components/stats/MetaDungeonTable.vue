@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toRef } from 'vue'
 import SparkLine from '@/components/ui/SparkLine.vue'
+import TableScrollHint from '@/components/ui/TableScrollHint.vue'
 import { useTableSort, type SortDir } from '@/composables/useTableSort'
 import type { DungeonReportEntry, DungeonTrendPoint } from '@/types/meta'
 
@@ -82,9 +83,7 @@ function trendPoints(dungeonId: number): number[] {
 
 <template>
   <div>
-    <p data-testid="scroll-hint" class="sm:hidden mb-1 text-[10px] text-wsa-disabled">
-      Scroll sideways for more →
-    </p>
+    <TableScrollHint />
     <div class="overflow-x-auto">
       <table class="w-full text-xs min-w-[520px]">
         <thead>

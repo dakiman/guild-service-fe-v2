@@ -18,13 +18,13 @@ function podiumClass(index: number): string {
 
 <template>
   <div v-if="rows.length" class="overflow-x-auto">
-    <table class="w-full text-sm min-w-[520px]">
+    <table class="w-full text-sm">
       <thead>
         <tr class="text-wsa-muted text-left text-xs">
           <th class="py-1.5 w-12">#</th>
           <th class="py-1.5">Character</th>
-          <th class="py-1.5">Realm</th>
-          <th class="py-1.5">Spec</th>
+          <th class="py-1.5 hidden sm:table-cell">Realm</th>
+          <th class="py-1.5 hidden sm:table-cell">Spec</th>
           <th class="py-1.5 text-right">Rating</th>
         </tr>
       </thead>
@@ -32,16 +32,21 @@ function podiumClass(index: number): string {
         <tr v-for="(row, index) in rows" :key="`${row.character.region}-${row.character.realm}-${row.character.name}`" class="border-b border-wsa-border/20">
           <td class="py-2 font-bold tabular-nums" :class="podiumClass(index)">{{ n(row.rank) }}</td>
           <td class="py-2">
-            <RouterLink
-              :to="{ name: 'character-detail', params: { region: row.character.region, realm: row.character.realm, name: row.character.name } }"
-              class="inline-flex items-center gap-2 font-bold text-wsa-text hover:text-wsa-gold hover:underline"
-            >
-              <ClassIcon :class-id="row.character.class_id" />
-              {{ displayName(row.character.name, row.character.display_name) }}
-            </RouterLink>
+            <div class="flex flex-col min-w-0">
+              <RouterLink
+                :to="{ name: 'character-detail', params: { region: row.character.region, realm: row.character.realm, name: row.character.name } }"
+                class="inline-flex items-center gap-2 font-bold text-wsa-text hover:text-wsa-gold hover:underline"
+              >
+                <ClassIcon :class-id="row.character.class_id" />
+                {{ displayName(row.character.name, row.character.display_name) }}
+              </RouterLink>
+              <span class="sm:hidden text-xs text-wsa-muted truncate" data-testid="mobile-meta">
+                {{ displayRealm(row.character.realm, row.character.display_realm) }}<template v-if="row.character.spec_id && SPEC_NAMES[row.character.spec_id]"> · {{ SPEC_NAMES[row.character.spec_id] }}</template>
+              </span>
+            </div>
           </td>
-          <td class="py-2 text-wsa-muted">{{ displayRealm(row.character.realm, row.character.display_realm) }}</td>
-          <td class="py-2 text-wsa-muted">
+          <td class="py-2 text-wsa-muted hidden sm:table-cell">{{ displayRealm(row.character.realm, row.character.display_realm) }}</td>
+          <td class="py-2 text-wsa-muted hidden sm:table-cell">
             <span v-if="row.character.spec_id" class="inline-flex items-center gap-1.5">
               <SpecIcon :spec-id="row.character.spec_id" :fallback-class-id="row.character.class_id" :size="16" />
               {{ SPEC_NAMES[row.character.spec_id] ?? '' }}

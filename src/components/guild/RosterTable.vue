@@ -69,7 +69,7 @@ function sortGlyph(key: SortKey): string {
               role="columnheader"
               :aria-sort="ariaSort('name')"
               tabindex="0"
-              class="text-left cursor-pointer select-none py-2 px-2 focus-visible:outline-2 focus-visible:outline-offset-1"
+              class="text-left cursor-pointer select-none py-2 px-2 sm:w-[40%] focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('name')"
               @keydown.enter.prevent="toggle('name')"
               @keydown.space.prevent="toggle('name')"
@@ -78,13 +78,13 @@ function sortGlyph(key: SortKey): string {
             </th>
             <th class="w-8 text-center py-2 px-2">Class</th>
             <th class="w-8 text-center py-2 px-2 hidden sm:table-cell">Spec</th>
-            <th class="w-8 text-center py-2 px-2">Race</th>
+            <th class="w-8 text-center py-2 px-2 hidden sm:table-cell">Race</th>
             <th class="w-8 text-center py-2 px-2 hidden sm:table-cell">Side</th>
             <th
               role="columnheader"
               :aria-sort="ariaSort('level')"
               tabindex="0"
-              class="text-right cursor-pointer select-none w-12 py-2 px-2 focus-visible:outline-2 focus-visible:outline-offset-1"
+              class="text-right cursor-pointer select-none w-12 py-2 px-2 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('level')"
               @keydown.enter.prevent="toggle('level')"
               @keydown.space.prevent="toggle('level')"
@@ -95,7 +95,7 @@ function sortGlyph(key: SortKey): string {
               role="columnheader"
               :aria-sort="ariaSort('equipped_item_level')"
               tabindex="0"
-              class="text-right cursor-pointer select-none w-14 py-2 px-2 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1"
+              class="text-right cursor-pointer select-none w-14 py-2 px-2 focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('equipped_item_level')"
               @keydown.enter.prevent="toggle('equipped_item_level')"
               @keydown.space.prevent="toggle('equipped_item_level')"
@@ -106,7 +106,7 @@ function sortGlyph(key: SortKey): string {
               role="columnheader"
               :aria-sort="ariaSort('mythic_plus_score')"
               tabindex="0"
-              class="text-right cursor-pointer select-none w-16 py-2 px-2 hidden sm:table-cell focus-visible:outline-2 focus-visible:outline-offset-1"
+              class="text-right cursor-pointer select-none w-16 py-2 px-2 focus-visible:outline-2 focus-visible:outline-offset-1"
               @click="toggle('mythic_plus_score')"
               @keydown.enter.prevent="toggle('mythic_plus_score')"
               @keydown.space.prevent="toggle('mythic_plus_score')"
@@ -131,7 +131,7 @@ function sortGlyph(key: SortKey): string {
             <td colspan="9" class="text-center text-wsa-disabled py-4">{{ filterActive ? 'No members match your filter.' : 'No members synced yet.' }}</td>
           </tr>
           <tr v-for="m in sortedRows" :key="m.id" class="border-b border-wsa-border/20 hover:bg-black/20 transition-colors">
-            <td class="font-medium py-1.5 px-2">
+            <td class="font-medium py-1.5 px-2 max-w-[10rem] sm:max-w-none truncate">
               <router-link
                 :to="{
                   name: 'character-summary',
@@ -154,22 +154,22 @@ function sortGlyph(key: SortKey): string {
               />
               <span v-else class="text-wsa-disabled">—</span>
             </td>
-            <td class="text-center py-1.5 px-2">
+            <td class="text-center py-1.5 px-2 hidden sm:table-cell">
               <RaceIcon :race-id="m.race_id" :size="18" />
             </td>
             <td class="text-center py-1.5 px-2 hidden sm:table-cell">
               <FactionBadge v-if="m.faction" :faction="m.faction" :size="14" />
             </td>
-            <td class="text-right tabular-nums text-wsa-text py-1.5 px-2">{{ m.level }}</td>
+            <td class="text-right tabular-nums text-wsa-text py-1.5 px-2 hidden sm:table-cell">{{ m.level }}</td>
             <td
-              class="text-right tabular-nums text-wsa-text py-1.5 px-2 hidden sm:table-cell"
+              class="text-right tabular-nums text-wsa-text py-1.5 px-2"
               :class="{ 'italic opacity-70': isStaleSync(m.synced_at) }"
             >
               <template v-if="m.equipped_item_level != null">{{ m.equipped_item_level }}</template>
               <span v-else class="text-wsa-disabled">—</span>
             </td>
             <td
-              class="text-right tabular-nums py-1.5 px-2 hidden sm:table-cell"
+              class="text-right tabular-nums py-1.5 px-2"
               :class="{ 'italic opacity-70': isStaleSync(m.synced_at) }"
             >
               <RatingChip v-if="m.mythic_plus_rating" :rating="m.mythic_plus_rating" :region-rank="m.region_rank" :is-current="m.mythic_plus_rating.is_current" :season-name="m.mythic_plus_rating.season_name" />

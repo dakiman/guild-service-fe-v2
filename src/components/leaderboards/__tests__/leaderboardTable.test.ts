@@ -30,4 +30,14 @@ describe('LeaderboardTable', () => {
     const w = mount(LeaderboardTable, { props: { rows: [] }, global: { stubs: { RouterLink: RouterLinkStub } } })
     expect(w.text()).toContain('No ranked characters yet this season')
   })
+
+  it('keeps rating visible on mobile and folds realm/spec under the name', () => {
+    const w = mount(LeaderboardTable, { props: { rows: rows as never }, global: { stubs: { RouterLink: RouterLinkStub, ClassIcon: true, SpecIcon: true } } })
+    expect(w.find('table').classes().join(' ')).not.toMatch(/min-w-\[/)
+    const realmTh = w.findAll('th').find((t) => t.text() === 'Realm')!
+    expect(realmTh.classes()).toContain('hidden'); expect(realmTh.classes()).toContain('sm:table-cell')
+    const ratingTh = w.findAll('th').find((t) => t.text() === 'Rating')!
+    expect(ratingTh.classes()).not.toContain('hidden')
+    expect(w.find('[data-testid="mobile-meta"]').text()).toContain('Draenor · Vengeance')
+  })
 })
