@@ -1,12 +1,14 @@
 <template>
   <div class="flex flex-col gap-4">
-    <ErrorState
-      v-if="lookup.error.value && !lookup.isFetching.value"
-      :error="lookup.error.value"
-      @retry="lookup.restartPolling()"
-    />
+    <template v-if="character">
+      <ErrorState
+        v-if="hasSettledError"
+        compact
+        kind="character"
+        :error="lookup.error.value"
+        @retry="lookup.restartPolling()"
+      />
 
-    <template v-else-if="character">
       <CharacterHeader
         :character="character"
         :achievements-enabled="meta?.feature_flags?.achievements !== false"
@@ -47,12 +49,25 @@
       <router-view />
     </template>
 
-    <PollingState
-      v-else
-      :pending-since="lookup.syncPendingSince.value"
-      :queue-depth="pollingQueueDepth"
-      @check-now="lookup.refetch()"
-    />
+    <template v-else-if="hasSettledError">
+      <h1 class="sr-only">Character lookup</h1>
+      <ErrorState
+        kind="character"
+        :error="lookup.error.value"
+        @retry="lookup.restartPolling()"
+      />
+    </template>
+
+    <template v-else-if="lookup.syncPendingSince.value">
+      <h1 class="sr-only">Character lookup</h1>
+      <PollingState
+        :pending-since="lookup.syncPendingSince.value"
+        :queue-depth="pollingQueueDepth"
+        @check-now="lookup.refetch()"
+      />
+    </template>
+
+    <CharacterLayoutSkeleton v-else />
   </div>
 </template>
 
@@ -70,6 +85,7 @@ import { toggleRecruitment } from '@/api/characters'
 import { SyncPendingError } from '@/types/api'
 import { Sparkles, BookOpen, Crown, Gem, Skull, Swords, Star, Trophy } from 'lucide-vue-next'
 import CharacterHeader from '@/components/character/CharacterHeader.vue'
+import CharacterLayoutSkeleton from '@/components/character/CharacterLayoutSkeleton.vue'
 import CharacterTabStrip, {
   type TabDescriptor,
 } from '@/components/character/CharacterTabStrip.vue'
@@ -103,6 +119,7 @@ const pollingQueueDepth = computed(() => {
   const err = lookup.error.value
   return err instanceof SyncPendingError ? err.queueDepth : undefined
 })
+const hasSettledError = computed(() => !!lookup.error.value && !lookup.isFetching.value)
 
 useWowheadRefresh(() => character.value)
 useWowheadRefresh(() => route.fullPath)

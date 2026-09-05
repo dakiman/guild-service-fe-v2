@@ -3,6 +3,7 @@ import { computed, ref, toRef, watch } from 'vue'
 import { refDebounced } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import GuildHeader from '@/components/guild/GuildHeader.vue'
+import GuildLayoutSkeleton from '@/components/guild/GuildLayoutSkeleton.vue'
 import GuildStatsSection from '@/components/guild/GuildStatsSection.vue'
 import RosterTable from '@/components/guild/RosterTable.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
@@ -65,13 +66,15 @@ const guildQueueDepth = computed(() => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <ErrorState
-      v-if="showError"
-      :error="lookup.error.value"
-      @retry="lookup.restartPolling()"
-    />
+    <template v-if="guild && members">
+      <ErrorState
+        v-if="showError"
+        compact
+        kind="guild"
+        :error="lookup.error.value"
+        @retry="lookup.restartPolling()"
+      />
 
-    <template v-else-if="guild && members">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <GuildHeader :guild="guild" class="flex-1" />
       </div>
@@ -105,22 +108,35 @@ const guildQueueDepth = computed(() => {
       />
     </template>
 
-    <PollingState
-      v-else
-      :pending-since="lookup.syncPendingSince.value"
-      :queue-depth="guildQueueDepth"
-      @check-now="lookup.refetch()"
-    >
-      <template #visual>
-        <div class="w-full flex flex-col gap-2">
-          <div v-for="i in 6" :key="i" class="flex items-center gap-3">
-            <div class="wsa-skeleton h-4 w-1/4" />
-            <div class="wsa-skeleton h-4 w-6 shrink-0" />
-            <div class="wsa-skeleton h-4 w-6 shrink-0" />
-            <div class="wsa-skeleton h-4 w-10 ml-auto" />
+    <template v-else-if="showError">
+      <h1 class="sr-only">Guild lookup</h1>
+      <ErrorState
+        kind="guild"
+        :error="lookup.error.value"
+        @retry="lookup.restartPolling()"
+      />
+    </template>
+
+    <template v-else-if="lookup.syncPendingSince.value">
+      <h1 class="sr-only">Guild lookup</h1>
+      <PollingState
+        :pending-since="lookup.syncPendingSince.value"
+        :queue-depth="guildQueueDepth"
+        @check-now="lookup.refetch()"
+      >
+        <template #visual>
+          <div class="w-full flex flex-col gap-2">
+            <div v-for="i in 6" :key="i" class="flex items-center gap-3">
+              <div class="wsa-skeleton h-4 w-1/4" />
+              <div class="wsa-skeleton h-4 w-6 shrink-0" />
+              <div class="wsa-skeleton h-4 w-6 shrink-0" />
+              <div class="wsa-skeleton h-4 w-10 ml-auto" />
+            </div>
           </div>
-        </div>
-      </template>
-    </PollingState>
+        </template>
+      </PollingState>
+    </template>
+
+    <GuildLayoutSkeleton v-else />
   </div>
 </template>
