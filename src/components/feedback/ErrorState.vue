@@ -1,11 +1,11 @@
 <template>
   <div
     role="alert"
-    class="wsa-card !p-4 flex items-start justify-between gap-3"
-    :class="isThrottled ? '!border-amber-700/50' : '!border-red-800/50'"
+    class="wsa-card flex justify-between gap-3"
+    :class="[isThrottled ? '!border-amber-700/50' : '!border-red-800/50', compact ? '!p-3 items-center' : '!p-4 items-start']"
   >
     <img
-      v-if="!hideArt"
+      v-if="!hideArt && !compact"
       :src="artSrc"
       alt=""
       aria-hidden="true"
@@ -15,14 +15,19 @@
       <h3 class="text-sm font-semibold" :class="isThrottled ? 'text-wsa-gold' : 'text-red-400'">
         {{ resolvedTitle }}
       </h3>
-      <p v-if="resolvedMessage" class="text-xs mt-1" :class="isThrottled ? 'text-wsa-muted' : 'text-red-300/80'">
+      <p
+        v-if="resolvedMessage"
+        :class="[isThrottled ? 'text-wsa-muted' : 'text-red-300/80', compact ? 'text-xs mt-0.5' : 'text-xs mt-1']"
+      >
         {{ resolvedMessage }}
       </p>
-      <p v-if="quip && !hideArt" class="text-[11px] italic text-wsa-disabled mt-1">{{ quip }}</p>
+      <p v-if="quip && !hideArt && !compact" class="text-[11px] italic text-wsa-disabled mt-1">{{ quip }}</p>
     </div>
     <div v-if="!hideRetry" class="flex-none">
       <slot name="actions">
+        <RouterLink v-if="isNotFound" :to="{ name: 'home' }" class="wsa-btn">{{ notFoundLabel }}</RouterLink>
         <button
+          v-else
           type="button"
           class="wsa-btn"
           :disabled="isThrottled && remainingSeconds > 0"
@@ -37,6 +42,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 import { NotFoundError, SyncPendingError, ThrottledError } from '@/types/api'
 
 const props = defineProps<{
@@ -45,6 +51,8 @@ const props = defineProps<{
   error?: unknown
   hideRetry?: boolean
   hideArt?: boolean
+  compact?: boolean
+  kind?: 'character' | 'guild'
 }>()
 
 const emit = defineEmits<{ retry: [] }>()
@@ -106,14 +114,22 @@ const resolvedMessage = computed(() => {
   if (isNotFound.value) return "We couldn't find that character/guild on Blizzard."
   if (isThrottled.value) {
     return remainingSeconds.value > 0
-      ? `This endpoint is rate-limited. Try again in ${remainingSeconds.value}s.`
-      : 'This endpoint is rate-limited. You can try again now.'
+      ? `Too many lookups right now — try again in ${remainingSeconds.value}s.`
+      : 'Too many lookups right now — you can try again now.'
   }
   if (isSyncPending.value) {
     return 'This is taking much longer than it should — the sync is still queued on our side. Try again, or come back in a few minutes.'
   }
   return undefined
 })
+
+const notFoundLabel = computed(() =>
+  props.kind === 'character'
+    ? 'Search another character'
+    : props.kind === 'guild'
+      ? 'Search another guild'
+      : 'Back to search',
+)
 
 const retryLabel = computed(() => {
   if (isThrottled.value && remainingSeconds.value > 0) return `Retry in ${remainingSeconds.value}s`
