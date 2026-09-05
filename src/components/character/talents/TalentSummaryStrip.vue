@@ -7,6 +7,7 @@
       :is-picked="true"
       :is-choice="false"
       :rank-label="ref.rank_label"
+      :name="ref.name"
       :class-color="classColor"
       :cell-size="36"
     />

@@ -14,6 +14,7 @@
   >
     <span class="talent-node__icon" />
     <span v-if="rankLabel" class="talent-node__rank">{{ rankLabel }}</span>
+    <span class="sr-only">{{ accessibleName }}</span>
   </a>
 </template>
 
@@ -27,6 +28,7 @@ const props = defineProps<{
   isChoice: boolean
   rankLabel?: string | null
   classColor?: string | null
+  name?: string | null
   /** Optional positional layout (consumed by TalentTreeColumn). */
   row?: number
   col?: number
@@ -35,6 +37,11 @@ const props = defineProps<{
 
 const dataWowhead = computed(() => buildWowheadHref({ spellId: props.spellId }))
 const fullHref = computed(() => `https://www.wowhead.com/${dataWowhead.value}`)
+
+const accessibleName = computed(
+  () =>
+    `${props.name ?? `Talent ${props.spellId}`}${props.rankLabel ? `, ${props.rankLabel}` : ''}`,
+)
 
 const nodeStyle = computed(() => {
   const out: Record<string, string> = {}

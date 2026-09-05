@@ -8,8 +8,10 @@ describe('SyncingBadge', () => {
 
   it('shows the syncing banner while syncing', () => {
     const w = mount(SyncingBadge, { props: { syncing: true } })
-    expect(w.find('[data-testid="sync-banner"]').exists()).toBe(true)
+    const banner = w.get('[data-testid="sync-banner"]')
     expect(w.text()).toContain('Syncing character data')
+    expect(banner.attributes('role')).toBe('status')
+    expect(banner.attributes('aria-live')).toBe('polite')
   })
 
   it('renders nothing when mounted already-synced (no flash on page load)', () => {

@@ -20,6 +20,7 @@
         :is-picked="pickedIds.has(node.id)"
         :is-choice="node.type === 'choice'"
         :rank-label="rankLabelFor(node)"
+        :name="nameFor(node)"
         :class-color="classColor"
         :cell-size="Math.round(cellSize * 1.25)"
       />
@@ -41,6 +42,7 @@
         :is-picked="pickedIds.has(node.id)"
         :is-choice="node.type === 'choice'"
         :rank-label="rankLabelFor(node)"
+        :name="nameFor(node)"
         :class-color="classColor"
         :row="node.display_row"
         :col="node.display_col"
@@ -63,6 +65,7 @@
         :is-picked="pickedIds.has(node.id)"
         :is-choice="node.type === 'choice'"
         :rank-label="rankLabelFor(node)"
+        :name="nameFor(node)"
         :class-color="classColor"
         :cell-size="Math.round(cellSize * 1.25)"
       />
@@ -177,6 +180,13 @@ function rankLabelFor(node: TalentNodeT): string | null {
   if (!p) return null
   if (p.max_rank > 1) return `${p.rank}/${p.max_rank}`
   return null
+}
+
+function nameFor(node: TalentNodeT): string | null {
+  const spellId = spellIdFor(node)
+  return node.ranks.find((r) => r.spell_id === spellId)?.name
+    ?? node.choice_options?.find((o) => o.spell_id === spellId)?.name
+    ?? node.ranks[0]?.name ?? null
 }
 </script>
 

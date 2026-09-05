@@ -65,11 +65,19 @@ function rankLabel(p: TalentEntry): string | null {
   return null
 }
 
+function nameFor(node: TalentNode, spellId: number): string | null {
+  return node.ranks.find((r) => r.spell_id === spellId)?.name
+    ?? node.choice_options?.find((o) => o.spell_id === spellId)?.name
+    ?? node.ranks[0]?.name ?? null
+}
+
 function toRef(p: PickedWithNode, section: 'class' | 'hero' | 'spec'): TalentNodeRef {
+  const spellId = resolveNodeSpellId(p.node, p.picked)
   return {
     node_id: p.node.id,
-    spell_id: resolveNodeSpellId(p.node, p.picked),
+    spell_id: spellId,
     rank_label: rankLabel(p.picked),
+    name: nameFor(p.node, spellId),
     section,
   }
 }

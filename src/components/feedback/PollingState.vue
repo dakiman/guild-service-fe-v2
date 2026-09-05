@@ -1,5 +1,5 @@
 <template>
-  <div class="wsa-card flex flex-col items-center text-center gap-3 py-8">
+  <div role="status" aria-live="polite" class="wsa-card flex flex-col items-center text-center gap-3 py-8">
     <slot name="visual">
       <img
         src="/brand/state-loading.jpg"

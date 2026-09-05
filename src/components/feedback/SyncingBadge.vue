@@ -2,6 +2,8 @@
   <span
     v-if="syncing"
     data-testid="sync-banner"
+    role="status"
+    aria-live="polite"
     class="wsa-badge !border-sky-500/30 !text-sky-400 gap-1.5"
   >
     <span class="wsa-spinner !w-3 !h-3 shrink-0" />
@@ -15,6 +17,8 @@
   <span
     v-else-if="showSuccess"
     data-testid="sync-success"
+    role="status"
+    aria-live="polite"
     class="wsa-badge sync-success-flash !border-emerald-500/30 !text-emerald-400 gap-1.5"
   >
     <img

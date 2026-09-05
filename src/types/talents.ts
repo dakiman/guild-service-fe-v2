@@ -53,6 +53,8 @@ export interface TalentNodeRef {
   spell_id: number
   /** "1/3" rendered next to the icon, or null for choice / single-rank. */
   rank_label: string | null
+  /** Talent name, used for the accessible name on the rendered icon. */
+  name: string | null
   /** Section the node came from — used only for ordering, not styling. */
   section: 'class' | 'hero' | 'spec'
 }

@@ -51,10 +51,19 @@
         />
       </div>
 
-      <ChevronDown
-        class="w-4 h-4 text-wsa-muted/60 shrink-0 transition-transform duration-300"
-        :class="{ 'rotate-180': expanded }"
-      />
+      <button
+        type="button"
+        class="ml-auto p-1 rounded text-wsa-muted hover:text-wsa-gold"
+        :aria-expanded="expanded"
+        aria-label="Toggle equipment details"
+        @click.stop="expanded = !expanded"
+      >
+        <ChevronDown
+          class="w-4 h-4 transition-transform"
+          :class="{ 'rotate-180': expanded }"
+          aria-hidden="true"
+        />
+      </button>
     </div>
 
     <div

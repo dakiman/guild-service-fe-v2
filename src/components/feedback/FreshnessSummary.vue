@@ -7,7 +7,7 @@
       @click="open = !open"
     >
       <component :is="aggregate.icon" class="w-3 h-3" :class="aggregate.iconClass" />
-      {{ aggregate.label }}
+      <span role="status">{{ aggregate.label }}</span>
       <ChevronDown class="w-3 h-3 text-wsa-muted transition-transform" :class="{ 'rotate-180': open }" />
     </button>
     <div

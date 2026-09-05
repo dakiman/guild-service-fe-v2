@@ -111,6 +111,7 @@
               :spell-id="p.spell_id"
               :is-picked="true"
               :is-choice="false"
+              :name="p.name || null"
               :class-color="classColor"
               :cell-size="36"
             />

@@ -12,10 +12,10 @@
       v-if="item"
       :href="`https://www.wowhead.com/${href}`"
       :data-wowhead="href"
+      :aria-label="`${item.name}, item level ${item.item_level}`"
       class="block w-full h-full"
       target="_blank"
       rel="noopener"
-      tabindex="-1"
     />
     <span
       v-if="item"

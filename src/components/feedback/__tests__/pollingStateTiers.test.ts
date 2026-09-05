@@ -7,6 +7,8 @@ describe('PollingState tiers', () => {
     const w = mount(PollingState)
     expect(w.text()).toContain('Fetching from Blizzard for the first time')
     expect(w.find('button').exists()).toBe(false)
+    expect(w.attributes('role')).toBe('status')
+    expect(w.attributes('aria-live')).toBe('polite')
   })
 
   it('shows the queue-busy line after 30s when the queue is deep', () => {

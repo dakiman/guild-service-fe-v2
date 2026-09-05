@@ -49,26 +49,28 @@
         v-if="otherTitles.length > 0"
         class="grid grid-cols-1 sm:grid-cols-2 gap-2"
       >
-        <li
-          v-for="title in otherTitles"
-          :key="title.id"
-          class="group relative overflow-hidden rounded-md border px-3 py-2 pl-4 text-sm cursor-pointer transition-colors"
-          :class="
-            previewedTitleId === title.id
-              ? 'border-wsa-gold/70 bg-base-200/40 wsa-text-heading'
-              : 'border-base-300/60 hover:border-wsa-gold/60 text-wsa-muted hover:wsa-text-heading'
-          "
-          @click.stop="onChipClick(title.id)"
-        >
-          <span
-            class="absolute left-0 top-0 bottom-0 w-[2px] transition-colors"
+        <li v-for="title in otherTitles" :key="title.id" class="list-none">
+          <button
+            type="button"
+            class="group relative w-full overflow-hidden rounded-md border px-3 py-2 pl-4 text-left text-sm transition-colors"
             :class="
               previewedTitleId === title.id
-                ? 'bg-wsa-gold'
-                : 'bg-wsa-gold/40 group-hover:bg-wsa-gold'
+                ? 'border-wsa-gold/70 bg-base-200/40 wsa-text-heading'
+                : 'border-base-300/60 hover:border-wsa-gold/60 text-wsa-muted hover:wsa-text-heading'
             "
-          />
-          {{ title.bare }}
+            :aria-pressed="previewedTitleId === title.id"
+            @click.stop="onChipClick(title.id)"
+          >
+            <span
+              class="absolute left-0 top-0 bottom-0 w-[2px] transition-colors"
+              :class="
+                previewedTitleId === title.id
+                  ? 'bg-wsa-gold'
+                  : 'bg-wsa-gold/40 group-hover:bg-wsa-gold'
+              "
+            />
+            {{ title.bare }}
+          </button>
         </li>
       </ul>
     </div>
