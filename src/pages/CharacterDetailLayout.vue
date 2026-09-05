@@ -79,6 +79,7 @@ import { toast } from 'vue-sonner'
 import { useCharacterLookup } from '@/composables/usePollingLookup'
 import { useWowheadRefresh } from '@/composables/useWowhead'
 import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
+import { useDocumentTitle } from '@/composables/useDocumentTitle'
 import { provideCharacterContext } from '@/composables/useCharacterContext'
 import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
@@ -99,6 +100,7 @@ import FreshnessSummary from '@/components/feedback/FreshnessSummary.vue'
 import type { Region } from '@/types/api'
 import type { CharacterLookupResult, CharacterResource, MetaBlock } from '@/types/character'
 import { getErrorMessage } from '@/utils/errors'
+import { displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'
 
 const props = defineProps<{ region: Region; realm: string; name: string }>()
 const { region, realm, name } = toRefs(props)
@@ -120,6 +122,12 @@ const pollingQueueDepth = computed(() => {
   return err instanceof SyncPendingError ? err.queueDepth : undefined
 })
 const hasSettledError = computed(() => !!lookup.error.value && !lookup.isFetching.value)
+
+useDocumentTitle(() =>
+  character.value
+    ? `${fmtName(character.value.name, character.value.display_name)} – ${fmtRealm(character.value.realm, character.value.display_realm)}`
+    : null,
+)
 
 useWowheadRefresh(() => character.value)
 useWowheadRefresh(() => route.fullPath)

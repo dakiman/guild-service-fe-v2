@@ -12,8 +12,10 @@ import StaleBadge from '@/components/feedback/StaleBadge.vue'
 import RefreshButton from '@/components/feedback/RefreshButton.vue'
 import { useGuildLookup } from '@/composables/usePollingLookup'
 import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
+import { useDocumentTitle } from '@/composables/useDocumentTitle'
 import type { Region } from '@/types/api'
 import { SyncPendingError } from '@/types/api'
+import { displayGuildName as fmtGuildName, displayRealm as fmtRealm } from '@/utils/display'
 
 const props = defineProps<{ region: Region; realm: string; name: string }>()
 
@@ -39,6 +41,12 @@ const members = computed(() => lookup.data.value?.members ?? null)
 const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
 const isSyncing = computed(() => lookup.data.value?.isSyncing ?? false)
+
+useDocumentTitle(() =>
+  guild.value
+    ? `${fmtGuildName(guild.value.name, guild.value.display_name)} – ${fmtRealm(guild.value.realm, guild.value.display_realm)}`
+    : null,
+)
 
 async function onForceRefresh() {
   const result = await lookup.forceRefresh()
