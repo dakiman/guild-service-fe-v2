@@ -31,6 +31,7 @@
         :key="instance.id"
         :instance="instance"
         :progress="raidProgress"
+        :collapsed="killCount(instance.id) === 0"
       />
 
       <template v-if="showLegacy">
@@ -45,6 +46,7 @@
             :key="instance.id"
             :instance="instance"
             :progress="raidProgress"
+            :collapsed="killCount(instance.id) === 0"
           />
         </div>
       </template>
@@ -60,12 +62,16 @@ import { useCharacterContext } from '@/composables/useCharacterContext'
 import type { RaidEncounterProgress } from '@/types/character'
 import type { RaidInstanceGameData } from '@/types/gameData'
 
-defineProps<{
+const props = defineProps<{
   raidProgress: RaidEncounterProgress[] | null
 }>()
 
 const { data, isLoading, isError, refetch } = useRaidInstances()
 const showLegacy = ref(false)
+
+function killCount(instanceId: number): number {
+  return (props.raidProgress ?? []).filter((r) => r.instance_id === instanceId).length
+}
 
 const { freshness } = useCharacterContext()
 const isSyncingSlice = computed(() => freshness.value.raids === 'never_synced')

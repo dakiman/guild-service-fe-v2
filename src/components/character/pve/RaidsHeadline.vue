@@ -1,11 +1,11 @@
 <template>
-  <div class="wsa-card p-5 flex flex-col gap-3">
+  <div class="wsa-card p-5 flex flex-wrap items-center justify-between gap-6">
     <div class="flex flex-col">
       <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">Raid Progression</span>
       <span class="text-4xl font-bold tabular-nums text-wsa-gold">{{ heroLabel }}</span>
       <span v-if="instanceName" class="text-xs text-wsa-muted/60 mt-1">{{ instanceName }}</span>
     </div>
-    <div v-if="secondaryRow" class="flex flex-wrap gap-2">
+    <div v-if="secondaryRow" class="flex flex-wrap items-center gap-2 sm:justify-end">
       <span
         v-for="chip in secondaryRow"
         :key="chip.label"

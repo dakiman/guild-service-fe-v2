@@ -1,5 +1,21 @@
 <template>
-  <div class="wsa-card overflow-hidden">
+  <div v-if="!expanded" class="wsa-card !p-0 overflow-hidden" data-testid="raid-collapsed">
+    <button
+      type="button"
+      data-testid="raid-expand"
+      class="w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-black/20 transition-colors"
+      :aria-expanded="false"
+      @click="expanded = true"
+    >
+      <span class="wsa-text-heading text-base truncate">{{ instance.name }}</span>
+      <span class="flex items-center gap-3 text-xs text-wsa-muted shrink-0">
+        <span class="tabular-nums">0/{{ instance.encounters.length }}</span>
+        <span class="uppercase tracking-wider hidden sm:inline">{{ instance.expansion.name }}</span>
+        <ChevronDown class="w-4 h-4" aria-hidden="true" />
+      </span>
+    </button>
+  </div>
+  <div v-else class="wsa-card overflow-hidden">
     <!-- Header strip: raid background tinted dark, instance name overlaid. -->
     <div
       class="relative px-4 py-5 border-b border-wsa-border/30"
@@ -8,9 +24,21 @@
       <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
       <div class="relative flex items-center justify-between">
         <h3 class="wsa-text-heading text-lg">{{ instance.name }}</h3>
-        <span class="text-xs text-wsa-muted/70 uppercase tracking-wider">
-          {{ instance.expansion.name }}
-        </span>
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-wsa-muted/70 uppercase tracking-wider">
+            {{ instance.expansion.name }}
+          </span>
+          <button
+            v-if="props.collapsed"
+            type="button"
+            class="wsa-btn !min-h-0 py-0.5 px-2 text-[11px] inline-flex items-center gap-1"
+            :aria-expanded="true"
+            @click="expanded = false"
+          >
+            <ChevronUp class="w-3.5 h-3.5" aria-hidden="true" />
+            Collapse
+          </button>
+        </div>
       </div>
     </div>
 
@@ -53,6 +81,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { ChevronDown, ChevronUp } from 'lucide-vue-next'
 import BossRow from './BossRow.vue'
 import type { RaidInstanceGameData } from '@/types/gameData'
 import type { RaidEncounterProgress } from '@/types/character'
@@ -60,7 +89,10 @@ import type { RaidEncounterProgress } from '@/types/character'
 const props = defineProps<{
   instance: RaidInstanceGameData
   progress: RaidEncounterProgress[] | null
+  collapsed?: boolean
 }>()
+
+const expanded = ref(!props.collapsed)
 
 interface DifficultyDescriptor {
   key: 'lfr' | 'normal' | 'heroic' | 'mythic'

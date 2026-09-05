@@ -36,3 +36,22 @@ describe('RaidInstanceCard default difficulty', () => {
     expect(activeTabText(w)).toContain('Heroic')
   })
 })
+
+describe('RaidInstanceCard collapsed', () => {
+  it('renders a one-line row with 0/N and expands on click', async () => {
+    const w = mount(RaidInstanceCard, { props: { instance, progress: [], collapsed: true }, global: { stubs: { BossRow: true } } })
+    expect(w.find('[data-testid="raid-collapsed"]').exists()).toBe(true)
+    expect(w.text()).toContain('Sporefall')
+    expect(w.text()).toContain('0/1')
+    expect(w.findAll('button.wsa-tab')).toHaveLength(0)
+    const toggle = w.get('[data-testid="raid-expand"]')
+    expect(toggle.attributes('aria-expanded')).toBe('false')
+    await toggle.trigger('click')
+    expect(w.find('[data-testid="raid-collapsed"]').exists()).toBe(false)
+    expect(w.findAll('button.wsa-tab').length).toBeGreaterThan(0)
+  })
+  it('is expanded by default when not collapsed', () => {
+    const w = mount(RaidInstanceCard, { props: { instance, progress: [] }, global: { stubs: { BossRow: true } } })
+    expect(w.find('[data-testid="raid-collapsed"]').exists()).toBe(false)
+  })
+})
