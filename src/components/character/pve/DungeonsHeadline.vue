@@ -1,7 +1,7 @@
 <template>
   <div class="wsa-card p-5 flex flex-wrap items-center justify-between gap-6">
     <div class="flex flex-col">
-      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">M+ Score</span>
+      <span class="text-[10px] uppercase tracking-wider text-wsa-muted/70">M+ Rating</span>
       <span class="text-4xl font-bold tabular-nums" :style="scoreStyle">
         {{ scoreLabel }}
       </span>
