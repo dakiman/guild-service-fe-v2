@@ -3,8 +3,8 @@
  *
  * | Nav entry     | Active when route.name is / starts with                     |
  * |---------------|-------------------------------------------------------------|
- * | Guilds        | guild-search, guild-detail                                  |
  * | Characters    | character-  (character-search + every character-* detail)   |
+ * | Guilds        | guild-search, guild-detail                                  |
  * | Mythic+       | mythic-plus (also mythic-plus-archive)                      |
  * | Leaderboards  | leaderboards (region/realm/class/spec + leaderboards-season)|
  * | Meta          | meta                                                        |
@@ -19,8 +19,8 @@ export interface NavLink {
 }
 
 export const NAV_LINKS: readonly NavLink[] = [
-  { name: 'guild-search', label: 'Guilds', prefixes: ['guild-'] },
   { name: 'character-search', label: 'Characters', prefixes: ['character-'] },
+  { name: 'guild-search', label: 'Guilds', prefixes: ['guild-'] },
   { name: 'mythic-plus', label: 'Mythic+', prefixes: ['mythic-plus'] },
   { name: 'leaderboards', label: 'Leaderboards', prefixes: ['leaderboards'] },
   { name: 'meta', label: 'Meta', prefixes: ['meta'] },

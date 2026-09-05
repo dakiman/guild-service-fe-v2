@@ -88,7 +88,7 @@ describe('AppNav', () => {
 
   it('renders six links with no Home entry', async () => {
     const { w } = await mountAt('/')
-    expect(desktopLinks(w).map((a) => a.text())).toEqual(['Guilds', 'Characters', 'Mythic+', 'Leaderboards', 'Meta', 'Raids'])
+    expect(desktopLinks(w).map((a) => a.text())).toEqual(['Characters', 'Guilds', 'Mythic+', 'Leaderboards', 'Meta', 'Raids'])
     w.unmount()
   })
 

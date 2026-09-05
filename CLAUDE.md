@@ -37,7 +37,7 @@ Possibly-stale resources call `useStaleAutoRefresh(isStale, queryKey, opts?)`, w
 
 ### Character tabs
 
-`pages/character/Character{Tab}Tab.vue` — one file per top-level tab. Two tabs nest subtabs: `pages/character/pve/` (`MythicSubtab`, `RaidsSubtab`) and `pages/character/collections/` (`MountsSubtab`, `PetsSubtab`, `ToysSubtab`).
+`pages/character/Character{Tab}Tab.vue` — one file per top-level tab. Two tabs nest subtabs: `pages/character/pve/` (`MythicSubtab`, `RaidsSubtab`) and `pages/character/collections/` (`MountsSubtab`, `PetsSubtab`, `ToysSubtab`). `CharacterTabStrip` is a `<nav aria-label="Character sections">` with `aria-current="page"` on the active link (no tab roles), scrolling horizontally below `sm`.
 
 **Basic-tier (sub-max-level) characters.** BE sends `meta.profile_tier: 'full' | 'basic'` — basic means the BE tracks profile/gear/talents only (no slice syncs, slice relation keys omitted from the payload, `meta.freshness` has only `profile`). `CharacterDetailLayout.vue` keys off it: shows `components/feedback/BasicProfileNotice.vue`, hides the freshness summary, and trims tabs to Summary + Talents. Slice-relation fields on `CharacterResource` are optional (`titles?`, `dungeon_runs?`, `pvp_brackets?`, ...) — normalize with `?? []` / `?? null` at consumer sites.
 
@@ -70,11 +70,13 @@ Affixes ride along on the dungeons response keyed by id (`Record<number, Keyston
 
 ### Nav
 
-`components/layout/AppNav.vue` collapses at **`lg` (1024px)**. Links come from `components/layout/navLinks.ts` (`NAV_LINKS` + `isNavActive`, prefix-based — Characters owns every `character-*` route, Leaderboards every `leaderboards*` route). No Home link; the wordmark is home. `NavSearch.vue` wraps `NameAutocomplete` (characters only): a pick routes to `character-detail`; Enter with no match routes to `/?q=<name>`, which `HomePage.vue` consumes once (prefills the character `LookupForm`, focuses the realm picker, strips the param). `/` focuses the search via `composables/useSlashShortcut.ts` (opens the mobile menu first below `lg`).
+`components/layout/AppNav.vue` collapses at **`lg` (1024px)**. Links come from `components/layout/navLinks.ts` (`NAV_LINKS` + `isNavActive`, prefix-based — Characters owns every `character-*` route, Leaderboards every `leaderboards*` route). Order is Characters · Guilds · Mythic+ · Leaderboards · Meta · Raids. No Home link; the wordmark is home. `NavSearch.vue` wraps `NameAutocomplete` (characters only): a pick routes to `character-detail`; Enter with no match routes to `/?q=<name>`, which `HomePage.vue` consumes once (prefills the character `LookupForm`, focuses the realm picker, strips the param). `/` focuses the search via `composables/useSlashShortcut.ts` (opens the mobile menu first below `lg`).
 
 ### Routing
 
 `src/router/index.ts` — all pages lazy-loaded. Guards in `router/guards.ts`: `meta.requiresAuth` → `/login?next=...`; `meta.guestOnly` redirects authed users to `/`. Dynamic params `:region/:realm/:name` use `props: true`.
+
+Routes carry either a static `meta.title` (formatted as `"{title} · Peon"` by `router/documentTitle.ts`'s `installDocumentTitle`) or `meta.dynamicTitle: true` (character-detail parent, guild-detail), in which case the page itself calls `composables/useDocumentTitle.ts` once its data resolves. `composables/useQueryParam.ts` (`useQueryParam(name, { default, parse?, serialize? })`, plus `intParam`) mirrors view state into the URL via `router.replace`, dropping the key when it's at the default — used by the guild roster (`page`, `q`), Meta (`week`, `region`, `spec`), the dungeons tab (`view`, `season`; no `?season=` means current), and the M+ archive and `TopRunsLeaderboard` (`page`).
 
 **Identity casing.** `character.name` and `character.realm` from BE are canonical lowercased/slug forms (`melaniya`, `the-maelstrom`); they round-trip into URLs and lookups, so do **not** mutate them. Display formatting is the component's job: `CharacterHeader.vue` exposes `displayName` (title-case first letter) and `displayRealm` (split on `-`, title-case each word, join with spaces). New components should follow the same pattern, not `.toUpperCase()` on raw fields.
 

@@ -10,8 +10,8 @@ function link(name: string) {
 describe('NAV_LINKS', () => {
   it('has exactly the six links, in order, with no Home', () => {
     expect(NAV_LINKS.map((l) => l.label)).toEqual([
-      'Guilds',
       'Characters',
+      'Guilds',
       'Mythic+',
       'Leaderboards',
       'Meta',
