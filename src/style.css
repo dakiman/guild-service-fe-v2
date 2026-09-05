@@ -238,6 +238,11 @@
   }
 }
 
+@layer utilities {
+  .scrollbar-none { scrollbar-width: none }
+  .scrollbar-none::-webkit-scrollbar { display: none }
+}
+
 /* ── Toasts (vue-sonner) ──────────────────────────────────────
  * Outside @layer components — Tailwind purges non-class selectors
  * inside layers. main.ts imports vue-sonner/style.css before this

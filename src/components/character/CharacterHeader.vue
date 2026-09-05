@@ -33,21 +33,23 @@
         <div class="flex flex-wrap items-center gap-3">
           <h1 class="font-display text-3xl font-bold text-wsa-text drop-shadow-md">{{ displayName }}</h1>
           <FactionBadge :faction="character.faction" />
-          <button
-            type="button"
-            class="p-1.5 rounded-md text-wsa-muted/60 hover:text-wsa-gold transition-colors"
-            title="Copy profile link"
-            aria-label="Copy profile link"
-            @click="onShareLink"
-          >
-            <Share2 class="w-4 h-4" />
-          </button>
-          <ExternalProfileLinks
-            kind="character"
-            :region="character.region"
-            :realm="character.realm"
-            :name="character.name"
-          />
+          <span class="inline-flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              class="p-1.5 rounded-md text-wsa-muted/60 hover:text-wsa-gold transition-colors"
+              title="Copy profile link"
+              aria-label="Copy profile link"
+              @click="onShareLink"
+            >
+              <Share2 class="w-4 h-4" />
+            </button>
+            <ExternalProfileLinks
+              kind="character"
+              :region="character.region"
+              :realm="character.realm"
+              :name="character.name"
+            />
+          </span>
         </div>
 
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
