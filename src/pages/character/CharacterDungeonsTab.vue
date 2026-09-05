@@ -3,7 +3,7 @@
     <DungeonsHeadline
       :runs="character.dungeon_runs ?? []"
       :rating="isCurrentSelected && character.mythic_plus_rating?.is_current ? character.mythic_plus_rating : null"
-      :current-season="selectedSeason"
+      :current-season="effectiveSeason"
       :season-name="selectedSeasonName"
     />
 
@@ -47,7 +47,7 @@
           v-if="seasonOptions.length > 1"
           aria-label="Season"
           class="text-xs bg-transparent border border-wsa-border rounded px-2 py-1 text-wsa-muted"
-          :value="selectedSeason ?? ''"
+          :value="effectiveSeason ?? ''"
           @change="onSeasonChange"
         >
           <option v-for="opt in seasonOptions" :key="opt.id" :value="opt.id">
@@ -68,23 +68,24 @@
         v-else-if="activeView === 'best'"
         :runs="character.dungeon_runs ?? []"
         :dungeons="dungeons"
-        :current-season="selectedSeason"
+        :current-season="effectiveSeason"
       />
       <MythicPlusAllRuns
         v-else
         :runs="character.dungeon_runs ?? []"
         :dungeons="dungeons"
-        :current-season="selectedSeason"
+        :current-season="effectiveSeason"
       />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, type Component } from 'vue'
+import { computed, type Component } from 'vue'
 import { Trophy, ListOrdered, Skull } from 'lucide-vue-next'
 import { useCharacterContext } from '@/composables/useCharacterContext'
 import { useMythicDungeons, useSeasons } from '@/composables/usePveGameData'
+import { useQueryParam, intParam } from '@/composables/useQueryParam'
 import DungeonsHeadline from '@/components/character/pve/DungeonsHeadline.vue'
 import MythicPlusBestPerDungeon from '@/components/character/pve/MythicPlusBestPerDungeon.vue'
 import MythicPlusAllRuns from '@/components/character/pve/MythicPlusAllRuns.vue'
@@ -105,7 +106,10 @@ const VIEWS: ViewDescriptor[] = [
   { key: 'all',  label: 'All Runs',         icon: ListOrdered },
 ]
 
-const activeView = ref<ViewDescriptor['key']>('best')
+const activeView = useQueryParam<'best' | 'all'>('view', {
+  default: 'best',
+  parse: (raw) => (raw === 'all' || raw === 'best' ? raw : null),
+})
 
 const { data, isLoading, isError, error, refetch } = useMythicDungeons()
 const { data: seasonData } = useSeasons()
@@ -131,24 +135,22 @@ const seasonOptions = computed(() => {
     .map((id) => ({ id, name: seasonNameById.value.get(id) ?? `Season ${id}` }))
 })
 
-// null until the registry answers → identical to today's unfiltered view.
-const selectedSeason = ref<number | null>(null)
-watch(currentSeason, (id) => {
-  if (selectedSeason.value === null && id != null) selectedSeason.value = id
-}, { immediate: true })
+// null means "the current season" — the canonical URL carries no ?season=.
+const selectedSeason = useQueryParam<number | null>('season', { default: null, parse: intParam })
+const effectiveSeason = computed(() => selectedSeason.value ?? currentSeason.value)
 
 const isCurrentSelected = computed(
   () => selectedSeason.value === null || selectedSeason.value === currentSeason.value,
 )
 const selectedSeasonName = computed(() =>
-  selectedSeason.value == null
+  effectiveSeason.value == null
     ? null
-    : (seasonNameById.value.get(selectedSeason.value) ?? `Season ${selectedSeason.value}`),
+    : (seasonNameById.value.get(effectiveSeason.value) ?? `Season ${effectiveSeason.value}`),
 )
 
 const seasonRuns = computed(() => {
   const runs = character.value.dungeon_runs ?? []
-  return selectedSeason.value == null ? runs : runs.filter((r) => r.season === selectedSeason.value)
+  return effectiveSeason.value == null ? runs : runs.filter((r) => r.season === effectiveSeason.value)
 })
 const emptyMessage = computed(() => {
   const base = `No ${selectedSeasonName.value ?? 'Mythic+'} runs recorded yet.`
@@ -157,6 +159,7 @@ const emptyMessage = computed(() => {
 
 function onSeasonChange(event: Event) {
   const value = (event.target as HTMLSelectElement).value
-  selectedSeason.value = value === '' ? null : Number(value)
+  const id = Number(value)
+  selectedSeason.value = id === currentSeason.value ? null : id
 }
 </script>

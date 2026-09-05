@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useCharacterStats, useTopRuns } from '@/composables/useCharacterStats'
 import { useMythicDungeons } from '@/composables/usePveGameData'
+import { useQueryParam, intParam } from '@/composables/useQueryParam'
 import TopRunsTable from '@/components/stats/TopRunsTable.vue'
 import PaginationControls from '@/components/ui/PaginationControls.vue'
 import CoverageStamp from '@/components/stats/CoverageStamp.vue'
 import ErrorState from '@/components/feedback/ErrorState.vue'
 
-const page = ref(1)
+const page = useQueryParam<number>('page', { default: 1, parse: intParam })
 const { data, isLoading, isError, refetch } = useTopRuns(page, 20)
 const { data: dungeonData } = useMythicDungeons()
 const { data: siteStats } = useCharacterStats()

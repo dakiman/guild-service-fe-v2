@@ -1,18 +1,25 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import PageHeader from '@/components/layout/PageHeader.vue'
 import CurrentAffixStrip from '@/components/stats/CurrentAffixStrip.vue'
 import MetaSpecCard from '@/components/stats/MetaSpecCard.vue'
 import MetaDungeonCard from '@/components/stats/MetaDungeonCard.vue'
 import MetaCompsCard from '@/components/stats/MetaCompsCard.vue'
 import { useMetaPeriods } from '@/composables/useMetaStats'
+import { useQueryParam, intParam } from '@/composables/useQueryParam'
 import { periodLabel } from '@/utils/periodLabel'
 import type { MetaPeriodParam, MetaRegion } from '@/types/meta'
 
-const period = ref<MetaPeriodParam>('current')
-const region = ref<MetaRegion>('all')
+const period = useQueryParam<MetaPeriodParam>('week', {
+  default: 'current',
+  parse: (raw) => (raw === 'current' ? 'current' : (intParam(raw) as MetaPeriodParam | null)),
+})
+const region = useQueryParam<MetaRegion>('region', {
+  default: 'all',
+  parse: (raw) => (['all', 'eu', 'us'].includes(raw) ? (raw as MetaRegion) : null),
+})
 /** Spec used to narrow Top Comps; set from the comps select or by clicking a Spec Meta row. */
-const specFilter = ref<number | null>(null)
+const specFilter = useQueryParam<number | null>('spec', { default: null, parse: intParam })
 
 const { data: periods } = useMetaPeriods()
 

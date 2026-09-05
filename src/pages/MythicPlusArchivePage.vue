@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, toRef } from 'vue'
+import { computed, toRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useSeasonArchive } from '@/composables/useSeasonArchive'
+import { useQueryParam, intParam } from '@/composables/useQueryParam'
 import TopRunsTable from '@/components/stats/TopRunsTable.vue'
 import HighestKeysList from '@/components/stats/HighestKeysList.vue'
 import TopPerformersCard from '@/components/stats/TopPerformersCard.vue'
@@ -14,7 +15,7 @@ const props = defineProps<{ slug: string }>()
 const { data, isLoading, isError } = useSeasonArchive(toRef(props, 'slug'))
 
 const PER_PAGE = 20
-const page = ref(1)
+const page = useQueryParam<number>('page', { default: 1, parse: intParam })
 
 const allRuns = computed(() => data.value?.top_runs ?? [])
 const lastPage = computed(() => Math.max(1, Math.ceil(allRuns.value.length / PER_PAGE)))

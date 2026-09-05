@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, toRef, watch } from 'vue'
 import { refDebounced } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import GuildHeader from '@/components/guild/GuildHeader.vue'
@@ -13,6 +13,7 @@ import RefreshButton from '@/components/feedback/RefreshButton.vue'
 import { useGuildLookup } from '@/composables/usePollingLookup'
 import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
 import { useDocumentTitle } from '@/composables/useDocumentTitle'
+import { useQueryParam, intParam } from '@/composables/useQueryParam'
 import type { Region } from '@/types/api'
 import { SyncPendingError } from '@/types/api'
 import { displayGuildName as fmtGuildName, displayRealm as fmtRealm } from '@/utils/display'
@@ -23,9 +24,9 @@ const region = toRef(props, 'region')
 const realm = toRef(props, 'realm')
 const name = toRef(props, 'name')
 
-const page = ref(1)
+const page = useQueryParam<number>('page', { default: 1, parse: intParam })
 const perPage = 50
-const filterText = ref('')
+const filterText = useQueryParam<string>('q', { default: '' })
 const debouncedFilter = refDebounced(filterText, 250)
 
 // Reset to page 1 when the filter changes so a search starting on page 7
