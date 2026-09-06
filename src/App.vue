@@ -10,6 +10,7 @@
       <router-view />
     </main>
     <AppFooter />
+    <LiveAnnouncer />
     <Toaster position="top-right" />
   </div>
 </template>
@@ -18,4 +19,5 @@
 import { Toaster } from 'vue-sonner'
 import AppNav from '@/components/layout/AppNav.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
+import LiveAnnouncer from '@/components/feedback/LiveAnnouncer.vue'
 </script>
