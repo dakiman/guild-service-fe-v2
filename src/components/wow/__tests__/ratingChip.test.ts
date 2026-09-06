@@ -22,6 +22,13 @@ describe('RatingChip', () => {
     expect(rank.attributes('title')).toBe('rank #6')
   })
 
+  it('hides the rank suffix below sm so narrow tables keep their width', () => {
+    const w = mount(RatingChip, { props: { rating: { rating: 2847, color: '#ff8000' }, regionRank: 6 } })
+    const rank = w.get('[aria-label="rank #6"]')
+    expect(rank.classes()).toContain('hidden')
+    expect(rank.classes()).toContain('sm:inline')
+  })
+
   it('omits the rank when null', () => {
     const w = mount(RatingChip, { props: { rating: { rating: 1500, color: null }, regionRank: null } })
     expect(w.text()).toContain('1,500')

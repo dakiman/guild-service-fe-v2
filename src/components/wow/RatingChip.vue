@@ -33,7 +33,7 @@ const showRank = computed(() => props.isCurrent && props.regionRank != null)
     >{{ n(rating.rating) }}</span>
     <span
       v-if="showRank"
-      class="text-wsa-muted font-normal"
+      class="hidden sm:inline text-wsa-muted font-normal"
       :aria-label="`rank #${n(regionRank!)}`"
       :title="`rank #${n(regionRank!)}`"
     >#{{ n(regionRank!) }}</span>
