@@ -83,7 +83,8 @@ import { useDocumentTitle } from '@/composables/useDocumentTitle'
 import { provideCharacterContext } from '@/composables/useCharacterContext'
 import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
-import { SyncPendingError } from '@/types/api'
+import { NotFoundError, SyncPendingError } from '@/types/api'
+import { lookupTitle, NOT_FOUND_TITLE } from '@/router/documentTitle'
 import { Sparkles, BookOpen, Crown, Gem, Skull, Swords, Star, Trophy } from 'lucide-vue-next'
 import CharacterHeader from '@/components/character/CharacterHeader.vue'
 import CharacterLayoutSkeleton from '@/components/character/CharacterLayoutSkeleton.vue'
@@ -100,7 +101,6 @@ import FreshnessSummary from '@/components/feedback/FreshnessSummary.vue'
 import type { Region } from '@/types/api'
 import type { CharacterLookupResult, CharacterResource, MetaBlock } from '@/types/character'
 import { getErrorMessage } from '@/utils/errors'
-import { displayName as fmtName, displayRealm as fmtRealm } from '@/utils/display'
 
 const props = defineProps<{ region: Region; realm: string; name: string }>()
 const { region, realm, name } = toRefs(props)
@@ -123,11 +123,12 @@ const pollingQueueDepth = computed(() => {
 })
 const hasSettledError = computed(() => !!lookup.error.value && !lookup.isFetching.value)
 
-useDocumentTitle(() =>
-  character.value
-    ? `${fmtName(character.value.name, character.value.display_name)} – ${fmtRealm(character.value.realm, character.value.display_realm)}`
-    : null,
-)
+useDocumentTitle(() => {
+  const c = character.value
+  if (c) return lookupTitle(c.name, c.realm, { name: c.display_name, realm: c.display_realm })
+  if (lookup.error.value instanceof NotFoundError) return NOT_FOUND_TITLE
+  return lookupTitle(name.value, realm.value)
+})
 
 useWowheadRefresh(() => character.value)
 useWowheadRefresh(() => route.fullPath)

@@ -134,4 +134,14 @@ describe('CharacterDetailLayout states', () => {
     expect(h1s).toHaveLength(1)
     expect(h1s[0].text()).toBe('Character lookup')
   })
+
+  it('titles the tab from the route params before data and "Not found" on a 404', () => {
+    document.title = 'Raids · Peon'
+    mountLayout(fakeLookup({}))
+    expect(document.title).toBe('Cirna – The Maelstrom · Peon')
+    mountLayout(fakeLookup({ data: { data: makeCharacter({ display_name: 'Cirna', display_realm: 'The Maelstrom' }), meta: makeMeta(), isStale: false, isSyncing: false } }))
+    expect(document.title).toBe('Cirna – The Maelstrom · Peon')
+    mountLayout(fakeLookup({ error: new NotFoundError() }))
+    expect(document.title).toBe('Not found · Peon')
+  })
 })

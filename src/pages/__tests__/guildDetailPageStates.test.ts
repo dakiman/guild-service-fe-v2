@@ -121,4 +121,12 @@ describe('GuildDetailPage states', () => {
     expect(h1s).toHaveLength(1)
     expect(h1s[0].text()).toBe('Guild lookup')
   })
+
+  it('titles the tab from the route params before data and "Not found" on a 404', () => {
+    document.title = 'Raids · Peon'
+    mountPage(fakeLookup({}))
+    expect(document.title).toBe('Starfall – The Maelstrom · Peon')
+    mountPage(fakeLookup({ error: new NotFoundError() }))
+    expect(document.title).toBe('Not found · Peon')
+  })
 })

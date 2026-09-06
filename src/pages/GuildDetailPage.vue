@@ -15,8 +15,8 @@ import { useStaleAutoRefresh } from '@/composables/useStaleAutoRefresh'
 import { useDocumentTitle } from '@/composables/useDocumentTitle'
 import { useQueryParam, intParam } from '@/composables/useQueryParam'
 import type { Region } from '@/types/api'
-import { SyncPendingError } from '@/types/api'
-import { displayGuildName as fmtGuildName, displayRealm as fmtRealm } from '@/utils/display'
+import { NotFoundError, SyncPendingError } from '@/types/api'
+import { lookupTitle, NOT_FOUND_TITLE } from '@/router/documentTitle'
 
 const props = defineProps<{ region: Region; realm: string; name: string }>()
 
@@ -43,11 +43,12 @@ const meta = computed(() => lookup.data.value?.meta ?? null)
 const isStale = computed(() => lookup.data.value?.isStale ?? false)
 const isSyncing = computed(() => lookup.data.value?.isSyncing ?? false)
 
-useDocumentTitle(() =>
-  guild.value
-    ? `${fmtGuildName(guild.value.name, guild.value.display_name)} – ${fmtRealm(guild.value.realm, guild.value.display_realm)}`
-    : null,
-)
+useDocumentTitle(() => {
+  const g = guild.value
+  if (g) return lookupTitle(g.name, g.realm, { name: g.display_name, realm: g.display_realm }, 'guild')
+  if (lookup.error.value instanceof NotFoundError) return NOT_FOUND_TITLE
+  return lookupTitle(name.value, realm.value, undefined, 'guild')
+})
 
 async function onForceRefresh() {
   const result = await lookup.forceRefresh()
