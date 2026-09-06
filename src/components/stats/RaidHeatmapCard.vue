@@ -154,15 +154,14 @@ const raidMediaMap = computed(() => {
               :role="(boss.kills_by_class[String(classId)] ?? 0) > 0 ? 'img' : undefined"
               :aria-label="
                 (boss.kills_by_class[String(classId)] ?? 0) > 0
-                  ? `${CLASSES[classId]} — ${boss.kills_by_class[String(classId)]} kills`
+                  ? `${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`
                   : undefined
               "
             >
               <div
                 v-if="(boss.kills_by_class[String(classId)] ?? 0) > 0"
                 class="heatmap-dot rounded-full"
-                role="img"
-                :aria-label="`${CLASSES[classId]}: ${boss.kills_by_class[String(classId)]} kills`"
+                aria-hidden="true"
                 :style="
                   dotStyle(
                     classId,
