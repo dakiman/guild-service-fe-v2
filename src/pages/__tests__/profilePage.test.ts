@@ -16,6 +16,9 @@ vi.mock('@/api/blizzard', () => ({ mintOAuthState: vi.fn() }))
 vi.mock('@/api/characters', () => ({ toggleRecruitment: vi.fn() }))
 vi.mock('vue-sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 
+const { announce } = vi.hoisted(() => ({ announce: vi.fn() }))
+vi.mock('@/composables/useAnnounce', () => ({ useAnnounce: () => ({ announce }) }))
+
 import ProfilePage from '@/pages/ProfilePage.vue'
 import PageHeader from '@/components/layout/PageHeader.vue'
 import ClassIcon from '@/components/wow/ClassIcon.vue'
@@ -242,6 +245,16 @@ describe('ProfilePage syncing state', () => {
     const w = mountPage(makeUser({ bnet_sync_status: 'syncing', characters: [] }))
     expect(w.text()).toContain('Syncing your characters from Battle.net')
     expect(w.text()).not.toContain('No characters yet')
+  })
+
+  it('announces the Battle.net sync once through the app live region, with no local role=status', async () => {
+    announce.mockClear()
+    const w = mountPage(makeUser({ bnet_sync_status: 'syncing', characters: [] }))
+    await flushPromises()
+    expect(w.get('[data-testid="bnet-syncing"]').text()).toContain('Syncing your characters from Battle.net')
+    expect(w.find('[role="status"]').exists()).toBe(false)
+    expect(announce).toHaveBeenCalledTimes(1)
+    expect(announce).toHaveBeenCalledWith('Syncing your characters from Battle.net…')
   })
 })
 

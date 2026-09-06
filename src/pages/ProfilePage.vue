@@ -75,10 +75,9 @@
         />
       </div>
       <div
-        v-if="characters.length === 0 && user.bnet_sync_status === 'syncing'"
+        v-if="bnetSyncingEmpty"
+        data-testid="bnet-syncing"
         class="flex items-center justify-center gap-2 py-8 text-sm text-wsa-muted"
-        role="status"
-        aria-live="polite"
       >
         <span class="wsa-spinner !w-4 !h-4 inline-block" /> Syncing your characters from Battle.net… Work, work…
       </div>
@@ -187,8 +186,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
+import { useAnnounce } from '@/composables/useAnnounce'
 import { useAuthStore } from '@/stores/auth'
 import { toggleRecruitment } from '@/api/characters'
 import { mintOAuthState } from '@/api/blizzard'
@@ -222,6 +222,18 @@ const search = ref('')
 
 // The login/register payloads don't eager-load the relation, so the key can be absent.
 const characters = computed(() => user.value?.characters ?? [])
+
+const { announce } = useAnnounce()
+const bnetSyncingEmpty = computed(
+  () => characters.value.length === 0 && user.value?.bnet_sync_status === 'syncing',
+)
+watch(
+  bnetSyncingEmpty,
+  (on) => {
+    if (on) void announce('Syncing your characters from Battle.net…')
+  },
+  { immediate: true },
+)
 
 const visibleCharacters = computed(() => {
   const sorted = [...characters.value].sort((a, b) => b.level - a.level)

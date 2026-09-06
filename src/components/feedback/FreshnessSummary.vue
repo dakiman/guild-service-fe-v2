@@ -7,7 +7,7 @@
       @click="open = !open"
     >
       <component :is="aggregate.icon" class="w-3 h-3" :class="aggregate.iconClass" />
-      <span role="status">{{ aggregate.label }}</span>
+      <span>{{ aggregate.label }}</span>
       <ChevronDown class="w-3 h-3 text-wsa-muted transition-transform" :class="{ 'rotate-180': open }" />
     </button>
     <div
@@ -21,9 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { ChevronDown, CircleCheck, CircleAlert, RefreshCw } from 'lucide-vue-next'
 import FreshnessChips from '@/components/feedback/FreshnessChips.vue'
+import { useAnnounce } from '@/composables/useAnnounce'
 import type { MetaBlock } from '@/types/character'
 
 const props = defineProps<{
@@ -60,4 +61,9 @@ const aggregate = computed(() => {
   }
   return { icon: CircleCheck, iconClass: 'text-emerald-400', label: 'Data up to date' }
 })
+
+const { announce } = useAnnounce()
+// Change-only: the initial label is visible content the user reads; announcing
+// it on mount would double-read the page.
+watch(() => aggregate.value.label, (label) => { void announce(label) })
 </script>

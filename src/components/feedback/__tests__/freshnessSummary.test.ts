@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+const { announce } = vi.hoisted(() => ({ announce: vi.fn() }))
+vi.mock('@/composables/useAnnounce', () => ({ useAnnounce: () => ({ announce }) }))
 import FreshnessSummary from '../FreshnessSummary.vue'
 
 const freshness = {
@@ -10,6 +12,17 @@ const freshness = {
 } as never
 
 describe('FreshnessSummary', () => {
+  beforeEach(() => announce.mockClear())
+
+  it('has no live region of its own, stays quiet on mount, announces aggregate changes', async () => {
+    const w = mount(FreshnessSummary, { props: { freshness } })
+    expect(w.find('[role="status"]').exists()).toBe(false)
+    expect(announce).not.toHaveBeenCalled()
+    await w.setProps({ hiddenKeys: ['collections', 'raids'] })
+    expect(announce).toHaveBeenCalledTimes(1)
+    expect(announce).toHaveBeenCalledWith('Data up to date')
+  })
+
   it('shows the syncing aggregate when any visible slice is never_synced', () => {
     const w = mount(FreshnessSummary, { props: { freshness } })
     expect(w.get('button').text()).toContain('Updating 1 section')
