@@ -74,6 +74,20 @@ export function resolveNodeSpellId(node: TalentNode, picked?: TalentEntry): numb
 }
 
 /**
+ * Display name for a node given the spell that represents it (see
+ * resolveNodeSpellId): the matching rank, else the matching choice option,
+ * else the first rank — Blizzard omits names on some choice entries.
+ */
+export function resolveNodeName(node: TalentNode, spellId: number): string | null {
+  return (
+    node.ranks.find((r) => r.spell_id === spellId)?.name ??
+    node.choice_options?.find((o) => o.spell_id === spellId)?.name ??
+    node.ranks[0]?.name ??
+    null
+  )
+}
+
+/**
  * Prepare a node family for absolute-grid rendering: collapse same-cell
  * duplicate ids (Blizzard ships e.g. Paladin's Lightforged Blessing as two
  * nodes on one cell — the picked twin must win or its highlight renders

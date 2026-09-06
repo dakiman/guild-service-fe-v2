@@ -79,7 +79,7 @@ import TalentEdges from './TalentEdges.vue'
 import TalentNode from './TalentNode.vue'
 import type { TalentEdge, TalentNode as TalentNodeT } from '@/types/talents'
 import type { TalentEntry } from '@/types/character'
-import { normalizeGridNodes, resolveNodeSpellId } from '@/utils/talentTopology'
+import { normalizeGridNodes, resolveNodeName, resolveNodeSpellId } from '@/utils/talentTopology'
 
 const props = defineProps<{
   title: string
@@ -183,10 +183,7 @@ function rankLabelFor(node: TalentNodeT): string | null {
 }
 
 function nameFor(node: TalentNodeT): string | null {
-  const spellId = spellIdFor(node)
-  return node.ranks.find((r) => r.spell_id === spellId)?.name
-    ?? node.choice_options?.find((o) => o.spell_id === spellId)?.name
-    ?? node.ranks[0]?.name ?? null
+  return resolveNodeName(node, spellIdFor(node))
 }
 </script>
 
