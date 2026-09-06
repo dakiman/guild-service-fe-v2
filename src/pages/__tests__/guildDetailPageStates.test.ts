@@ -126,6 +126,18 @@ describe('GuildDetailPage states', () => {
     document.title = 'Raids · Peon'
     mountPage(fakeLookup({}))
     expect(document.title).toBe('Starfall – The Maelstrom · Peon')
+    document.title = 'Raids · Peon'
+    mountPage(fakeLookup({
+      data: {
+        guild: makeGuild({ display_name: 'StarFall', display_realm: 'The Maelstrom' }),
+        members: makeMembers(),
+        meta: makeMeta(),
+        isStale: false,
+        isSyncing: false,
+      },
+    }))
+    expect(document.title).toBe('StarFall – The Maelstrom · Peon')
+    document.title = 'Raids · Peon'
     mountPage(fakeLookup({ error: new NotFoundError() }))
     expect(document.title).toBe('Not found · Peon')
   })

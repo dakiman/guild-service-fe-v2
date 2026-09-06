@@ -103,8 +103,8 @@ const mergedPrevious = computed(
           v-if="previousSeasonSeg"
           :to="{ name: 'leaderboards-season-region', params: { season: previousSeasonSeg, region: character.region } }"
           class="hover:text-wsa-gold hover:underline"
-        >{{ rating.season_name ?? 'Earlier season' }}: {{ n(rating.rating) }}</RouterLink>
-        <span v-else>{{ rating.season_name ?? 'Earlier season' }}: {{ n(rating.rating) }}</span>
+        >{{ rating.season_name ?? previous?.season_name ?? 'Earlier season' }}: {{ n(rating.rating) }}</RouterLink>
+        <span v-else>{{ rating.season_name ?? previous?.season_name ?? 'Earlier season' }}: {{ n(rating.rating) }}</span>
         <template v-if="mergedPrevious && previous && previousSeg">
           <span aria-hidden="true">·</span>
           <RouterLink

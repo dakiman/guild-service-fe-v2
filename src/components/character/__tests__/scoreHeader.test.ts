@@ -148,6 +148,32 @@ describe('ScoreHeader', () => {
     expect(w.find('[data-testid="score-previous"]').text()).toContain('#40 EU')
   })
 
+  it('falls back to the previous rank\'s season name when the rating carries none, in the merged case', async () => {
+    const w = mountWith({
+      ...base,
+      game_version: 'retail',
+      mythic_plus_rating: { rating: 2723, color: '#a335ee', per_spec: {}, ...lastSeason, season_name: null },
+      rank: null,
+      previous_rank: lastSeasonRank,
+    })
+    await flushPromises()
+    expect(w.find('[data-testid="score-season"]').text()).toContain('Midnight Season 1: 2,723')
+  })
+
+  it('shows only score-previous, no score-season, when unrated with no rating at all', async () => {
+    const w = mountWith({
+      ...base,
+      game_version: 'retail',
+      mythic_plus_rating: null,
+      rank: null,
+      previous_rank: lastSeasonRank,
+    })
+    await flushPromises()
+    expect(w.find('[data-testid="score-previous"]').exists()).toBe(true)
+    expect(w.find('[data-testid="score-previous"]').text()).toContain('#40 EU')
+    expect(w.find('[data-testid="score-season"]').exists()).toBe(false)
+  })
+
   it('keeps the previous-season block under a current rating', async () => {
     const w = mountWith({ ...base, game_version: 'retail', mythic_plus_rating: { rating: 2847, color: '#ff8000', per_spec: {}, ...thisSeason }, rank: null, previous_rank: lastSeasonRank })
     await flushPromises()

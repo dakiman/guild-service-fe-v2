@@ -139,8 +139,10 @@ describe('CharacterDetailLayout states', () => {
     document.title = 'Raids · Peon'
     mountLayout(fakeLookup({}))
     expect(document.title).toBe('Cirna – The Maelstrom · Peon')
-    mountLayout(fakeLookup({ data: { data: makeCharacter({ display_name: 'Cirna', display_realm: 'The Maelstrom' }), meta: makeMeta(), isStale: false, isSyncing: false } }))
-    expect(document.title).toBe('Cirna – The Maelstrom · Peon')
+    document.title = 'Raids · Peon'
+    mountLayout(fakeLookup({ data: { data: makeCharacter({ display_name: 'CiRnA', display_realm: 'The Maelstrom' }), meta: makeMeta(), isStale: false, isSyncing: false } }))
+    expect(document.title).toBe('CiRnA – The Maelstrom · Peon')
+    document.title = 'Raids · Peon'
     mountLayout(fakeLookup({ error: new NotFoundError() }))
     expect(document.title).toBe('Not found · Peon')
   })
