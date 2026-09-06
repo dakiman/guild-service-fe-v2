@@ -2,8 +2,6 @@
   <span
     v-if="syncing"
     data-testid="sync-banner"
-    role="status"
-    aria-live="polite"
     class="wsa-badge !border-sky-500/30 !text-sky-400 gap-1.5"
   >
     <span class="wsa-spinner !w-3 !h-3 shrink-0" />
@@ -17,8 +15,6 @@
   <span
     v-else-if="showSuccess"
     data-testid="sync-success"
-    role="status"
-    aria-live="polite"
     class="wsa-badge sync-success-flash !border-emerald-500/30 !text-emerald-400 gap-1.5"
   >
     <img
@@ -33,6 +29,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watch } from 'vue'
+import { useAnnounce } from '@/composables/useAnnounce'
 
 defineOptions({ inheritAttrs: false })
 
@@ -51,13 +48,22 @@ function clearTimer() {
   }
 }
 
+const { announce } = useAnnounce()
+const SYNCING_TEXT = 'Syncing character data — sections fill in as they arrive.'
+
 watch(
   () => props.syncing,
   (now, prev) => {
     clearTimer()
-    if (prev && !now) {
+    if (now) {
+      showSuccess.value = false
+      void announce(SYNCING_TEXT)
+      return
+    }
+    if (prev) {
       // Sync just finished — flash the success badge, then go quiet.
       showSuccess.value = true
+      void announce("Job's done!")
       timer = setTimeout(() => {
         showSuccess.value = false
         timer = null
@@ -66,6 +72,7 @@ watch(
       showSuccess.value = false
     }
   },
+  { immediate: true },
 )
 
 onBeforeUnmount(clearTimer)

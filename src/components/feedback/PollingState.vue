@@ -1,5 +1,5 @@
 <template>
-  <div role="status" aria-live="polite" class="wsa-card flex flex-col items-center text-center gap-3 py-8">
+  <div class="wsa-card flex flex-col items-center text-center gap-3 py-8">
     <slot name="visual">
       <img
         src="/brand/state-loading.jpg"
@@ -22,8 +22,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { ACTIVE_PHASE_MS } from '@/composables/pollingSchedule'
+import { useAnnounce } from '@/composables/useAnnounce'
 
 const props = defineProps<{
   // Epoch ms of the first 202 for this lookup (usePollingLookup's
@@ -88,4 +89,9 @@ const tierSubtext = computed(() => {
 const showQueueBusy = computed(
   () => tier.value !== 'first' && (props.queueDepth ?? 0) > QUEUE_BUSY_THRESHOLD,
 )
+
+const { announce } = useAnnounce()
+const spoken = computed(() => props.message ?? tierMessage.value)
+// Entering the pending state is itself the change worth announcing → immediate.
+watch(spoken, (text) => { void announce(text) }, { immediate: true })
 </script>

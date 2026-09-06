@@ -1,14 +1,21 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+
+const { announce } = vi.hoisted(() => ({ announce: vi.fn() }))
+vi.mock('@/composables/useAnnounce', () => ({ useAnnounce: () => ({ announce }) }))
+
 import PollingState from '../PollingState.vue'
 
 describe('PollingState tiers', () => {
+  beforeEach(() => announce.mockClear())
+
   it('shows first-fetch copy when pendingSince is fresh or absent', () => {
     const w = mount(PollingState)
     expect(w.text()).toContain('Fetching from Blizzard for the first time')
     expect(w.find('button').exists()).toBe(false)
-    expect(w.attributes('role')).toBe('status')
-    expect(w.attributes('aria-live')).toBe('polite')
+    expect(w.attributes('role')).toBeUndefined()
+    expect(w.attributes('aria-live')).toBeUndefined()
+    expect(announce).toHaveBeenCalledWith('Fetching from Blizzard for the first time…')
   })
 
   it('shows the queue-busy line after 30s when the queue is deep', () => {
@@ -44,6 +51,20 @@ describe('PollingState tiers', () => {
     })
     expect(w.text()).toContain('Syncing character data…')
     expect(w.text()).toContain('custom')
+  })
+
+  it('announces each tier change as the clock advances', async () => {
+    vi.useFakeTimers()
+    try {
+      const w = mount(PollingState, { props: { pendingSince: Date.now() } })
+      expect(announce).toHaveBeenLastCalledWith('Fetching from Blizzard for the first time…')
+      vi.advanceTimersByTime(31_000)
+      await w.vm.$nextTick()
+      expect(announce).toHaveBeenLastCalledWith('Still syncing…')
+      expect(announce).toHaveBeenCalledTimes(2)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
 
