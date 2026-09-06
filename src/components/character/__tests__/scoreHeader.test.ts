@@ -33,6 +33,7 @@ const rankBase = {
   population: { world: 152560, region: 82297, realm: 1900, class: 14000, spec: 6100 },
   percentile: 4, connected_realm_id: 1090, computed_at: new Date(Date.now() - 5 * 3_600_000).toISOString(),
 }
+const lastSeasonRank = { ...lastSeason, rating: 2723, world: 40000, region: 40, realm: 3, class: 900, spec: 400, ...rankBase }
 
 describe('ScoreHeader', () => {
   it('renders a dash and "No M+ rating yet" for an unrated character', async () => {
@@ -103,7 +104,7 @@ describe('ScoreHeader', () => {
     expect(w.text()).not.toContain('Destruction')
   })
 
-  it('shows last season standings from previous_rank with season-prefixed links', async () => {
+  it('shows last season standings from previous_rank with season-prefixed links, merged into score-season when the seasons match', async () => {
     const w = mountWith({
       ...base,
       game_version: 'retail',
@@ -112,12 +113,45 @@ describe('ScoreHeader', () => {
       previous_rank: { ...lastSeason, rating: 2723, world: 900, region: 40, realm: 2, class: 9, spec: 4, ...rankBase },
     })
     await flushPromises()
-    const prev = w.find('[data-testid="score-previous"]')
-    expect(prev.text()).toContain('Midnight Season 1')
-    expect(prev.text()).toContain('#40 EU')
-    expect(prev.text()).toContain('#2 on The Maelstrom')
+    const line = w.find('[data-testid="score-season"]')
+    expect(line.text()).toContain('Midnight Season 1')
+    expect(line.text()).toContain('#40 EU')
+    expect(line.text()).toContain('#2 on The Maelstrom')
+    expect(w.find('[data-testid="score-previous"]').exists()).toBe(false)
     const links = w.findAll('a').map((a) => JSON.parse(a.attributes('data-to')!))
     expect(links).toContainEqual({ name: 'leaderboards-season-region', params: { season: 'mn-1', region: 'eu' } })
     expect(links).toContainEqual({ name: 'leaderboards-season-realm', params: { season: 'mn-1', region: 'eu', realm: 'the-maelstrom' } })
+  })
+
+  it('merges the earlier-season rating and rank into one line when they share a season', async () => {
+    const w = mountWith({ ...base, game_version: 'retail', mythic_plus_rating: { rating: 2723, color: '#a335ee', per_spec: {}, ...lastSeason }, rank: null, previous_rank: lastSeasonRank })
+    await flushPromises()
+    const line = w.find('[data-testid="score-season"]')
+    const text = line.text()
+    expect(text).toContain('Midnight Season 1: 2,723')
+    expect(text).toContain('#40 EU')
+    expect(text).toContain('#3 on The Maelstrom')
+    expect(line.findAll('[aria-hidden="true"]')).toHaveLength(2)
+    expect(line.findAll('a').map((a) => JSON.parse(a.attributes('data-to')!))).toEqual([
+      { name: 'leaderboards-season-region', params: { season: 'mn-1', region: 'eu' } },
+      { name: 'leaderboards-season-region', params: { season: 'mn-1', region: 'eu' } },
+      { name: 'leaderboards-season-realm', params: { season: 'mn-1', region: 'eu', realm: 'the-maelstrom' } },
+    ])
+    expect(w.find('[data-testid="score-previous"]').exists()).toBe(false)
+  })
+
+  it('keeps both lines when the rating and the previous rank come from different seasons', async () => {
+    const olderSeason = { season_id: 16, season_slug: 'season-tww-3', season_name: 'The War Within Season 3', is_current: false }
+    const w = mountWith({ ...base, game_version: 'retail', mythic_plus_rating: { rating: 2723, color: '#a335ee', per_spec: {}, ...olderSeason }, rank: null, previous_rank: lastSeasonRank })
+    await flushPromises()
+    expect(w.find('[data-testid="score-season"]').text()).toBe('The War Within Season 3: 2,723')
+    expect(w.find('[data-testid="score-previous"]').text()).toContain('#40 EU')
+  })
+
+  it('keeps the previous-season block under a current rating', async () => {
+    const w = mountWith({ ...base, game_version: 'retail', mythic_plus_rating: { rating: 2847, color: '#ff8000', per_spec: {}, ...thisSeason }, rank: null, previous_rank: lastSeasonRank })
+    await flushPromises()
+    expect(w.find('[data-testid="score-value"]').text()).toBe('2,847')
+    expect(w.find('[data-testid="score-previous"]').text()).toContain('Midnight Season 1')
   })
 })

@@ -36,6 +36,14 @@ const sSlug = computed(() =>
 const stamp = computed(() => relativeTime(rank.value?.computed_at))
 const previous = computed(() => props.character.previous_rank)
 const previousSeg = computed(() => (previous.value?.season_slug ? seasonSegment(previous.value.season_slug) : null))
+const sameSeason = computed(
+  () => !!previous.value?.season_slug && previous.value.season_slug === rating.value?.season_slug,
+)
+// Unrated this season and the previous rank is from the same season the rating
+// is from → say that season once, on one line, instead of two blocks.
+const mergedPrevious = computed(
+  () => !ratedThisSeason.value && !!rating.value && !!previous.value && sameSeason.value,
+)
 </script>
 
 <template>
@@ -90,19 +98,33 @@ const previousSeg = computed(() => (previous.value?.season_slug ? seasonSegment(
     <template v-else>
       <div class="text-4xl md:text-5xl font-bold leading-none text-wsa-muted" data-testid="score-value">—</div>
       <div v-if="rating" class="text-xs text-wsa-muted" data-testid="score-unrated">Not yet rated this season</div>
-      <div v-if="rating" class="text-xs text-wsa-muted" data-testid="score-season">
+      <div v-if="rating" class="flex flex-wrap sm:justify-end gap-x-2 text-xs text-wsa-muted" data-testid="score-season">
         <RouterLink
           v-if="previousSeasonSeg"
           :to="{ name: 'leaderboards-season-region', params: { season: previousSeasonSeg, region: character.region } }"
           class="hover:text-wsa-gold hover:underline"
         >{{ rating.season_name ?? 'Earlier season' }}: {{ n(rating.rating) }}</RouterLink>
         <span v-else>{{ rating.season_name ?? 'Earlier season' }}: {{ n(rating.rating) }}</span>
+        <template v-if="mergedPrevious && previous && previousSeg">
+          <span aria-hidden="true">·</span>
+          <RouterLink
+            :to="{ name: 'leaderboards-season-region', params: { season: previousSeg, region: character.region } }"
+            class="hover:text-wsa-gold hover:underline"
+          >#{{ n(previous.region) }} {{ regionUpper }}</RouterLink>
+          <template v-if="previous.realm != null">
+            <span aria-hidden="true">·</span>
+            <RouterLink
+              :to="{ name: 'leaderboards-season-realm', params: { season: previousSeg, region: character.region, realm: character.realm } }"
+              class="hover:text-wsa-gold hover:underline"
+            >#{{ n(previous.realm) }} on {{ realmName }}</RouterLink>
+          </template>
+        </template>
       </div>
       <div v-else class="text-xs text-wsa-muted" data-testid="score-unrated">No M+ rating yet</div>
     </template>
 
     <div
-      v-if="previous && previousSeg"
+      v-if="previous && previousSeg && !mergedPrevious"
       class="flex flex-wrap sm:justify-end gap-x-2 text-xs text-wsa-muted"
       data-testid="score-previous"
     >
