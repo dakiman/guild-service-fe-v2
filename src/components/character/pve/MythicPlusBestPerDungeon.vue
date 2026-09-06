@@ -66,7 +66,6 @@ import { useWowheadRefresh } from '@/composables/useWowhead'
 const props = defineProps<{
   runs: DungeonRun[]
   dungeons: MythicKeystoneDungeonGameData[]
-  currentSeason: number | null
 }>()
 
 interface BestRow {
@@ -74,12 +73,7 @@ interface BestRow {
   bestRun: DungeonRun | null
 }
 
-const seasonRuns = computed<DungeonRun[]>(() => {
-  if (props.currentSeason == null) return props.runs
-  return props.runs.filter((run) => run.season === props.currentSeason)
-})
-
-useWowheadRefresh(seasonRuns)
+useWowheadRefresh(() => props.runs)
 
 const rows = computed<BestRow[]>(() => {
   const sorted = [...props.dungeons].sort((a, b) => a.name.localeCompare(b.name))
@@ -95,7 +89,7 @@ const rows = computed<BestRow[]>(() => {
 })
 
 function bestRunFor(dungeonId: number): DungeonRun | null {
-  const candidates = seasonRuns.value.filter((run) => run.dungeon_id === dungeonId)
+  const candidates = props.runs.filter((run) => run.dungeon_id === dungeonId)
   if (candidates.length === 0) return null
   return candidates.reduce((best, run) => {
     if (run.keystone_level > best.keystone_level) return run

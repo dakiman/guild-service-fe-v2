@@ -93,4 +93,15 @@ describe('CharacterDungeonsTab season switcher', () => {
     expect(headline.props('currentSeason')).toBe(18)
     expect(headline.props('rating')).toBeNull()
   })
+
+  it('hands the views the already season-filtered runs and no season prop', async () => {
+    const wrapper = mountTab()
+    await flushPromises()
+    const ids = () =>
+      (wrapper.findComponent({ name: 'MythicPlusBestPerDungeon' }).props('runs') as { id: number }[]).map((r) => r.id)
+    expect(ids()).toEqual([1])
+    expect(wrapper.findComponent({ name: 'MythicPlusBestPerDungeon' }).props('currentSeason')).toBeUndefined()
+    await wrapper.find('select[aria-label="Season"]').setValue('17')
+    expect(ids()).toEqual([2])
+  })
 })

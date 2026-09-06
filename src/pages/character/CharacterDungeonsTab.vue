@@ -64,18 +64,8 @@
         :message="emptyMessage"
         :icon="Skull"
       />
-      <MythicPlusBestPerDungeon
-        v-else-if="activeView === 'best'"
-        :runs="character.dungeon_runs ?? []"
-        :dungeons="dungeons"
-        :current-season="effectiveSeason"
-      />
-      <MythicPlusAllRuns
-        v-else
-        :runs="character.dungeon_runs ?? []"
-        :dungeons="dungeons"
-        :current-season="effectiveSeason"
-      />
+      <MythicPlusBestPerDungeon v-else-if="activeView === 'best'" :runs="seasonRuns" :dungeons="dungeons" />
+      <MythicPlusAllRuns v-else :runs="seasonRuns" :dungeons="dungeons" />
     </template>
   </div>
 </template>

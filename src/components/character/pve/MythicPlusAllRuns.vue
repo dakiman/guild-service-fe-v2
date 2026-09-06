@@ -1,13 +1,6 @@
 <template>
   <div>
-    <div v-if="isSyncingSlice && seasonRuns.length === 0" class="wsa-card p-6 text-sm text-wsa-muted/70 flex items-center gap-2">
-      <span class="wsa-spinner !w-3 !h-3 inline-block" />
-      Syncing dungeon data…
-    </div>
-    <div v-else-if="seasonRuns.length === 0" class="wsa-card p-6 text-sm text-wsa-muted/70">
-      No mythic+ runs recorded this season.
-    </div>
-    <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
       <button
         v-for="run in sortedRuns"
         :key="run.id"
@@ -166,19 +159,14 @@ import type { MythicKeystoneDungeonGameData } from '@/types/gameData'
 import { CLASS_COLORS, SPEC_TO_CLASS } from '@/utils/wowConstants'
 import { displayName } from '@/utils/display'
 import { useWowheadRefresh } from '@/composables/useWowhead'
-import { useCharacterContext } from '@/composables/useCharacterContext'
 
 const props = defineProps<{
   runs: DungeonRun[]
   dungeons: MythicKeystoneDungeonGameData[]
-  currentSeason: number | null
 }>()
 
 const dialogRef = ref<HTMLDialogElement | null>(null)
 const selectedRun = ref<DungeonRun | null>(null)
-
-const { freshness } = useCharacterContext()
-const isSyncingSlice = computed(() => freshness.value.mythic_plus === 'never_synced')
 
 function openRun(run: DungeonRun): void {
   selectedRun.value = run
@@ -227,14 +215,7 @@ const dungeonIcons = computed<Record<number, string>>(() => {
   return map
 })
 
-const seasonRuns = computed<DungeonRun[]>(() => {
-  if (props.currentSeason == null) return props.runs
-  return props.runs.filter((run) => run.season === props.currentSeason)
-})
-
-const sortedRuns = computed<DungeonRun[]>(() =>
-  [...seasonRuns.value].sort((a, b) => b.completed_timestamp - a.completed_timestamp),
-)
+const sortedRuns = computed<DungeonRun[]>(() => [...props.runs].sort((a, b) => b.completed_timestamp - a.completed_timestamp))
 
 useWowheadRefresh(sortedRuns)
 
